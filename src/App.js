@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MapPin, Calendar, Volume2, VolumeX, Heart, Pointer, Navigation } from 'lucide-react';
+import { MapPin, Calendar, Volume2, VolumeX, Heart, Navigation } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -92,16 +92,6 @@ const App = () => {
             src="/ouverture.mp4"
           />
           
-          {!hasStarted && (
-             <div className="absolute inset-0 flex items-center justify-center bg-black/5">
-               <div className="text-center group">
-                 <Pointer className="text-white/80 mx-auto mb-4 animate-bounce" size={40} />
-                 <span className="text-white text-[10px] tracking-[0.6em] uppercase font-light drop-shadow-md">
-                   Appuyez pour ouvrir
-                 </span>
-               </div>
-             </div>
-          )}
         </div>
       )}
 
