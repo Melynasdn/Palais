@@ -37,10 +37,13 @@ const App = () => {
 
     const tl = gsap.timeline();
 
+    // Correction du timing : 
+    // La vidéo fait 4s. On attend 3.2s, puis le flash dure 0.8s. 
+    // À 4s pile (3.2 + 0.8), on déclenche onComplete.
     tl.to(flashRef.current, { 
       opacity: 1, 
       duration: 0.8, 
-      delay: 2.2, 
+      delay: 3.2, 
       ease: "power2.in",
       onComplete: () => {
         setIsOpen(true);
@@ -90,7 +93,7 @@ const App = () => {
       {/* --- PHASE 2 : LE SITE ROYAL --- */}
       <main ref={mainContentRef} className={`${isOpen ? 'block' : 'hidden'} relative min-h-screen bg-[#fdfaf5]`}>
         
-        {/* SECTION 1 : HERO (Avec bg.jpg) */}
+        {/* SECTION 1 : HERO */}
         <header 
           className="h-[100vh] flex flex-col items-center justify-center text-center px-6 relative"
           style={{ 
@@ -114,9 +117,8 @@ const App = () => {
           </div>
         </header>
 
-        {/* SECTION 2 : L'INVITATION (Fond Clair Texturé) */}
+        {/* SECTION 2 : L'INVITATION */}
         <section className="relative py-32 bg-[#fdfaf5] overflow-hidden">
-          {/* Filigrane décoratif en fond */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 text-[20rem] font-calligraphy text-[#d4af37]/5 pointer-events-none select-none">
             Wedding
           </div>
@@ -130,7 +132,7 @@ const App = () => {
           </div>
         </section>
 
-        {/* SECTION 3 : DÉTAILS (Style Cartes Royales) */}
+        {/* SECTION 3 : DÉTAILS */}
         <section className="py-20 px-6 max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16">
             <div className="relative p-1 bg-gradient-to-b from-[#d4af37]/40 to-transparent rounded-[2rem]">
@@ -157,7 +159,7 @@ const App = () => {
           </div>
         </section>
 
-        {/* SECTION 4 : ITINÉRAIRE (Style Chic) */}
+        {/* SECTION 4 : ITINÉRAIRE */}
         <section className="py-32 px-6 bg-white/50">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
@@ -170,6 +172,8 @@ const App = () => {
                 <p className="font-serif italic text-[#6b5e4c] mb-10 text-lg">Un service de voiturier sera à votre disposition dès l'entrée du Palais.</p>
                 <a 
                   href="https://maps.google.com" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center gap-3 bg-[#4a4238] text-[#fdfaf5] px-8 py-4 rounded-full hover:bg-[#b08d57] transition-all shadow-xl group"
                 >
                   <Navigation size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -178,8 +182,8 @@ const App = () => {
               </div>
               <div className="md:col-span-8 h-[450px] relative">
                 <iframe 
-                  title="Location map of Salle Les Roses d'Or in Sidi Abdellah, Alger"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d102435.03158784185!2d2.844781662499999!3d36.6480034!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128faf9923832d73%3A0x6a1006525797f66e!2sSidi%20Abdellah!5e0!3m2!1sfr!2sdz!4v1700000000000!5m2!1sfr!2sdz"
+                  title="Location map"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3202.8!2d2.8!3d36.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDQyJzAwLjAiTiAywrA0OCcwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1620000000000!5m2!1sfr!2sdz"
                   width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) contrast(1.1) brightness(1.1) sepia(0.2)' }} allowFullScreen="" loading="lazy" 
                 />
               </div>
@@ -187,12 +191,12 @@ const App = () => {
           </div>
         </section>
 
-        {/* FOOTER & VERSET */}
+        {/* FOOTER */}
         <footer className="py-40 text-center px-6 relative">
           <div className="max-w-2xl mx-auto border-t border-[#d4af37]/30 pt-20">
             <Heart className="text-[#d4af37] mx-auto mb-8 opacity-40" size={24} strokeWidth={1} />
             <p className="text-[#4a4238] font-serif italic text-2xl leading-relaxed mb-12 px-4">
-               "Qu'Allah bénisse cette union et nous rassemble dans le bien."
+                "Qu'Allah bénisse cette union et nous rassemble dans le bien."
             </p>
             <p className="text-[#b08d57] text-[10px] uppercase tracking-[0.8em] font-bold opacity-70">
               Familles Belkacem & Mansouri
