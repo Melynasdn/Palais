@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MapPin, Calendar, Volume2, VolumeX, Heart, Pointer, Navigation } from 'lucide-react';
+import { MapPin, Calendar, Volume2, VolumeX, Heart, Navigation } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -86,14 +86,14 @@ const App = () => {
             className={`absolute inset-0 z-50 bg-cover bg-center transition-opacity duration-1000 ${hasStarted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
             style={{ backgroundImage: "url('/poster.jpg')" }}
           >
-            <div className="absolute inset-0 bg-black/5 flex flex-col items-center justify-center">
+           {/*  <div className="absolute inset-0 bg-black/5 flex flex-col items-center justify-center">
               <div className="text-center group">
                 <Pointer className="text-[#8c7e6a] mx-auto mb-4 animate-bounce" size={40} />
                 <span className="text-[#8c7e6a] text-[10px] tracking-[0.6em] uppercase font-light drop-shadow-sm">
                   Appuyez pour ouvrir
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* 2. LA VIDÉO : En attente sous l'image */}
