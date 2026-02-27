@@ -83,7 +83,7 @@ const App = () => {
           >
             
           </div>
-          <video ref={videoRef} className="w-full h-full object-cover" playsInline src="/ouverture.mp4" />
+          <video ref={videoRef} className="w-full h-full object-cover" playsInline muted src="/ouverture.mp4" />
         </div>
       )}
 
