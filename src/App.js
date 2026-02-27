@@ -100,7 +100,6 @@ const App = () => {
           }}
         >
           <div className="animate-fade-in-up">
-            <h2 className="text-[#b08d57] uppercase tracking-[0.8em] text-[10px] md:text-xs mb-10 font-bold">Bismillah Al-Rahman Al-Rahim</h2>
             <h1 className="text-7xl md:text-[11rem] font-calligraphy text-[#4a4238] leading-tight drop-shadow-sm">Yacine & Amel</h1>
             <div className="flex items-center justify-center gap-6 my-8">
                 <div className="w-12 h-[1px] bg-[#d4af37]/50"></div>
