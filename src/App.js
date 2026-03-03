@@ -87,7 +87,7 @@ const App = () => {
       )}
 
       {/* --- PHASE 2 : LE SITE ROYAL --- */}
-      <main ref={mainContentRef} className={`${isOpen ? 'block' : 'hidden'} relative min-h-screen bg-[#4B1B1C]`}>
+      <main ref={mainContentRef} className={`${isOpen ? 'block' : 'hidden'} relative min-h-screen bg-[#310102]`}>
         
         {/* SECTION 1 : HERO */}
         <header 
@@ -99,7 +99,7 @@ const App = () => {
           }}
         >
           <div className="animate-fade-in-up">
-            <h1 className="text-5xl md:text-[11rem] font-calligraphy text-[#F2E8E0] leading-tight" style={{ textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>Yacine & Amel</h1>
+            <h1 className="text-5xl md:text-[11rem] font-calligraphy text-[#F2E8E0] leading-tight mt-10" style={{ textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>Yacine & Amel</h1>
             <div className="flex items-center justify-center gap-6 my-8">
                 <div className="w-12 h-[1px] bg-[#F2E8E0]/30"></div>
                 <Heart className="text-[#F2E8E0] fill-[#F2E8E0]/10" size={20} strokeWidth={1} />
@@ -114,7 +114,7 @@ const App = () => {
         </header>
 
         {/* SECTION 2 : L'INVITATION */}
-        <section className="relative py-32 bg-[#3A1415] overflow-hidden">
+        <section className="relative py-32 bg-[#350616] overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 text-[20rem] font-calligraphy text-[#F2E8E0]/[0.03] pointer-events-none select-none">
             Wedding
           </div>
@@ -132,62 +132,61 @@ const App = () => {
         <section className="py-20 px-6 max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16">
             <div className="relative p-1 bg-gradient-to-b from-[#F2E8E0]/20 to-transparent rounded-[2rem]">
-                <div className="bg-[#5C2A2B] p-12 rounded-[1.9rem] text-center shadow-sm">
-                  <h4 className="uppercase tracking-[0.4em] text-[10px] font-bold mb-6 text-[#D4B5A0]">Le Rendez-vous</h4>
-                  <p className="text-5xl text-[#FAF7F3] font-light mb-2 tracking-tighter">14 AOÛT</p>
-                  <p className="text-xl text-[#D4B5A0] font-serif italic">Vendredi deux mille vingt-six</p>
-                  <p className="mt-6 text-[#FAF7F3] font-bold tracking-[0.2em] text-xs">À DIX-NEUF HEURES</p>
+                <div className="bg-[#FEFCEF] p-12 rounded-[1.9rem] text-center shadow-sm">
+                  <h4 className="uppercase tracking-[0.4em] text-[10px] font-bold mb-6 text-[#310102]">Le Rendez-vous</h4>
+                  <p className="text-5xl text-[#350616] font-light mb-2 tracking-tighter">14 AOÛT</p>
+                  <p className="text-xl text-[#5D122B] font-serif italic">Vendredi 2026</p>
+                  <p className="mt-6 text-[#310102] font-bold tracking-[0.2em] text-xs">À DIX-NEUF HEURES</p>
                 </div>
             </div>
 
             <div className="relative p-1 bg-gradient-to-b from-[#F2E8E0]/20 to-transparent rounded-[2rem]">
-                <div className="bg-[#5C2A2B] p-12 rounded-[1.9rem] text-center shadow-sm h-full">
-                  <MapPin className="text-[#F2E8E0] mx-auto mb-8" size={32} strokeWidth={1.5} />
-                  <h4 className="uppercase tracking-[0.4em] text-[10px] font-bold mb-6 text-[#D4B5A0]">Le Palais</h4>
-                  <p className="text-4xl text-[#FAF7F3] font-calligraphy mb-2">Salle Les Roses d'Or</p>
-                  <p className="text-sm text-[#D4B5A0] tracking-[0.3em] uppercase">Sidi Abdellah, Alger</p>
-                  <div className="mt-8 pt-6 border-t border-[#F2E8E0]/10 text-[#F2E8E0] italic text-sm font-serif">
-                    Tenue de fête exigée
-                  </div>
+                <div className="bg-[#FEFCEF] p-12 rounded-[1.9rem] text-center shadow-sm h-full">
+                  <MapPin className="text-[#5D122B] mx-auto mb-8" size={32} strokeWidth={1.5} />
+                  <h4 className="uppercase tracking-[0.4em] text-[10px] font-bold mb-6 text-[#310102]">Le Palais</h4>
+                  <p className="text-3xl text-[#350616] font-calligraphy mb-2">Salle Les Roses d'Or</p>
+                  <p className="text-sm text-[#310102] tracking-[0.3em] uppercase">Sidi Abdellah, Alger</p>
+                  
                 </div>
             </div>
           </div>
         </section>
 
         {/* SECTION 4 : ITINÉRAIRE */}
-        <section className="py-32 px-6 bg-[#3A1415]/80">
+        <section className="py-32 px-6 bg-[#350616]/80">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
-              <h3 className="text-5xl font-calligraphy text-[#F2E8E0]">Se rendre à la fête</h3>
+              <h3 className="text-3xl font-calligraphy text-[#F2E8E0]">Se rendre à la fête</h3>
               <div className="w-12 h-[2px] bg-[#F2E8E0]/40 mx-auto mt-4"></div>
             </div>
             
-            <div className="grid md:grid-cols-12 items-center gap-0 rounded-[3rem] overflow-hidden shadow-2xl border border-[#F2E8E0]/10 bg-[#5C2A2B]">
-              <div className="md:col-span-4 p-12 bg-[#4B1B1C]">
-                <p className="font-serif italic text-[#D4B5A0] mb-10 text-lg">Un service de voiturier sera à votre disposition dès l'entrée du Palais.</p>
-                <a 
-                  href="https://maps.google.com" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 bg-[#F2E8E0] text-[#4B1B1C] px-8 py-4 rounded-full hover:bg-[#FAF7F3] transition-all shadow-xl group"
-                >
-                  <Navigation size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  <span className="uppercase text-[10px] tracking-[0.3em] font-bold">Ouvrir l'itinéraire</span>
-                </a>
-              </div>
-              <div className="md:col-span-8 h-[450px] relative">
+            <div className="rounded-[3rem] overflow-hidden shadow-2xl border border-[#F2E8E0]/10 bg-[#5C2A2B]">
+              <div className="h-[400px] md:h-[450px] relative w-full">
                 <iframe 
                   title="Location map"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3202.8!2d2.8!3d36.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDQyJzAwLjAiTiAywrA0OCcwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1620000000000!5m2!1sfr!2sdz"
                   width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) contrast(1.2) brightness(0.35) sepia(0.2) hue-rotate(330deg)' }} allowFullScreen="" loading="lazy" 
                 />
               </div>
+              <div className="bg-[#310102] px-10 py-10 flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
+                <a 
+                  href="https://maps.google.com" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 flex items-center justify-center gap-3 bg-[#F2E8E0] text-[#4B1B1C] px-8 py-4 rounded-full hover:bg-[#FAF7F3] transition-all shadow-xl group"
+                >
+                  <Navigation size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <span className="uppercase text-[10px] tracking-[0.3em] font-bold">Ouvrir l'itinéraire</span>
+                </a>
+              </div>
             </div>
+
+
           </div>
         </section>
 
         {/* FOOTER */}
-        <footer className="py-40 text-center px-6 relative bg-[#4B1B1C]">
+        <footer className="py-40 text-center px-6 relative bg-[#310102]">
           <div className="max-w-2xl mx-auto border-t border-[#F2E8E0]/15 pt-20">
             <Heart className="text-[#F2E8E0] mx-auto mb-8 opacity-30" size={24} strokeWidth={1} />
             <p className="text-[#F2E8E0]/90 font-serif italic text-2xl leading-relaxed mb-12 px-4">
