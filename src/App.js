@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MapPin,  Volume2, VolumeX, Heart, Navigation, Quote } from 'lucide-react';
+import { MapPin, Volume2, VolumeX, Heart, Navigation, Quote } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -31,7 +31,9 @@ const App = () => {
     setHasStarted(true);
     setIsMuted(false);
 
+    // L'utilisateur appuie → la vidéo démarre
     if (videoRef.current) {
+      videoRef.current.muted = false;
       videoRef.current.play();
     }
 
@@ -40,7 +42,7 @@ const App = () => {
     tl.to(flashRef.current, { 
       opacity: 1, 
       duration: 0.6, 
-      delay: 2.9, 
+      delay: 2, 
       ease: "power2.in",
     })
     .call(() => {
@@ -74,15 +76,16 @@ const App = () => {
         </button>
       )}
 
-      {/* --- PHASE 1 : L'OUVERTURE --- */}
+      {/* --- PHASE 1 : Vidéo affichée (1ère frame) mais en pause, démarre au clic --- */}
       {!isOpen && (
         <div className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer bg-[#4B1B1C]" onClick={handleStartTransition}>
-          <div 
-            className={`absolute inset-0 z-50 bg-cover bg-center transition-opacity duration-1000 ${hasStarted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-            style={{ backgroundImage: "url('/poster.jpg')" }}
-          >
-          </div>
-          <video ref={videoRef} className="w-full h-full object-cover" playsInline src="/ouverture.mp4" />
+          <video 
+            ref={videoRef} 
+            className="w-full h-full object-cover" 
+            playsInline 
+            preload="auto"
+            src="/ouverture.mp4" 
+          />
         </div>
       )}
 
@@ -146,7 +149,6 @@ const App = () => {
                   <h4 className="uppercase tracking-[0.4em] text-[10px] font-bold mb-6 text-[#310102]">Le Palais</h4>
                   <p className="text-3xl text-[#350616] font-calligraphy mb-2">Salle Les Roses d'Or</p>
                   <p className="text-sm text-[#310102] tracking-[0.3em] uppercase">Sidi Abdellah, Alger</p>
-                  
                 </div>
             </div>
           </div>
@@ -180,8 +182,6 @@ const App = () => {
                 </a>
               </div>
             </div>
-
-
           </div>
         </section>
 
