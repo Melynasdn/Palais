@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MapPin, Heart, Navigation, Quote } from 'lucide-react';
-
+import bismillah from './assets/bismillah.png';
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -70,20 +70,30 @@ const App = () => {
         {/* SECTION 1 : HERO */}
         <header 
           className="h-[100vh] flex flex-col items-center justify-center text-center px-6 relative"
-          style={{ 
-            backgroundImage: `linear-gradient(to bottom, rgba(95, 68, 68, 0.4), rgb(31, 14, 14)), url('/bg.jpg')`,
+          style={{  
+            backgroundImage: ` url('/bg.jpg')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
         >
           <div className="animate-fade-in-up">
-            <h1 className="text-5xl md:text-[11rem] font-calligraphy text-[#F2E8E0] leading-tight mt-10" style={{ textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>Yacine & Amel</h1>
+
+            <img src={bismillah} alt='Bismillah errahman errahim'
+              className="mt-6 ml-3 w-36 md:w-48 mb-6 opacity-80"
+            />
+
+            <h1 className="text-3xl md:text-[9rem] font-calligraphy text-[#310102] 
+               leading-tight mt-8" style={{ textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>Yacine & Amel</h1>
             <div className="flex items-center justify-center gap-6 my-8">
-                <div className="w-12 h-[1px] bg-[#F2E8E0]/30"></div>
-                <Heart className="text-[#F2E8E0] fill-[#F2E8E0]/10" size={20} strokeWidth={1} />
-                <div className="w-12 h-[1px] bg-[#F2E8E0]/30"></div>
+                <div className="w-12 h-[1px] bg-[#5D122B]/30"></div>
+                <Heart className="text-[#5D122B] fill-[#5D122B]/10" size={20} strokeWidth={1} />
+                <div className="w-12 h-[1px] bg-[#5D122B]/30"></div>
             </div>
-            <p className="text-xl md:text-2xl italic font-serif text-[#D4B5A0] tracking-[0.2em]">S'unissent pour l'éternité</p>
+
+            <p className="text-sm md:text-lg italic font-serif text-[#5D122B] tracking-[0.2em]">
+                 S'unissent <br/>pour l'éternité
+            </p>
+
           </div>
           
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-30">
