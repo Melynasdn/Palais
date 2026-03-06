@@ -79,11 +79,11 @@ const App = () => {
           <div className="animate-fade-in-up">
 
             <img src={bismillah} alt='Bismillah errahman errahim'
-              className="mt-4 ml-3 w-48 md:w-64 mb-6 opacity-80"
+              className="mt-2 ml-3 w-48 md:w-64 mb-6 opacity-80"
             />
 
             <h1 className="text-4xl md:text-[9rem] font-calligraphy text-[#310102] 
-               leading-tight mt-8" style={{ textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>Yacine & Amel</h1>
+               leading-tight mt-6" style={{ textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>Yacine & Amel</h1>
             <div className="flex items-center justify-center gap-6 my-8">
                 <div className="w-12 h-[1px] bg-[#5D122B]/30"></div>
                 <Heart className="text-[#5D122B] fill-[#5D122B]/10" size={20} strokeWidth={1} />
@@ -91,8 +91,12 @@ const App = () => {
             </div>
 
             <p className="text-sm md:text-lg italic font-serif text-[#5D122B] tracking-[0.2em]">
-                 S'unissent <br/>pour l'éternité
+                  Ont la joie de vous inviter à célébrer leur union
             </p>
+
+                  <p className=" mt-4 text-xl text-[#5D122B] font-serif italic"> Le Vendredi</p>
+                  <p className="text-3xl text-[#350616] font-light mb-2 tracking-tighter">14 AOÛT 2026</p>
+                  <p className=" text-[#310102] font-serif italic tracking-[0.2em] text-xs">À 19h</p>
 
           </div>
           
