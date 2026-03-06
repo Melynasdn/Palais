@@ -79,10 +79,10 @@ const App = () => {
           <div className="animate-fade-in-up">
 
             <img src={bismillah} alt='Bismillah errahman errahim'
-              className="mt-6 ml-3 w-36 md:w-48 mb-6 opacity-80"
+              className="mt-4 ml-3 w-48 md:w-64 mb-6 opacity-80"
             />
 
-            <h1 className="text-3xl md:text-[9rem] font-calligraphy text-[#310102] 
+            <h1 className="text-4xl md:text-[9rem] font-calligraphy text-[#310102] 
                leading-tight mt-8" style={{ textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>Yacine & Amel</h1>
             <div className="flex items-center justify-center gap-6 my-8">
                 <div className="w-12 h-[1px] bg-[#5D122B]/30"></div>
