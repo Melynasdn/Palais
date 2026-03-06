@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MapPin,  Volume2, VolumeX, Heart, Navigation, Quote } from 'lucide-react';
+import { MapPin, Heart, Navigation, Quote } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -9,27 +9,15 @@ if (typeof window !== 'undefined') {
 
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
   const [hasStarted, setHasStarted] = useState(false);
   
   const videoRef = useRef(null);
   const flashRef = useRef(null);
   const mainContentRef = useRef(null);
-  const audioRef = useRef(null);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.muted = isMuted;
-      if (!isMuted && isOpen) {
-        audioRef.current.play().catch(() => console.log("Interaction requise"));
-      }
-    }
-  }, [isMuted, isOpen]);
 
   const handleStartTransition = () => {
     if (hasStarted) return;
     setHasStarted(true);
-    setIsMuted(false);
 
     if (videoRef.current) {
       videoRef.current.play();
@@ -62,17 +50,7 @@ const App = () => {
     <div className="min-h-screen text-[#F2E8E0] overflow-x-hidden bg-[#4B1B1C]">
       <script src="https://cdn.tailwindcss.com"></script>
 
-      <audio ref={audioRef} loop src="/musique-mariage.mp3" />
       <div ref={flashRef} className="fixed inset-0 z-[100] bg-white opacity-0 pointer-events-none" />
-
-      {isOpen && (
-        <button 
-          onClick={() => setIsMuted(!isMuted)}
-          className="fixed top-6 right-6 z-50 p-4 bg-[#3A1415]/80 backdrop-blur-md rounded-full border border-[#F2E8E0]/20 shadow-2xl transition-all hover:scale-110 active:scale-95"
-        >
-          {isMuted ? <VolumeX className="text-[#F2E8E0]" size={20} /> : <Volume2 className="text-[#F2E8E0]" size={20} />}
-        </button>
-      )}
 
       {/* --- PHASE 1 : L'OUVERTURE --- */}
       {!isOpen && (
@@ -146,7 +124,6 @@ const App = () => {
                   <h4 className="uppercase tracking-[0.4em] text-[10px] font-bold mb-6 text-[#310102]">Le Palais</h4>
                   <p className="text-3xl text-[#350616] font-calligraphy mb-2">Salle Les Roses d'Or</p>
                   <p className="text-sm text-[#310102] tracking-[0.3em] uppercase">Sidi Abdellah, Alger</p>
-                  
                 </div>
             </div>
           </div>
@@ -180,8 +157,6 @@ const App = () => {
                 </a>
               </div>
             </div>
-
-
           </div>
         </section>
 
