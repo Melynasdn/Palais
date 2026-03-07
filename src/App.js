@@ -3,6 +3,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Heart, Navigation } from 'lucide-react';
 import bismillah from './assets/bismillah.png';
+import fond from './assets/fond.jpg';
+import fleur from './assets/fleur.jpg';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -263,12 +265,146 @@ const App = () => {
           </div>
         </section>
 
-        {/* SECTION 3 : COUNTDOWN */}
+
+
+{/* SECTION 4 : LE LIEU */}
+        <section
+          className="relative py-20 px-6 overflow-hidden"
+          style={{
+            backgroundImage: `url(${fond})`,
+          }}
+        >
+
+
+          {/* Top & bottom borders */}
+          <div style={{
+            position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+            width: '60%', maxWidth: '400px', height: '1px',
+            background: 'linear-gradient(to right, transparent, rgba(139,106,58,0.3), transparent)',
+          }} />
+          <div style={{
+            position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)',
+            width: '60%', maxWidth: '400px', height: '1px',
+            background: 'linear-gradient(to right, transparent, rgba(139,106,58,0.3), transparent)',
+          }} />
+
+          {/* Titre section */}
+          <div className="text-center mb-10 relative z-10">
+            <p className="font-calligraphy text-5xl md:text-6xl mb-3" style={{ color: '#310102' }}>
+              Le Lieu
+            </p>
+            <p className="text-[10px] tracking-[0.4em] uppercase font-bold"
+              style={{ color: '#5D122B', fontFamily: 'Playfair Display, serif' }}>
+              {"Où nous célébrons"}
+            </p>
+          </div>
+
+          {/* Carte burgundy */}
+          <div
+            className="relative z-10 max-w-lg mx-auto rounded-3xl overflow-hidden"
+            style={{
+              background: `
+                radial-gradient(ellipse at 30% 20%, rgba(93,18,43,0.6) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(93,18,43,0.4) 0%, transparent 50%),
+                linear-gradient(160deg, #3D1220 0%, #2A0D16 40%, #1E0A10 100%)
+              `,
+              boxShadow: '0 30px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(201,168,76,0.15), inset 0 1px 0 rgba(201,168,76,0.1)',
+            }}
+          >
+            {/* Image salle */}
+            <div className="relative w-full overflow-hidden" style={{ height: '200px' }}>
+              <img
+                src={fleur}
+                alt="Salle Les Roses d'Or"
+                width={100}
+                height={80}
+                className="object-cover mx-auto block mt-8"
+                
+              />
+              
+              
+            </div>
+
+            {/* Nom salle */}
+            <div className="text-center px-8 pt-4 pb-1">
+              <p className="font-calligraphy text-3xl md:text-4xl" style={{ color: '#F2E8E0' }}>
+                {"Salle Les Roses d'Or"}
+              </p>
+            </div>
+
+            <div className="mx-10 my-4" style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent)' }}></div>
+
+            {/* Date & heure */}
+            <div className="text-center px-8 pb-4">
+              <p style={{ color: '#ffffff', fontFamily: 'Playfair Display, serif', fontSize: '0.9rem', letterSpacing: '0.05em' }}>
+                14 Août 2026
+                <span className="mx-3 opacity-40">·</span>
+                <span style={{ fontStyle: 'italic', color: '#F2E8E0' }}>19:00</span>
+              </p>
+            </div>
+
+            <div className="mx-10 my-2" style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent)' }}></div>
+
+            {/* Adresse */}
+            <div className="text-center px-8 py-5">
+              <p className="text-lg font-semibold mb-1" style={{ color: '#F2E8E0', fontFamily: 'Playfair Display, serif' }}>
+                Sidi Abdellah
+              </p>
+              <p className="text-sm tracking-wider" style={{ color: '#fff3d3', fontFamily: 'Playfair Display, serif' }}>
+                {"Alger, Algérie"}
+              </p>
+            </div>
+
+            {/* Map */}
+            <div className="mx-6 rounded-2xl overflow-hidden" style={{ height: '200px', border: '1px solid rgba(201,168,76,0.15)' }}>
+              <iframe
+                title="Location map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3202.8!2d2.8!3d36.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDQyJzAwLjAiTiAywrA0OCcwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1620000000000!5m2!1sfr!2sdz"
+                width="100%"
+                height="100%"
+                style={{ border: 0, filter: 'sepia(0.3) saturate(0.8) brightness(0.85)' }}
+                allowFullScreen
+                loading="lazy"
+              />
+            </div>
+
+            {/* Bouton itinéraire */}
+            <div className="px-6 py-6">
+              <a
+                href="https://maps.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full py-4 rounded-full transition-all"
+                style={{
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: '#ffffff',
+                  fontFamily: 'Playfair Display, serif',
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.35em',
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  background: 'transparent',
+                  textDecoration: 'none',
+                }}
+              >
+                <Navigation size={14} />
+                {"Ouvrir l'itinéraire"}
+              </a>
+            </div>
+          </div>
+        </section>
+
+                {/* SECTION 3 : COUNTDOWN */}
         <section style={{
           position: 'relative',
           padding: '5rem 1.5rem',
           overflow: 'hidden',
-          background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(247,240,224,1) 0%, rgba(240,234,219,1) 50%, rgba(232,224,206,1) 100%)',
+          background: `
+            radial-gradient(ellipse at 20% 50%, rgba(93,18,43,0.4) 0%, transparent 60%),
+            radial-gradient(ellipse at 80% 50%, rgba(93,18,43,0.4) 0%, transparent 60%),
+            radial-gradient(ellipse at 50% 0%, rgba(242,232,224,0.08) 0%, transparent 50%),
+            linear-gradient(180deg, #2A0D16 0%, #3D1220 50%, #2A0D16 100%)
+          `,
         }}>
           {/* Texture */}
           <div style={{
@@ -297,7 +433,7 @@ const App = () => {
             <h2 style={{
               fontFamily: "'Great Vibes', cursive",
               fontSize: 'clamp(2.8rem, 8vw, 4rem)',
-              color: '#580406',
+              color: '#fff1f1',
               marginBottom: '0.25rem',
               lineHeight: 1.2,
             }}>
@@ -306,14 +442,14 @@ const App = () => {
 
             {/* Subtitle */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', margin: '0.75rem 0 2.5rem' }}>
-              <div style={{ height: '1px', flex: 1, maxWidth: '60px', background: 'linear-gradient(to right, transparent, #5D122B)' }} />
+              <div style={{ height: '1px', flex: 1, maxWidth: '60px', background: 'linear-gradient(to right, transparent, #ffffff)' }} />
               <p style={{
                 fontSize: '0.6rem', letterSpacing: '0.4em', textTransform: 'uppercase',
-                fontWeight: 700, color: '#7a1c3b', fontFamily: "'Playfair Display', serif", margin: 0,
+                fontWeight: 700, color: '#fff8fa', fontFamily: "'Playfair Display', serif", margin: 0,
               }}>
                 Jusqu&apos;au jour J
               </p>
-              <div style={{ height: '1px', flex: 1, maxWidth: '60px', background: 'linear-gradient(to left, transparent, #5D122B)' }} />
+              <div style={{ height: '1px', flex: 1, maxWidth: '60px', background: 'linear-gradient(to left, transparent, #ffffff)' }} />
             </div>
 
             {/* Countdown card */}
@@ -323,7 +459,7 @@ const App = () => {
               maxWidth: '500px',
               padding: '2.5rem 1.5rem 2rem',
               borderRadius: '24px',
-              background: 'linear-gradient(160deg, rgba(254,252,245,0.7) 0%, rgba(247,240,228,0.5) 100%)',
+              background: 'linear-gradient(160deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%)',
               border: '1px solid rgba(139,106,58,0.12)',
               boxShadow: '0 4px 30px rgba(49,1,2,0.04), inset 0 1px 0 rgba(255,255,255,0.6)',
               backdropFilter: 'blur(10px)',
@@ -345,168 +481,19 @@ const App = () => {
           </div>
         </section>
 
-        {/* SECTION 4 : LE LIEU */}
-        <section
-          className="relative py-20 px-6 overflow-hidden"
-          style={{
-            background: `
-              radial-gradient(ellipse at 20% 50%, rgba(93,18,43,0.4) 0%, transparent 60%),
-              radial-gradient(ellipse at 80% 50%, rgba(93,18,43,0.4) 0%, transparent 60%),
-              radial-gradient(ellipse at 50% 0%, rgba(242,232,224,0.08) 0%, transparent 50%),
-              linear-gradient(180deg, #2A0D16 0%, #3D1220 50%, #2A0D16 100%)
-            `,
-          }}
-        >
-          <div className="absolute inset-0 pointer-events-none" style={{
-            background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%)',
-          }}></div>
-          <div className="absolute left-8 top-1/2 -translate-y-1/2 h-40 w-[1px] opacity-20"
-            style={{ background: 'linear-gradient(to bottom, transparent, #C9A84C, transparent)' }}></div>
-          <div className="absolute right-8 top-1/2 -translate-y-1/2 h-40 w-[1px] opacity-20"
-            style={{ background: 'linear-gradient(to bottom, transparent, #C9A84C, transparent)' }}></div>
-
-          <div className="text-center mb-10 relative z-10">
-            <p className="font-calligraphy text-5xl md:text-6xl mb-3" style={{ color: '#F2E8E0' }}>
-              Le Lieu
-            </p>
-            <p className="text-[10px] tracking-[0.4em] uppercase font-bold"
-              style={{ color: '#C9A84C', fontFamily: 'Playfair Display, serif' }}>
-              {"Où nous célébrons"}
-            </p>
-            <div className="flex items-center justify-center gap-4 mt-4 opacity-40">
-              <div className="h-[1px] w-16" style={{ background: 'linear-gradient(to right, transparent, #C9A84C)' }}></div>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M6 0 L7 4.5 L11.5 6 L7 7.5 L6 12 L5 7.5 L0.5 6 L5 4.5 Z" fill="#C9A84C" />
-              </svg>
-              <div className="h-[1px] w-16" style={{ background: 'linear-gradient(to left, transparent, #C9A84C)' }}></div>
-            </div>
-          </div>
-
-          <div
-            className="relative z-10 max-w-lg mx-auto rounded-3xl overflow-hidden"
-            style={{
-              background: 'linear-gradient(160deg, #FEFCEF 0%, #F7F0E0 60%, #F2E8D5 100%)',
-              boxShadow: '0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.25)',
-            }}
-          >
-            <div className="relative w-full overflow-hidden" style={{ height: '200px' }}>
-              <img
-                src="/fleur.jpg"
-                alt="Salle Les Roses d'Or"
-                width={200}
-                height={150}
-                className="object-cover mx-auto block"
-                style={{
-                  filter: 'sepia(0.2) saturate(0.9) brightness(0.9)',
-                  transform: 'scale(1.05)',
-                }}
-              />
-              <div className="absolute inset-0" style={{
-                background: `linear-gradient(to bottom, rgba(254,252,239,0.15) 0%, rgba(254,252,239,0.0) 40%, rgba(247,240,224,0.85) 100%)`,
-              }} />
-            </div>
-
-            <div className="text-center px-8 pt-2 pb-1">
-              <p className="font-calligraphy text-3xl md:text-4xl" style={{ color: '#310102' }}>
-                {"Salle Les Roses d'Or"}
-              </p>
-            </div>
-
-            <div className="mx-10 my-4" style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.4), transparent)' }}></div>
-
-            <div className="text-center px-8 pb-4">
-              <p style={{ color: '#5D122B', fontFamily: 'Playfair Display, serif', fontSize: '0.9rem', letterSpacing: '0.05em' }}>
-                14 Août 2026
-                <span className="mx-3 opacity-40">·</span>
-                <span style={{ fontStyle: 'italic' }}>19:00</span>
-              </p>
-            </div>
-
-            <div className="mx-10 my-2" style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.4), transparent)' }}></div>
-
-            <div className="text-center px-8 py-5">
-              <p className="text-lg font-semibold mb-1" style={{ color: '#310102', fontFamily: 'Playfair Display, serif' }}>
-                Sidi Abdellah
-              </p>
-              <p className="text-sm tracking-wider" style={{ color: '#8B6A3A', fontFamily: 'Playfair Display, serif' }}>
-                {"Alger, Algérie"}
-              </p>
-            </div>
-
-            <div className="mx-6 rounded-2xl overflow-hidden" style={{ height: '200px', border: '1px solid rgba(201,168,76,0.2)' }}>
-              <iframe
-                title="Location map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3202.8!2d2.8!3d36.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDQyJzAwLjAiTiAywrA0OCcwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1620000000000!5m2!1sfr!2sdz"
-                width="100%"
-                height="100%"
-                style={{ border: 0, filter: 'sepia(0.3) saturate(0.8) brightness(0.95)' }}
-                allowFullScreen
-                loading="lazy"
-              />
-            </div>
-
-            <div className="px-6 py-6">
-              <a
-                href="https://maps.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full py-4 rounded-full transition-all"
-                style={{
-                  border: '1px solid rgba(139,106,58,0.4)',
-                  color: '#8B6A3A',
-                  fontFamily: 'Playfair Display, serif',
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.35em',
-                  textTransform: 'uppercase',
-                  fontWeight: 'bold',
-                  background: 'transparent',
-                  textDecoration: 'none',
-                }}
-              >
-                <Navigation size={14} />
-                {"Ouvrir l'itinéraire"}
-              </a>
-            </div>
-          </div>
-        </section>
-
         {/* FOOTER */}
         <footer
-          className="py-40 text-center px-6 relative"
+          className="py-10 text-center px-6 relative"
           style={{
-            background: '#F2E8E0',
+            background: '#f5eee7',
           }}
         >
-          <div className="absolute inset-0 opacity-[0.04]" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: '180px',
-          }}></div>
-          <div className="absolute inset-0 pointer-events-none" style={{
-            background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,106,58,0.06) 0%, transparent 70%)',
-          }}></div>
+
 
           <div className="max-w-2xl mx-auto relative z-10">
-            <div className="flex items-center justify-center gap-4 mb-12 opacity-40">
-              <div className="h-[1px] w-16" style={{ background: 'linear-gradient(to right, transparent, #8B6A3A)' }}></div>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M7 0 L8 5 L13 7 L8 9 L7 14 L6 9 L1 7 L6 5 Z" fill="#8B6A3A" opacity="0.8" />
-              </svg>
-              <div className="h-[1px] w-16" style={{ background: 'linear-gradient(to left, transparent, #8B6A3A)' }}></div>
-            </div>
 
-            <Heart className="mx-auto mb-8 opacity-20" size={24} strokeWidth={1} style={{ color: '#310102' }} />
 
-            <p className="font-serif italic text-2xl leading-relaxed mb-12 px-4" style={{ color: '#310102' }}>
-              {"\"Qu'Allah bénisse cette union et nous rassemble dans le bien.\""}
-            </p>
-
-            <div className="flex items-center justify-center gap-4 mb-10 opacity-30">
-              <div className="h-[1px] w-20" style={{ background: 'linear-gradient(to right, transparent, #8B6A3A)' }}></div>
-              <span style={{ color: '#C9A84C', fontSize: '14px' }}>✿</span>
-              <div className="h-[1px] w-20" style={{ background: 'linear-gradient(to left, transparent, #8B6A3A)' }}></div>
-            </div>
-
-            <p className="text-[10px] uppercase tracking-[0.8em] font-bold mb-16 opacity-50" style={{ color: '#310102' }}>
+            <p className="text-[10px] uppercase tracking-[0.8em] font-bold mb-4 opacity-100" style={{ color: '#5f1616' }}>
               Familles Belkacem & Mansouri
             </p>
 
@@ -516,7 +503,7 @@ const App = () => {
             }}></div>
 
             <span className="text-[10px] tracking-[0.25em] uppercase font-bold"
-              style={{ color: '#8B6A3A', fontFamily: 'Playfair Display, serif' }}>
+              style={{ color: '#5f1616', fontFamily: 'Playfair Display, serif' }}>
               {"Made with love by  "}
             </span>
             <a
@@ -526,13 +513,12 @@ const App = () => {
               className="inline-flex items-center justify-center gap-2 transition-all hover:opacity-60"
               style={{
                 textDecoration: 'none',
-                borderBottom: '1px solid rgba(139,106,58,0.4)',
+                borderBottom: '1px solid #5f1616',
                 paddingBottom: '2px',
               }}
             >
-              <Heart size={10} className="fill-current" style={{ color: '#5D122B' }} />
               <span className="text-[10px] tracking-[0.25em] uppercase font-bold"
-                style={{ color: '#8B6A3A', fontFamily: 'Playfair Display, serif' }}>
+                style={{ color: '#5f1616', fontFamily: 'Playfair Display, serif' }}>
                 {"Digital Invitation"}
               </span>
             </a>
