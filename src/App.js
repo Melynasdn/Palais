@@ -72,29 +72,7 @@ const CountdownUnit = ({ value, label }) => {
   );
 };
 
-const FloralCorner = ({ position }) => {
-  const styles = {
-    topLeft: { top: 0, left: 0, transform: 'rotate(0deg)' },
-    topRight: { top: 0, right: 0, transform: 'rotate(90deg)' },
-    bottomLeft: { bottom: 0, left: 0, transform: 'rotate(-90deg)' },
-    bottomRight: { bottom: 0, right: 0, transform: 'rotate(180deg)' },
-  };
 
-  return (
-    <svg
-      width="60"
-      height="60"
-      viewBox="0 0 60 60"
-      fill="none"
-      style={{ position: 'absolute', ...styles[position], opacity: 0.25 }}
-    >
-      <path d="M2 2 C2 2, 8 2, 12 6 C16 10, 14 16, 18 18 C22 20, 26 16, 30 20 C34 24, 28 30, 32 34" stroke="#8B6A3A" strokeWidth="1" fill="none" />
-      <path d="M2 2 C2 2, 2 8, 6 12 C10 16, 16 14, 18 18 C20 22, 16 26, 20 30 C24 34, 30 28, 34 32" stroke="#8B6A3A" strokeWidth="1" fill="none" />
-      <circle cx="18" cy="18" r="2" fill="#8B6A3A" opacity="0.4" />
-      <circle cx="8" cy="8" r="1.5" fill="#8B6A3A" opacity="0.3" />
-    </svg>
-  );
-};
 
 const CountdownSeparator = () => (
   <div style={{
