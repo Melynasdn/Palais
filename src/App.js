@@ -586,7 +586,19 @@ const App = () => {
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: var(--clr-light); border-radius: 10px; }
         ::-webkit-scrollbar-track { background: var(--clr-bg-main); }
-      `}</style>
+     /* When Chrome Force Dark is detected, re-invert everything */
+body.chrome-auto-dark {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+body.chrome-auto-dark img,
+body.chrome-auto-dark video,
+body.chrome-auto-dark iframe,
+body.chrome-auto-dark svg {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+     
+     
+     `}</style>
     </div>
   );
 };
