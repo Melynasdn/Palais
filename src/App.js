@@ -532,13 +532,19 @@ const App = () => {
         html, body { 
           margin: 0; padding: 0; background-color: #4B1B1C !important; 
           scroll-behavior: smooth;
-          color-scheme: only light;
+          color-scheme: light only;
         }
 
         *, *::before, *::after {
           forced-color-adjust: none !important;
-          color-scheme: only light !important;
+          color-scheme: light only !important;
         }
+          html[data-darkreader-scheme="dark"] *,
+html[data-bs-theme="dark"] * {
+  color: inherit !important;
+  background-color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
 
         @media (prefers-color-scheme: dark) {
           * {
