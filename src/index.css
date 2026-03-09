@@ -4,16 +4,17 @@
 
 :root {
   color-scheme: light dark;
-  forced-color-adjust: none;
 }
 
+/* Force re-invert when dark mode is active */
 @media (prefers-color-scheme: dark) {
-  *, *::before, *::after {
-    forced-color-adjust: none !important;
-    -webkit-text-fill-color: inherit !important;
+  html {
+    filter: invert(1) hue-rotate(180deg) !important;
   }
-
-  img, video, iframe, svg, canvas {
-    filter: none !important;
+  
+  /* Re-invert images/videos so they stay normal */
+  img, video, iframe, canvas, svg,
+  [style*="background-image"] {
+    filter: invert(1) hue-rotate(180deg) !important;
   }
 }

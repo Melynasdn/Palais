@@ -42,21 +42,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-      <script>
-  // Detect Chrome Auto Dark Theme and re-apply correct colors
-  document.addEventListener("DOMContentLoaded", function() {
-    var d = document.createElement('div');
-    d.style.display = 'none';
-    d.style.backgroundColor = 'canvas';
-    d.style.colorScheme = 'light';
-    document.body.appendChild(d);
-    var isAutoDark = getComputedStyle(d).backgroundColor !== 'rgb(255, 255, 255)';
-    document.body.removeChild(d);
-    
-    if (isAutoDark) {
-      document.body.classList.add('chrome-auto-dark');
-    }
-  });
-</script>
+      
   </body>
 </html>
