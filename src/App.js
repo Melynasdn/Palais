@@ -38,7 +38,7 @@ const CountdownUnit = ({ value, label }) => {
         <span style={{
           fontFamily: "'Great Vibes', cursive",
           fontSize: 'clamp(3.5rem, 10vw, 6rem)',
-          color: '#7a1c3b',
+          color: '#4e0e23',
           lineHeight: 1,
           display: 'block',
           position: 'relative',
@@ -458,7 +458,8 @@ const App = () => {
               maxWidth: '500px',
               padding: '2.5rem 1.5rem 2rem',
               borderRadius: '24px',
-              background: 'linear-gradient(160deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%)',
+              /* background: 'linear-gradient(160deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%)', */
+              backgroundImage:`url(${fond})`,
               border: '1px solid rgba(139,106,58,0.12)',
               boxShadow: '0 4px 30px rgba(49,1,2,0.04), inset 0 1px 0 rgba(255,255,255,0.6)',
               backdropFilter: 'blur(10px)',
