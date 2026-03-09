@@ -161,7 +161,6 @@ const App = () => {
 
   return (
     <div className="min-h-screen text-[#F2E8E0] overflow-x-hidden bg-[#4B1B1C]">
-      <script src="https://cdn.tailwindcss.com"></script>
 
       <div ref={flashRef} className="fixed inset-0 z-[100] bg-white opacity-0 pointer-events-none" />
 
