@@ -5,11 +5,9 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta name="color-scheme" content="light only">
-    <meta name="darkreader-lock">
+    <meta name="color-scheme" content="light dark">
     <meta name="supported-color-schemes" content="light only">
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <meta
       name="description"
@@ -30,25 +28,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Digital Invitation</title>
-    <script>
-  // Force light mode - override Android dark mode
-  (function() {
-    var style = document.createElement('style');
-    style.textContent = 
-      '*, *::before, *::after {' +
-      '  -webkit-text-fill-color: inherit !important;' +
-      '  forced-color-adjust: none !important;' +
-      '}' +
-      'html, body { color-scheme: light only !important; }' +
-      'img, video, iframe, svg { filter: none !important; }';
-    document.documentElement.appendChild(style);
-    
-    // Remove any dark mode attributes browsers might add
-    document.documentElement.removeAttribute('data-darkreader-scheme');
-    document.documentElement.style.colorScheme = 'light only';
-  })();
-</script>
+    <title>Your Digital Invitation</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
