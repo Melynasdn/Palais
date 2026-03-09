@@ -534,6 +534,10 @@ const App = () => {
           margin: 0; padding: 0; background-color: #4B1B1C !important; 
           scroll-behavior: smooth;
         }
+          html, body, * {
+  color-scheme: only light;
+  forced-color-adjust: none;
+}
 
         .font-calligraphy { font-family: 'Great Vibes', cursive; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -547,6 +551,13 @@ const App = () => {
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #F2E8E0; border-radius: 10px; }
         ::-webkit-scrollbar-track { background: #4B1B1C; }
+      @media (prefers-color-scheme: dark) {
+  * {
+    -webkit-text-fill-color: inherit !important;
+    forced-color-adjust: none !important;
+    color: inherit !important;
+  }
+}
       `}</style>
     </div>
   );
