@@ -39,6 +39,7 @@ const CountdownUnit = ({ value, label }) => {
           fontFamily: "'Great Vibes', cursive",
           fontSize: 'clamp(3.5rem, 10vw, 6rem)',
           color: '#4e0e23',
+          WebkitTextFillColor: '#4e0e23',
           lineHeight: 1,
           display: 'block',
           position: 'relative',
@@ -64,6 +65,7 @@ const CountdownUnit = ({ value, label }) => {
         textTransform: 'uppercase',
         fontWeight: 700,
         color: '#5D122B',
+        WebkitTextFillColor: '#5D122B',
         fontFamily: "'Playfair Display', serif",
         marginTop: '8px',
         opacity: 0.8,
@@ -159,14 +161,21 @@ const App = () => {
       }, "-=1.5");
   };
 
+  /* ── Dark-mode-proof color helpers ── */
+  const darkText = { color: '#310102', WebkitTextFillColor: '#310102' };
+  const accentText = { color: '#5D122B', WebkitTextFillColor: '#5D122B' };
+  const lightText = { color: '#F2E8E0', WebkitTextFillColor: '#F2E8E0' };
+  const whiteText = { color: '#ffffff', WebkitTextFillColor: '#ffffff' };
+  const footerText = { color: '#5f1616', WebkitTextFillColor: '#5f1616' };
+
   return (
-    <div className="min-h-screen text-[#F2E8E0] overflow-x-hidden bg-[#4B1B1C]">
+    <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: '#4B1B1C', ...lightText }}>
 
       <div ref={flashRef} className="fixed inset-0 z-[100] bg-white opacity-0 pointer-events-none" />
 
       {/* --- PHASE 1 : L'OUVERTURE --- */}
       {!isOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer bg-[#4B1B1C]" onClick={handleStartTransition}>
+        <div className="fixed inset-0 z-40 flex items-center justify-center cursor-pointer" style={{ backgroundColor: '#4B1B1C' }} onClick={handleStartTransition}>
           <div
             className={`absolute inset-0 z-50 bg-cover bg-center transition-opacity duration-1000 ${hasStarted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
             style={{ backgroundImage: "url('/poster.jpg')" }}
@@ -176,7 +185,7 @@ const App = () => {
       )}
 
       {/* --- PHASE 2 : LE SITE ROYAL --- */}
-      <main ref={mainContentRef} className={`${isOpen ? 'block' : 'hidden'} relative min-h-screen bg-[#310102]`}>
+      <main ref={mainContentRef} className={`${isOpen ? 'block' : 'hidden'} relative min-h-screen`} style={{ backgroundColor: '#310102' }}>
 
         {/* SECTION 1 : HERO */}
         <header
@@ -191,24 +200,25 @@ const App = () => {
             <img src={bismillah} alt='Bismillah errahman errahim'
               className="mt-8 ml-3 w-48 md:w-64 mb-6 opacity-80"
             />
-            <h1 className="text-4xl md:text-[9rem] font-calligraphy text-[#310102] leading-tight mt-6"
-              style={{ textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>
+            <h1 className="text-4xl md:text-[9rem] font-calligraphy leading-tight mt-6"
+              style={{ ...darkText, textShadow: '0 2px 40px rgba(0, 0, 0, 0.15)' }}>
               Yacine & Amel
             </h1>
             <div className="flex items-center justify-center gap-6 my-8">
-              <div className="w-12 h-[1px] bg-[#5D122B]/30"></div>
-              <Heart className="text-[#5D122B] fill-[#5D122B]/10" size={20} strokeWidth={1} />
-              <div className="w-12 h-[1px] bg-[#5D122B]/30"></div>
+              <div className="w-12 h-[1px]" style={{ backgroundColor: 'rgba(93,18,43,0.3)' }}></div>
+              <Heart style={{ color: '#5D122B', fill: 'rgba(93,18,43,0.1)' }} size={20} strokeWidth={1} />
+              <div className="w-12 h-[1px]" style={{ backgroundColor: 'rgba(93,18,43,0.3)' }}></div>
             </div>
-            <p className="text-sm md:text-lg italic font-serif text-[#5D122B] tracking-[0.2em]">
+            <p className="text-sm md:text-lg italic font-serif tracking-[0.2em]"
+              style={accentText}>
               Ont la joie de vous inviter <br /> à célébrer leur union
             </p>
-            <p className="mt-4 text-xl text-[#310102] font-serif italic">Le Vendredi</p>
-            <p className="mt-3 text-2xl text-[#310102] font-light mb-2 tracking-tighter">14 AOÛT 2026</p>
-            <p className="text-[#310102] font-serif italic tracking-[0.2em] text-xs">À 19h</p>
+            <p className="mt-4 text-xl font-serif italic" style={darkText}>Le Vendredi</p>
+            <p className="mt-3 text-2xl font-light mb-2 tracking-tighter" style={darkText}>14 AOÛT 2026</p>
+            <p className="font-serif italic tracking-[0.2em] text-xs" style={darkText}>À 19h</p>
           </div>
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-30">
-            <div className="w-[1px] h-16 bg-gradient-to-b from-[#F2E8E0] to-transparent"></div>
+            <div className="w-[1px] h-16" style={{ background: 'linear-gradient(to bottom, #F2E8E0, transparent)' }}></div>
           </div>
         </header>
 
@@ -228,8 +238,8 @@ const App = () => {
             style={{ background: 'linear-gradient(to bottom, transparent, #C9A84C, transparent)' }}></div>
           <div className="absolute right-8 top-1/2 -translate-y-1/2 h-40 w-[1px] opacity-20"
             style={{ background: 'linear-gradient(to bottom, transparent, #C9A84C, transparent)' }}></div>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 font-calligraphy text-[#F2E8E0]/[0.025] pointer-events-none select-none whitespace-nowrap"
-            style={{ fontSize: '18rem', lineHeight: 1 }}>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 font-calligraphy pointer-events-none select-none whitespace-nowrap"
+            style={{ fontSize: '18rem', lineHeight: 1, color: 'rgba(242,232,224,0.025)', WebkitTextFillColor: 'rgba(242,232,224,0.025)' }}>
             Wedding
           </div>
 
@@ -244,8 +254,9 @@ const App = () => {
 
             <div className="relative">
               <span className="font-calligraphy absolute -top-6 -left-2 opacity-20 select-none"
-                style={{ fontSize: '6rem', color: '#C9A84C', lineHeight: 1 }}>"</span>
-              <p className="text-xl md:text-2xl font-serif italic text-[#F2E8E0]/90 leading-relaxed px-8" style={{
+                style={{ fontSize: '6rem', color: '#C9A84C', WebkitTextFillColor: '#C9A84C', lineHeight: 1 }}>"</span>
+              <p className="text-xl md:text-2xl font-serif italic leading-relaxed px-8" style={{
+                color: 'rgba(242,232,224,0.9)', WebkitTextFillColor: 'rgba(242,232,224,0.9)',
                 textShadow: '0 2px 30px rgba(0,0,0,0.3)'
               }}>
                 Dans la joie et la gratitude envers Allah,<br />
@@ -253,12 +264,12 @@ const App = () => {
                 à la célébration de notre mariage.
               </p>
               <span className="font-calligraphy absolute -bottom-10 -right-2 opacity-20 select-none"
-                style={{ fontSize: '6rem', color: '#C9A84C', lineHeight: 1 }}>"</span>
+                style={{ fontSize: '6rem', color: '#C9A84C', WebkitTextFillColor: '#C9A84C', lineHeight: 1 }}>"</span>
             </div>
 
             <div className="flex items-center justify-center gap-4 mt-14 opacity-40">
               <div className="h-[1px] w-16" style={{ background: 'linear-gradient(to right, transparent, #C9A84C)' }}></div>
-              <span style={{ color: '#C9A84C', fontSize: '16px' }}>✿</span>
+              <span style={{ color: '#C9A84C', WebkitTextFillColor: '#C9A84C', fontSize: '16px' }}>✿</span>
               <div className="h-[1px] w-16" style={{ background: 'linear-gradient(to left, transparent, #C9A84C)' }}></div>
             </div>
           </div>
@@ -266,15 +277,13 @@ const App = () => {
 
 
 
-{/* SECTION 4 : LE LIEU */}
+        {/* SECTION 4 : LE LIEU */}
         <section
           className="relative py-20 px-6 overflow-hidden"
           style={{
             backgroundImage: `url(${fond})`,
           }}
         >
-
-
           {/* Top & bottom borders */}
           <div style={{
             position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
@@ -289,11 +298,11 @@ const App = () => {
 
           {/* Titre section */}
           <div className="text-center mb-10 relative z-10">
-            <p className="font-calligraphy text-5xl md:text-6xl mb-3" style={{ color: '#310102' }}>
+            <p className="font-calligraphy text-5xl md:text-6xl mb-3" style={darkText}>
               Le Lieu
             </p>
             <p className="text-[10px] tracking-[0.4em] uppercase font-bold"
-              style={{ color: '#5D122B', fontFamily: 'Playfair Display, serif' }}>
+              style={{ ...accentText, fontFamily: 'Playfair Display, serif' }}>
               {"Où nous célébrons"}
             </p>
           </div>
@@ -318,15 +327,12 @@ const App = () => {
                 width={100}
                 height={80}
                 className="object-cover mx-auto block mt-8"
-                
               />
-              
-              
             </div>
 
             {/* Nom salle */}
             <div className="text-center px-8 pt-4 pb-1">
-              <p className="font-calligraphy text-3xl md:text-4xl" style={{ color: '#F2E8E0' }}>
+              <p className="font-calligraphy text-3xl md:text-4xl" style={lightText}>
                 {"Salle Les Roses d'Or"}
               </p>
             </div>
@@ -335,10 +341,10 @@ const App = () => {
 
             {/* Date & heure */}
             <div className="text-center px-8 pb-4">
-              <p style={{ color: '#ffffff', fontFamily: 'Playfair Display, serif', fontSize: '0.9rem', letterSpacing: '0.05em' }}>
+              <p style={{ ...whiteText, fontFamily: 'Playfair Display, serif', fontSize: '0.9rem', letterSpacing: '0.05em' }}>
                 14 Août 2026
                 <span className="mx-3 opacity-40">·</span>
-                <span style={{ fontStyle: 'italic', color: '#F2E8E0' }}>19:00</span>
+                <span style={{ fontStyle: 'italic', ...lightText }}>19:00</span>
               </p>
             </div>
 
@@ -346,10 +352,10 @@ const App = () => {
 
             {/* Adresse */}
             <div className="text-center px-8 py-5">
-              <p className="text-lg font-semibold mb-1" style={{ color: '#F2E8E0', fontFamily: 'Playfair Display, serif' }}>
+              <p className="text-lg font-semibold mb-1" style={{ ...lightText, fontFamily: 'Playfair Display, serif' }}>
                 Sidi Abdellah
               </p>
-              <p className="text-sm tracking-wider" style={{ color: '#fff3d3', fontFamily: 'Playfair Display, serif' }}>
+              <p className="text-sm tracking-wider" style={{ color: '#fff3d3', WebkitTextFillColor: '#fff3d3', fontFamily: 'Playfair Display, serif' }}>
                 {"Alger, Algérie"}
               </p>
             </div>
@@ -376,7 +382,7 @@ const App = () => {
                 className="flex items-center justify-center gap-3 w-full py-4 rounded-full transition-all"
                 style={{
                   border: '1px solid rgba(255, 255, 255, 0.3)',
-                  color: '#ffffff',
+                  ...whiteText,
                   fontFamily: 'Playfair Display, serif',
                   fontSize: '0.65rem',
                   letterSpacing: '0.35em',
@@ -386,14 +392,14 @@ const App = () => {
                   textDecoration: 'none',
                 }}
               >
-                <Navigation size={14} />
+                <Navigation size={14} style={whiteText} />
                 {"Ouvrir l'itinéraire"}
               </a>
             </div>
           </div>
         </section>
 
-                {/* SECTION 3 : COUNTDOWN */}
+        {/* SECTION 3 : COUNTDOWN */}
         <section style={{
           position: 'relative',
           padding: '5rem 1.5rem',
@@ -426,13 +432,12 @@ const App = () => {
 
           <div style={{ position: 'relative', zIndex: 10, maxWidth: '560px', margin: '0 auto', textAlign: 'center' }}>
 
-            
-
             {/* Title */}
             <h2 style={{
               fontFamily: "'Great Vibes', cursive",
               fontSize: 'clamp(2.8rem, 8vw, 4rem)',
               color: '#fff1f1',
+              WebkitTextFillColor: '#fff1f1',
               marginBottom: '0.25rem',
               lineHeight: 1.2,
             }}>
@@ -444,7 +449,7 @@ const App = () => {
               <div style={{ height: '1px', flex: 1, maxWidth: '60px', background: 'linear-gradient(to right, transparent, #ffffff)' }} />
               <p style={{
                 fontSize: '0.6rem', letterSpacing: '0.4em', textTransform: 'uppercase',
-                fontWeight: 700, color: '#fff8fa', fontFamily: "'Playfair Display', serif", margin: 0,
+                fontWeight: 700, color: '#fff8fa', WebkitTextFillColor: '#fff8fa', fontFamily: "'Playfair Display', serif", margin: 0,
               }}>
                 Jusqu&apos;au jour J
               </p>
@@ -458,13 +463,11 @@ const App = () => {
               maxWidth: '500px',
               padding: '2.5rem 1.5rem 2rem',
               borderRadius: '24px',
-              /* background: 'linear-gradient(160deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%)', */
-              backgroundImage:`url(${fond})`,
+              backgroundImage: `url(${fond})`,
               border: '1px solid rgba(139,106,58,0.12)',
               boxShadow: '0 4px 30px rgba(49,1,2,0.04), inset 0 1px 0 rgba(255,255,255,0.6)',
               backdropFilter: 'blur(10px)',
             }}>
-            
 
               {/* Numbers */}
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
@@ -477,7 +480,6 @@ const App = () => {
 
             </div>
 
-          
           </div>
         </section>
 
@@ -488,12 +490,9 @@ const App = () => {
             background: '#f5eee7',
           }}
         >
-
-
           <div className="max-w-2xl mx-auto relative z-10">
 
-
-            <p className="text-[10px] uppercase tracking-[0.8em] font-bold mb-4 opacity-100" style={{ color: '#5f1616' }}>
+            <p className="text-[10px] uppercase tracking-[0.8em] font-bold mb-4 opacity-100" style={footerText}>
               Familles Belkacem & Mansouri
             </p>
 
@@ -503,7 +502,7 @@ const App = () => {
             }}></div>
 
             <span className="text-[10px] tracking-[0.25em] uppercase font-bold"
-              style={{ color: '#5f1616', fontFamily: 'Playfair Display, serif' }}>
+              style={{ ...footerText, fontFamily: 'Playfair Display, serif' }}>
               {"Made with love by  "}
             </span>
             <a
@@ -518,7 +517,7 @@ const App = () => {
               }}
             >
               <span className="text-[10px] tracking-[0.25em] uppercase font-bold"
-                style={{ color: '#5f1616', fontFamily: 'Playfair Display, serif' }}>
+                style={{ ...footerText, fontFamily: 'Playfair Display, serif' }}>
                 {"Digital Invitation"}
               </span>
             </a>
@@ -533,11 +532,20 @@ const App = () => {
         html, body { 
           margin: 0; padding: 0; background-color: #4B1B1C !important; 
           scroll-behavior: smooth;
+          color-scheme: only light;
         }
-          html, body, * {
-  color-scheme: only light;
-  forced-color-adjust: none;
-}
+
+        *, *::before, *::after {
+          forced-color-adjust: none !important;
+          color-scheme: only light !important;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          * {
+            -webkit-text-fill-color: inherit !important;
+            forced-color-adjust: none !important;
+          }
+        }
 
         .font-calligraphy { font-family: 'Great Vibes', cursive; }
         .font-serif { font-family: 'Playfair Display', serif; }
@@ -551,13 +559,6 @@ const App = () => {
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #F2E8E0; border-radius: 10px; }
         ::-webkit-scrollbar-track { background: #4B1B1C; }
-      @media (prefers-color-scheme: dark) {
-  * {
-    -webkit-text-fill-color: inherit !important;
-    forced-color-adjust: none !important;
-    color: inherit !important;
-  }
-}
       `}</style>
     </div>
   );
