@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <title>Test Dark Mode Resistance</title>
+  <style>
+    body { margin: 0; padding: 2rem; background: #f5eee7; }
+    
+    /* Test 1: Normal HTML text - Chrome WILL change this */
+    .test-html {
+      color: #310102;
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      margin: 1rem 0;
+    }
+
+    /* Test 2: SVG text with color-scheme only light */
+    .test-svg {
+      display: block;
+      margin: 1rem 0;
+      color-scheme: only light;
+    }
+
+    /* Test 3: Text rendered as background-image SVG data URI */
+    .test-bgimg {
+      width: 100%;
+      height: 80px;
+      margin: 1rem 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='80'%3E%3Cstyle%3E@import url('https://fonts.googleapis.com/css2?family=Great+Vibes')%3C/style%3E%3Ctext x='10' y='60' fill='%23310102' font-family='Great Vibes' font-size='48'%3EYacine %26 Amel%3C/text%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    /* Test 4: Text as actual <img> with SVG data URI */
+    .test-img {
+      display: block;
+      margin: 1rem 0;
+    }
+
+    .label {
+      font-size: 0.75rem;
+      color: #999;
+      font-family: sans-serif;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <p class="label">TEST 1: HTML text normal (Chrome va changer ça)</p>
+  <p class="test-html">Yacine & Amel</p>
+
+  <p class="label">TEST 2: SVG inline avec color-scheme: only light</p>
+  <svg class="test-svg" width="400" height="80" style="color-scheme: only light;" xmlns="http://www.w3.org/2000/svg">
+    <text x="10" y="60" fill="#310102" font-family="Great Vibes, cursive" font-size="48">Yacine & Amel</text>
+  </svg>
+
+  <p class="label">TEST 3: background-image SVG data URI</p>
+  <div class="test-bgimg"></div>
+
+  <p class="label">TEST 4: img tag avec SVG data URI</p>
+  <img class="test-img" width="400" height="80" alt="Yacine & Amel"
+    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='80'%3E%3Ctext x='10' y='60' fill='%23310102' font-family='serif' font-size='48'%3EYacine %26 Amel%3C/text%3E%3C/svg%3E"
+  />
+
+  <p class="label">TEST 5: Canvas rendu en image</p>
+  <canvas id="canvas-test" width="400" height="80" style="display:none;"></canvas>
+  <img id="canvas-img" class="test-img" width="400" height="80" alt="Yacine & Amel" />
+
+  <script>
+    // Render text to canvas then convert to img
+    var c = document.getElementById('canvas-test');
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#f5eee7';
+    ctx.fillRect(0, 0, 400, 80);
+    ctx.fillStyle = '#310102';
+    ctx.font = '48px serif';
+    ctx.fillText('Yacine & Amel', 10, 60);
+    document.getElementById('canvas-img').src = c.toDataURL();
+  </script>
+
+</body>
+</html>
