@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Heart, Navigation } from 'lucide-react';
+import { Heart} from 'lucide-react';
 import bismillah from './assets/bismillah.png';
 import fond from './assets/fond.jpg';
 import fleur from './assets/fleur.jpg';
