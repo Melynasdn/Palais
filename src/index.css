@@ -1,15 +1,19 @@
-:root {
-  forced-color-adjust: none;
-  -webkit-text-fill-color: inherit;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-html {
-  color-scheme: light only;
+:root {
+  color-scheme: light dark;
+  forced-color-adjust: none;
 }
 
 @media (prefers-color-scheme: dark) {
-  html, body {
-    background-color: #4B1B1C !important;
-    color: #F2E8E0 !important;
+  *, *::before, *::after {
+    forced-color-adjust: none !important;
+    -webkit-text-fill-color: inherit !important;
+  }
+
+  img, video, iframe, svg, canvas {
+    filter: none !important;
   }
 }
