@@ -1,0 +1,15 @@
+:root {
+  forced-color-adjust: none;
+  -webkit-text-fill-color: inherit;
+}
+
+html {
+  color-scheme: only light;
+}
+
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #4B1B1C !important;
+    color: #F2E8E0 !important;
+  }
+}
