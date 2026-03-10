@@ -4,82 +4,50 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <title>Test Dark Mode Resistance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <title>Test Hex vs RGB vs HSL</title>
   <style>
-    body { margin: 0; padding: 2rem; background: #f5eee7; }
-    
-    /* Test 1: Normal HTML text - Chrome WILL change this */
-    .test-html {
-      color: #310102;
-      font-family: 'Great Vibes', cursive;
-      font-size: 3rem;
-      margin: 1rem 0;
-    }
-
-    /* Test 2: SVG text with color-scheme only light */
-    .test-svg {
-      display: block;
-      margin: 1rem 0;
-      color-scheme: only light;
-    }
-
-    /* Test 3: Text rendered as background-image SVG data URI */
-    .test-bgimg {
-      width: 100%;
-      height: 80px;
-      margin: 1rem 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='80'%3E%3Cstyle%3E@import url('https://fonts.googleapis.com/css2?family=Great+Vibes')%3C/style%3E%3Ctext x='10' y='60' fill='%23310102' font-family='Great Vibes' font-size='48'%3EYacine %26 Amel%3C/text%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-size: contain;
-    }
-
-    /* Test 4: Text as actual <img> with SVG data URI */
-    .test-img {
-      display: block;
-      margin: 1rem 0;
-    }
-
-    .label {
-      font-size: 0.75rem;
-      color: #999;
-      font-family: sans-serif;
-      margin-top: 2rem;
-    }
+    body { margin: 0; padding: 1.5rem; background: #f5eee7; font-family: sans-serif; }
+    .label { font-size: 0.7rem; color: #999; margin-top: 1.5rem; }
+    .test { font-family: 'Great Vibes', cursive; font-size: 2.5rem; margin: 0.5rem 0; }
   </style>
 </head>
 <body>
 
-  <p class="label">TEST 1: HTML text normal (Chrome va changer ça)</p>
-  <p class="test-html">Yacine & Amel</p>
+  <p class="label">TEST 1: HEX color</p>
+  <p class="test" style="color: #310102;">Yacine & Amel (hex)</p>
 
-  <p class="label">TEST 2: SVG inline avec color-scheme: only light</p>
-  <svg class="test-svg" width="400" height="80" style="color-scheme: only light;" xmlns="http://www.w3.org/2000/svg">
-    <text x="10" y="60" fill="#310102" font-family="Great Vibes, cursive" font-size="48">Yacine & Amel</text>
-  </svg>
+  <p class="label">TEST 2: RGB color</p>
+  <p class="test" style="color: rgb(49, 1, 2);">Yacine & Amel (rgb)</p>
 
-  <p class="label">TEST 3: background-image SVG data URI</p>
-  <div class="test-bgimg"></div>
+  <p class="label">TEST 3: RGBA color</p>
+  <p class="test" style="color: rgba(49, 1, 2, 1);">Yacine & Amel (rgba)</p>
 
-  <p class="label">TEST 4: img tag avec SVG data URI</p>
-  <img class="test-img" width="400" height="80" alt="Yacine & Amel"
-    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='80'%3E%3Ctext x='10' y='60' fill='%23310102' font-family='serif' font-size='48'%3EYacine %26 Amel%3C/text%3E%3C/svg%3E"
-  />
+  <p class="label">TEST 4: HSL color</p>
+  <p class="test" style="color: hsl(359, 96%, 10%);">Yacine & Amel (hsl)</p>
 
-  <p class="label">TEST 5: Canvas rendu en image</p>
-  <canvas id="canvas-test" width="400" height="80" style="display:none;"></canvas>
-  <img id="canvas-img" class="test-img" width="400" height="80" alt="Yacine & Amel" />
+  <p class="label">TEST 5: HEX + filter brightness(100%)</p>
+  <p class="test" style="color: #310102; filter: brightness(100%);">Yacine & Amel (hex+filter)</p>
+
+  <p class="label">TEST 6: RGB + filter brightness(100%)</p>
+  <p class="test" style="color: rgb(49, 1, 2); filter: brightness(100%);">Yacine & Amel (rgb+filter)</p>
+
+  <p class="label">TEST 7: RGB + WebkitTextFillColor + filter</p>
+  <p class="test" style="color: rgb(49, 1, 2); -webkit-text-fill-color: rgb(49, 1, 2); filter: brightness(100%);">Yacine & Amel (rgb+fill+filter)</p>
+
+  <p class="label">TEST 8: Canvas (référence - devrait marcher)</p>
+  <canvas id="c" width="400" height="60" style="display:none;"></canvas>
+  <img id="ci" width="400" height="60" alt="canvas test" />
 
   <script>
-    // Render text to canvas then convert to img
-    var c = document.getElementById('canvas-test');
+    var c = document.getElementById('c');
     var ctx = c.getContext('2d');
     ctx.fillStyle = '#f5eee7';
-    ctx.fillRect(0, 0, 400, 80);
-    ctx.fillStyle = '#310102';
-    ctx.font = '48px serif';
-    ctx.fillText('Yacine & Amel', 10, 60);
-    document.getElementById('canvas-img').src = c.toDataURL();
+    ctx.fillRect(0, 0, 400, 60);
+    ctx.fillStyle = 'rgb(49, 1, 2)';
+    ctx.font = '40px Great Vibes, cursive';
+    ctx.fillText('Yacine & Amel (canvas)', 10, 45);
+    document.getElementById('ci').src = c.toDataURL();
   </script>
 
 </body>
