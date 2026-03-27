@@ -694,3 +694,67 @@ html, body {
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-thumb { background: #F2E8E0; border-radius: 10px; }
 ::-webkit-scrollbar-track { background: #4B1B1C; }
+
+
+
+
+
+
+
+
+
+
+
+
+/* ════════════ MUSIC TOGGLE ════════════ */
+.music-toggle {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  background: rgba(45, 10, 20, 0.85);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.music-toggle:hover {
+  border-color: rgba(201, 168, 76, 0.5);
+  background: rgba(61, 18, 32, 0.95);
+  transform: scale(1.05);
+}
+
+.music-toggle-icon {
+  color: #F2E8E0;
+  display: flex;
+  align-items: center;
+}
+
+.music-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.bar {
+  width: 2.5px;
+  border-radius: 2px;
+  background: #C9A84C;
+}
+
+.bar-1 { animation: bar-bounce 0.8s ease-in-out infinite alternate; height: 6px; }
+.bar-2 { animation: bar-bounce 0.8s ease-in-out 0.2s infinite alternate; height: 10px; }
+.bar-3 { animation: bar-bounce 0.8s ease-in-out 0.4s infinite alternate; height: 4px; }
+
+@keyframes bar-bounce {
+  from { height: 3px; }
+  to { height: 14px; }
+}

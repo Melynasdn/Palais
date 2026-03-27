@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Heart, Navigation } from 'lucide-react';
+import { Heart, Navigation, Volume2, VolumeX } from 'lucide-react';
 import bismillah from './assets/bismillah.png';
 import fond from './assets/fond.jpg';
 import fleur from './assets/fleur.jpg';
@@ -61,11 +61,13 @@ const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isMuted, setIsMuted] = useState(false);
 
   const videoRef = useRef(null);
   const flashRef = useRef(null);
   const mainContentRef = useRef(null);
-
+  const audioRef = useRef(null);
+ 
   const targetDate = '2026-08-14';
 
   useEffect(() => {
@@ -105,6 +107,11 @@ const App = () => {
       .call(() => {
         setIsOpen(true);
         window.scrollTo(0, 0);
+
+        if (audioRef.current) {
+    audioRef.current.volume = 0.4;
+    audioRef.current.play().catch(() => {});
+  }
       }, null, "+=0.1")
       .fromTo(mainContentRef.current,
         { scale: 1.05, opacity: 0 },
@@ -115,11 +122,20 @@ const App = () => {
       }, "-=1.5");
   };
 
+  const toggleMute = () => {
+  if (audioRef.current) {
+    audioRef.current.muted = !audioRef.current.muted;
+    setIsMuted(!isMuted);
+  }
+};
+
   return (
     <div className="app-wrapper">
 
       <div ref={flashRef} className="flash-overlay" />
-
+      <audio ref={audioRef} loop preload="auto">
+          <source src="/music.mp3" type="audio/mpeg" />
+       </audio>
       {/* --- PHASE 1 : L'OUVERTURE --- */}
       {!isOpen && (
         <div className="ouverture-wrapper" onClick={handleStartTransition}>
@@ -287,9 +303,26 @@ const App = () => {
               <span className="footer-credit">Digital Invitation</span>
             </a>
           </div>
+
+          
         </footer>
+        {/* Bouton Mute/Unmute */}
 
       </main>
+      {isOpen && (
+  <button onClick={toggleMute} className="music-toggle">
+    <div className="music-toggle-icon">
+      {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+    </div>
+    {!isMuted && (
+      <div className="music-bars">
+        <span className="bar bar-1" />
+        <span className="bar bar-2" />
+        <span className="bar bar-3" />
+      </div>
+    )}
+  </button>
+)}
     </div>
   );
 };
