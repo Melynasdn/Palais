@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Heart, Navigation, Volume2, VolumeX } from 'lucide-react';
+import { Heart, Navigation, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
 import bismillah from './assets/bismillah.png';
 import fond from './assets/fond.jpg';
 import fleur from './assets/fleur.jpg';
@@ -63,6 +63,14 @@ const App = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isMuted, setIsMuted] = useState(false);
 
+  // Theme: 'auto' follows system, 'light'/'dark' are manual overrides
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('wedding-theme') || 'auto';
+    }
+    return 'auto';
+  });
+
   const videoRef = useRef(null);
   const flashRef = useRef(null);
   const mainContentRef = useRef(null);
@@ -91,6 +99,42 @@ const App = () => {
 
   const targetDate = '2026-08-14';
 
+  // ═══════════ THEME LOGIC ═══════════
+  const getResolvedTheme = useCallback(() => {
+    if (theme === 'auto') {
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    return theme;
+  }, [theme]);
+
+  useEffect(() => {
+    const resolved = getResolvedTheme();
+    document.documentElement.setAttribute('data-theme', resolved);
+    localStorage.setItem('wedding-theme', theme);
+  }, [theme, getResolvedTheme]);
+
+  // Listen for system theme changes when in auto mode
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: light)');
+    const handler = () => {
+      if (theme === 'auto') {
+        const resolved = mq.matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', resolved);
+      }
+    };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const resolved = getResolvedTheme();
+    // If currently dark → switch to light, if light → switch to dark
+    setTheme(resolved === 'dark' ? 'light' : 'dark');
+  };
+
+  const isDark = getResolvedTheme() === 'dark';
+
+  // ═══════════ COUNTDOWN ═══════════
   useEffect(() => {
     const calculate = () => {
       const now = new Date();
@@ -114,11 +158,9 @@ const App = () => {
 
   // ═══════════ SCROLL ANIMATIONS ═══════════
   const initScrollAnimations = useCallback(() => {
-    // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       ScrollTrigger.getAll().forEach(t => t.kill());
 
-      // ── HERO: Parallax on background ──
       if (heroRef.current) {
         gsap.to(heroRef.current, {
           backgroundPositionY: '30%',
@@ -132,7 +174,6 @@ const App = () => {
         });
       }
 
-      // ── HERO: Fade out content on scroll ──
       if (heroRef.current) {
         gsap.to('.hero-content', {
           y: -60,
@@ -147,7 +188,6 @@ const App = () => {
         });
       }
 
-      // ── INVITATION: Side lines grow ──
       if (invitationSideLeftRef.current) {
         gsap.fromTo(invitationSideLeftRef.current,
           { height: 0, opacity: 0 },
@@ -167,7 +207,6 @@ const App = () => {
         );
       }
 
-      // ── INVITATION: Ornament top ──
       if (invitationOrnamentTopRef.current) {
         gsap.fromTo(invitationOrnamentTopRef.current,
           { scaleX: 0, opacity: 0 },
@@ -178,7 +217,6 @@ const App = () => {
         );
       }
 
-      // ── INVITATION: Quote text lines ──
       if (invitationTextRef.current) {
         const lines = invitationTextRef.current.querySelectorAll('.anim-line');
         gsap.fromTo(lines,
@@ -190,7 +228,6 @@ const App = () => {
         );
       }
 
-      // ── INVITATION: Quote marks ──
       gsap.fromTo('.invitation-quote-mark.open',
         { x: -30, opacity: 0 },
         {
@@ -206,7 +243,6 @@ const App = () => {
         }
       );
 
-      // ── INVITATION: Ornament bottom ──
       if (invitationOrnamentBottomRef.current) {
         gsap.fromTo(invitationOrnamentBottomRef.current,
           { scaleX: 0, opacity: 0 },
@@ -217,7 +253,6 @@ const App = () => {
         );
       }
 
-      // ── INVITATION: Background text parallax ──
       gsap.to('.invitation-bg-text', {
         y: -80,
         ease: 'none',
@@ -229,7 +264,6 @@ const App = () => {
         },
       });
 
-      // ── LIEU: Header ──
       if (lieuHeaderRef.current) {
         gsap.fromTo(lieuHeaderRef.current.querySelector('.lieu-title'),
           { y: 50, opacity: 0 },
@@ -247,7 +281,6 @@ const App = () => {
         );
       }
 
-      // ── LIEU: Card slides up with scale ──
       if (lieuCardRef.current) {
         gsap.fromTo(lieuCardRef.current,
           { y: 80, opacity: 0, scale: 0.95 },
@@ -258,7 +291,6 @@ const App = () => {
         );
       }
 
-      // ── LIEU: Internal elements stagger ──
       if (lieuCardRef.current) {
         const cardChildren = lieuCardRef.current.querySelectorAll('.lieu-name, .gold-separator, .lieu-datetime, .lieu-address, .lieu-map-wrapper, .lieu-btn-wrapper');
         gsap.fromTo(cardChildren,
@@ -270,7 +302,6 @@ const App = () => {
         );
       }
 
-      // ── COUNTDOWN: Title ──
       if (countdownTitleRef.current) {
         gsap.fromTo(countdownTitleRef.current,
           { y: 40, opacity: 0, scale: 0.9 },
@@ -281,7 +312,6 @@ const App = () => {
         );
       }
 
-      // ── COUNTDOWN: Subtitle row ──
       gsap.fromTo('.countdown-subtitle-row',
         { width: '0%', opacity: 0 },
         {
@@ -290,7 +320,6 @@ const App = () => {
         }
       );
 
-      // ── COUNTDOWN: Card ──
       if (countdownCardRef.current) {
         gsap.fromTo(countdownCardRef.current,
           { y: 60, opacity: 0, rotateX: 10 },
@@ -301,7 +330,6 @@ const App = () => {
         );
       }
 
-      // ── FOOTER: Slide up ──
       if (footerRef.current) {
         gsap.fromTo(footerRef.current.children,
           { y: 30, opacity: 0 },
@@ -312,7 +340,6 @@ const App = () => {
         );
       }
 
-      // ── BORDERS: Animate width on scroll ──
       document.querySelectorAll('.lieu-border, .countdown-border').forEach(border => {
         gsap.fromTo(border,
           { width: '0%' },
@@ -323,7 +350,6 @@ const App = () => {
         );
       });
 
-      // ── GOLD SEPARATORS: Scale in ──
       document.querySelectorAll('.gold-separator').forEach(sep => {
         gsap.fromTo(sep,
           { scaleX: 0 },
@@ -395,20 +421,32 @@ const App = () => {
         <source src="/music.mp3" type="audio/mpeg" />
       </audio>
 
-      {/* Bouton Mute/Unmute — indépendant */}
+      {/* ═══ Floating controls ═══ */}
       {isOpen && (
-        <button onClick={toggleMute} className="music-toggle">
-          <div className="music-toggle-icon">
-            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-          </div>
-          {!isMuted && (
-            <div className="music-bars">
-              <span className="bar bar-1" />
-              <span className="bar bar-2" />
-              <span className="bar bar-3" />
+        <div className="floating-controls">
+          {/* Theme toggle */}
+          <button onClick={toggleTheme} className="floating-btn theme-toggle" aria-label="Changer le thème">
+            <div className="theme-toggle-track">
+              <div className={`theme-toggle-thumb ${isDark ? 'dark' : 'light'}`}>
+                {isDark ? <Moon size={12} /> : <Sun size={12} />}
+              </div>
             </div>
-          )}
-        </button>
+          </button>
+
+          {/* Music toggle */}
+          <button onClick={toggleMute} className="floating-btn music-toggle">
+            <div className="music-toggle-icon">
+              {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </div>
+            {!isMuted && (
+              <div className="music-bars">
+                <span className="bar bar-1" />
+                <span className="bar bar-2" />
+                <span className="bar bar-3" />
+              </div>
+            )}
+          </button>
+        </div>
       )}
 
       {/* --- PHASE 1 : L'OUVERTURE --- */}
@@ -432,7 +470,7 @@ const App = () => {
             <h1 ref={heroTitleRef} className="hero-title anim-hero">Yacine & Amel</h1>
             <div ref={heroDividerRef} className="hero-divider anim-hero">
               <div className="hero-line"></div>
-              <Heart style={{ color: '#5D122B', fill: 'rgba(93,18,43,0.1)' }} size={20} strokeWidth={1} />
+              <Heart className="hero-heart-icon" size={20} strokeWidth={1} />
               <div className="hero-line"></div>
             </div>
             <p ref={heroSubtitleRef} className="hero-subtitle anim-hero">
