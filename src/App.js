@@ -99,11 +99,17 @@ const App = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [theme, setTheme] = useState('light');
   const [isTransitioning, setIsTransitioning] = useState(false);
+
   const videoRef = useRef(null);
   const flashRef = useRef(null);
   const mainContentRef = useRef(null);
   const audioRef = useRef(null);
-  const transitionVideoRef = useRef(null);
+  const transitionVideoDarkRef = useRef(null);
+  const transitionVideoLightRef = useRef(null);
+  const overlayRef = useRef(null);
+
+  // Store first-frame posters to avoid black flash
+  const postersRef = useRef({ dark: null, light: null });
 
   // Refs for scroll animations
   const heroRef = useRef(null);
@@ -123,6 +129,25 @@ const App = () => {
   const footerRef = useRef(null);
 
   const targetDate = '2026-08-14';
+
+  /* ── Capture first frame of each transition video as poster ── */
+  useEffect(() => {
+    const captureFrame = (vid, key) => {
+      const handler = () => {
+        vid.removeEventListener('loadeddata', handler);
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = vid.videoWidth;
+          canvas.height = vid.videoHeight;
+          canvas.getContext('2d').drawImage(vid, 0, 0);
+          postersRef.current[key] = canvas.toDataURL('image/jpeg', 0.8);
+        } catch (e) { /* cross-origin: ignore */ }
+      };
+      vid.addEventListener('loadeddata', handler);
+    };
+    if (transitionVideoDarkRef.current) captureFrame(transitionVideoDarkRef.current, 'dark');
+    if (transitionVideoLightRef.current) captureFrame(transitionVideoLightRef.current, 'light');
+  }, []);
 
   /* ── Apply theme variables ── */
   useEffect(() => {
@@ -153,67 +178,60 @@ const App = () => {
     return () => clearInterval(interval);
   }, [targetDate]);
 
-  /* ── Theme toggle with transition video ── */
+  /* ══════════════════════════════════════════════
+     THEME TOGGLE — fluid, no black screen
+     ══════════════════════════════════════════════ */
 const toggleTheme = useCallback(() => {
   if (isTransitioning) return;
   const next = theme === 'light' ? 'dark' : 'light';
+  const vid = next === 'dark'
+    ? transitionVideoDarkRef.current
+    : transitionVideoLightRef.current;
+  const overlay = overlayRef.current;
+  if (!vid || !overlay) return;
 
-  const vid = transitionVideoRef.current;
-  if (!vid) return;
-
-  // Bloque immédiatement les clics
   setIsTransitioning(true);
 
-  vid.src = next === 'dark' ? '/transition-to-dark.mp4' : '/transition-to-light.mp4';
-  vid.load();
+  // Prepare video
+  transitionVideoDarkRef.current.style.display = 'none';
+  transitionVideoLightRef.current.style.display = 'none';
+  vid.style.display = 'block';
+  vid.currentTime = 0;
 
-  vid.oncanplay = () => {
-    vid.oncanplay = null;
-    vid.play().catch(() => {});
-  };
-    
-  // Switch le thème directement sur le DOM sans setState
+  // Remove fade-out class, ensure clean state
+  overlay.classList.remove('fade-out');
+
+  let themeSwitched = false;
+
   vid.ontimeupdate = () => {
-    if (vid.currentTime >= vid.duration / 2) {
-      vid.ontimeupdate = null;
-      // Applique le thème via DOM directement (pas de re-render)
-      const vars = next === 'dark' ? {
-        '--bg-primary': '#08080D', '--bg-secondary': '#0F0F17',
-        '--bg-card': 'rgba(22,22,32,0.92)', '--bg-card-solid': '#16161F',
-        '--text-primary': '#F0EBE3', '--text-secondary': '#B0A79D',
-        '--text-muted': '#6A6058', '--gold': '#D4A849',
-        '--gold-light': 'rgba(212,168,73,0.10)', '--gold-glow': 'rgba(212,168,73,0.20)',
-        '--border': 'rgba(212,168,73,0.15)', '--border-subtle': 'rgba(240,235,227,0.05)',
-        '--shadow-sm': '0 2px 8px rgba(0,0,0,0.2)', '--shadow-md': '0 8px 32px rgba(0,0,0,0.3)',
-        '--shadow-lg': '0 16px 48px rgba(0,0,0,0.4)',
-        '--hero-overlay': 'linear-gradient(180deg, rgba(8,8,13,0) 0%, rgba(8,8,13,0.15) 50%, rgba(8,8,13,0.92) 100%)',
-        '--hero-overlay-top': 'linear-gradient(180deg, rgba(8,8,13,0.5) 0%, rgba(8,8,13,0) 30%)',
-      } : {
-        '--bg-primary': '#FAF7F2', '--bg-secondary': '#F3EDE4',
-        '--bg-card': 'rgba(255,255,255,0.92)', '--bg-card-solid': '#FFFFFF',
-        '--text-primary': '#2C1810', '--text-secondary': '#6B5B4F',
-        '--text-muted': '#9B8B7F', '--gold': '#B8860B',
-        '--gold-light': 'rgba(184,134,11,0.12)', '--gold-glow': 'rgba(184,134,11,0.25)',
-        '--border': 'rgba(184,134,11,0.18)', '--border-subtle': 'rgba(44,24,16,0.07)',
-        '--shadow-sm': '0 2px 8px rgba(44,24,16,0.06)', '--shadow-md': '0 8px 32px rgba(44,24,16,0.08)',
-        '--shadow-lg': '0 16px 48px rgba(44,24,16,0.12)',
-        '--hero-overlay': 'linear-gradient(180deg, rgba(250,247,242,0) 0%, rgba(250,247,242,0.15) 50%, rgba(250,247,242,0.92) 100%)',
-        '--hero-overlay-top': 'linear-gradient(180deg, rgba(250,247,242,0.5) 0%, rgba(250,247,242,0) 30%)',
-      };
+    if (!themeSwitched && vid.duration && vid.currentTime >= vid.duration / 2) {
+      themeSwitched = true;
+      const vars = THEMES[next];
       const root = document.documentElement;
       Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
       document.querySelector('.app-wrapper')?.setAttribute('data-theme', next);
     }
   };
 
-  vid.onended = () => {
-    vid.ontimeupdate = null;
-    vid.onended = null;
-    vid.oncanplay = null;
-    // Maintenant sync le React state APRÈS la vidéo
-    setTheme(next);
-    setIsTransitioning(false);
-  };
+vid.onended = () => {
+  vid.ontimeupdate = null;
+  vid.onended = null;
+  // Sync React state FIRST so hero video switches under the overlay
+  setTheme(next);
+  // Wait one frame for React to re-render hero video opacity
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      // Now fade out the overlay — hero is already showing correct video
+      overlay.classList.add('fade-out');
+      setTimeout(() => {
+        vid.style.display = 'none';
+        overlay.classList.remove('fade-out');
+        setIsTransitioning(false);
+      }, 600);
+    });
+  });
+};
+  vid.play().catch(() => setIsTransitioning(false));
 }, [theme, isTransitioning]);
 
   // ═══════════ SCROLL ANIMATIONS ═══════════
@@ -221,7 +239,6 @@ const toggleTheme = useCallback(() => {
     const timer = setTimeout(() => {
       ScrollTrigger.getAll().forEach(t => t.kill());
 
-      // ── HERO: Fade out content on scroll ──
       if (heroRef.current) {
         gsap.to(heroContentRef.current, {
           y: -60, opacity: 0, ease: 'none',
@@ -234,7 +251,6 @@ const toggleTheme = useCallback(() => {
         });
       }
 
-      // ── INVITATION: Side lines grow ──
       [invitationSideLeftRef, invitationSideRightRef].forEach(ref => {
         if (ref.current) {
           gsap.fromTo(ref.current,
@@ -247,7 +263,6 @@ const toggleTheme = useCallback(() => {
         }
       });
 
-      // ── INVITATION: Ornament top ──
       if (invitationOrnamentTopRef.current) {
         gsap.fromTo(invitationOrnamentTopRef.current,
           { scaleX: 0, opacity: 0 },
@@ -258,7 +273,6 @@ const toggleTheme = useCallback(() => {
         );
       }
 
-      // ── INVITATION: Quote text lines ──
       if (invitationTextRef.current) {
         const lines = invitationTextRef.current.querySelectorAll('.anim-line');
         gsap.fromTo(lines,
@@ -270,7 +284,6 @@ const toggleTheme = useCallback(() => {
         );
       }
 
-      // ── INVITATION: Quote marks ──
       gsap.fromTo('.dn-quote-mark.open',
         { x: -30, opacity: 0 },
         {
@@ -286,7 +299,6 @@ const toggleTheme = useCallback(() => {
         }
       );
 
-      // ── INVITATION: Ornament bottom ──
       if (invitationOrnamentBottomRef.current) {
         gsap.fromTo(invitationOrnamentBottomRef.current,
           { scaleX: 0, opacity: 0 },
@@ -297,7 +309,6 @@ const toggleTheme = useCallback(() => {
         );
       }
 
-      // ── INVITATION: Background text parallax ──
       gsap.to('.dn-invitation-bg-text', {
         y: -80, ease: 'none',
         scrollTrigger: {
@@ -305,7 +316,6 @@ const toggleTheme = useCallback(() => {
         },
       });
 
-      // ── LIEU: Header ──
       if (lieuHeaderRef.current) {
         gsap.fromTo(lieuHeaderRef.current.querySelector('.dn-lieu-title'),
           { y: 50, opacity: 0 },
@@ -323,7 +333,6 @@ const toggleTheme = useCallback(() => {
         );
       }
 
-      // ── LIEU: Card ──
       if (lieuCardRef.current) {
         gsap.fromTo(lieuCardRef.current,
           { y: 80, opacity: 0, scale: 0.95 },
@@ -342,7 +351,6 @@ const toggleTheme = useCallback(() => {
         );
       }
 
-      // ── COUNTDOWN: Title ──
       if (countdownTitleRef.current) {
         gsap.fromTo(countdownTitleRef.current,
           { y: 40, opacity: 0, scale: 0.9 },
@@ -371,7 +379,6 @@ const toggleTheme = useCallback(() => {
         );
       }
 
-      // ── FOOTER ──
       if (footerRef.current) {
         gsap.fromTo(footerRef.current.children,
           { y: 30, opacity: 0 },
@@ -382,7 +389,6 @@ const toggleTheme = useCallback(() => {
         );
       }
 
-      // ── BORDERS ──
       document.querySelectorAll('.dn-section-border').forEach(border => {
         gsap.fromTo(border,
           { width: '0%' },
@@ -393,7 +399,6 @@ const toggleTheme = useCallback(() => {
         );
       });
 
-      // ── GOLD SEPARATORS ──
       document.querySelectorAll('.dn-gold-sep').forEach(sep => {
         gsap.fromTo(sep,
           { scaleX: 0 },
@@ -468,10 +473,28 @@ const toggleTheme = useCallback(() => {
         <source src="/music.mp3" type="audio/mpeg" />
       </audio>
 
-      {/* ── Transition video overlay ── */}
-      <div className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}>
-  <video key="transition-vid" ref={transitionVideoRef} playsInline muted preload="auto" />
-</div>
+      {/* ── Transition overlay — poster bg prevents black flash ── */}
+      <div
+        ref={overlayRef}
+        className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}
+      >
+        <video
+          ref={transitionVideoDarkRef}
+          playsInline
+          muted
+          preload="auto"
+          src="/transition-to-dark.mp4"
+          style={{ display: 'none' }}
+        />
+        <video
+          ref={transitionVideoLightRef}
+          playsInline
+          muted
+          preload="auto"
+          src="/transition-to-light.mp4"
+          style={{ display: 'none' }}
+        />
+      </div>
 
       {/* ── Fixed Controls (mute + theme) ── */}
       {isOpen && (
@@ -527,17 +550,14 @@ const toggleTheme = useCallback(() => {
               style={{ opacity: theme === 'dark' ? 1 : 0 }}
             />
           </div>
-          <div className="dn-hero-overlay-top" />
-          <div className="dn-hero-overlay-bottom" />
+
 
           <div ref={heroContentRef} className="dn-hero-content">
             <h1 className="dn-hero-title">
               Yacine
-              & 
+              &
               Amel
             </h1>
-
-
 
             <div className="dn-hero-date-block">
               <p className="dn-hero-date">14 AOÛT 2026</p>
