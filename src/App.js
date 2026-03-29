@@ -173,7 +173,7 @@ const toggleTheme = useCallback(() => {
     vid.oncanplay = null;
     vid.play().catch(() => {});
   };
-
+    
   // Switch le thème directement sur le DOM sans setState
   vid.ontimeupdate = () => {
     if (vid.currentTime >= vid.duration / 2) {
