@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Heart, Navigation, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
-import bismillah from './assets/bismillah.png';
-import fond from './assets/fond.jpg';
+import { Navigation, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
+
 import fleur from './assets/fleur.jpg';
 import './App.css';
 
@@ -100,7 +99,6 @@ const App = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [theme, setTheme] = useState('light');
   const [isTransitioning, setIsTransitioning] = useState(false);
- const pendingThemeRef = useRef(null);
   const videoRef = useRef(null);
   const flashRef = useRef(null);
   const mainContentRef = useRef(null);
