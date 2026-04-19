@@ -55,38 +55,6 @@ const THEMES = {
 };
 
 /* ═══════════════════════════════════════════════
-   FLOATING PARTICLES COMPONENT
-   ═══════════════════════════════════════════════ */
-const FloatingParticles = ({ count = 12 }) => {
-  const particles = Array.from({ length: count }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    size: 2 + Math.random() * 3,
-    delay: Math.random() * 8,
-    duration: 6 + Math.random() * 6,
-    startY: 80 + Math.random() * 20,
-  }));
-  return (
-    <div className="dn-particles">
-      {particles.map(p => (
-        <div
-          key={p.id}
-          className="dn-particle"
-          style={{
-            left: p.left,
-            bottom: `${p.startY}%`,
-            width: p.size,
-            height: p.size,
-            animationDelay: `${p.delay}s`,
-            animationDuration: `${p.duration}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-/* ═══════════════════════════════════════════════
    COUNTDOWN UNIT
    ═══════════════════════════════════════════════ */
 const CountdownUnit = ({ value, label }) => {
@@ -102,10 +70,12 @@ const CountdownUnit = ({ value, label }) => {
     }
   }, [value]);
 
+  const display = String(value).padStart(2, '0');
+
   return (
     <div className="cd-unit">
       <div className={`cd-value-wrap ${flip ? 'cd-flip' : ''}`}>
-        <span className="cd-value">{String(value).padStart(2, '0')}</span>
+        <span className="cd-value">{display}</span>
       </div>
       <p className="cd-label">{label}</p>
     </div>
@@ -134,17 +104,11 @@ const App = () => {
   const flashRef = useRef(null);
   const mainContentRef = useRef(null);
   const audioRef = useRef(null);
-<<<<<<< HEAD
   const blackoutRef = useRef(null);
   const transitionVideoDarkRef = useRef(null);
   const transitionVideoLightRef = useRef(null);
-=======
-  const transitionVideoDarkRef = useRef(null);
-  const transitionVideoLightRef = useRef(null);
-  const overlayRef = useRef(null);
-  const postersRef = useRef({ dark: null, light: null });
->>>>>>> ff56d43738903ae8c2ad78571efef490cfe4960d
 
+  // Refs for scroll animations
   const heroRef = useRef(null);
   const heroContentRef = useRef(null);
   const invitationRef = useRef(null);
@@ -163,49 +127,35 @@ const App = () => {
 
   const targetDate = '2026-08-14';
 
-  /* ── Capture first frames ── */
-  useEffect(() => {
-    const capture = (vid, key) => {
-      const h = () => {
-        vid.removeEventListener('loadeddata', h);
-        try {
-          const c = document.createElement('canvas');
-          c.width = vid.videoWidth; c.height = vid.videoHeight;
-          c.getContext('2d').drawImage(vid, 0, 0);
-          postersRef.current[key] = c.toDataURL('image/jpeg', 0.8);
-        } catch (e) {}
-      };
-      vid.addEventListener('loadeddata', h);
-    };
-    if (transitionVideoDarkRef.current) capture(transitionVideoDarkRef.current, 'dark');
-    if (transitionVideoLightRef.current) capture(transitionVideoLightRef.current, 'light');
-  }, []);
-
-  /* ── Apply theme ── */
+  /* ── Apply theme variables ── */
   useEffect(() => {
     const vars = THEMES[theme];
     const root = document.documentElement;
     Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
   }, [theme]);
 
-  /* ── Countdown ── */
+  /* ── Countdown timer ── */
   useEffect(() => {
-    const calc = () => {
-      const diff = new Date(targetDate + 'T19:00:00') - new Date();
-      if (diff <= 0) return setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    const calculate = () => {
+      const now = new Date();
+      const target = new Date(targetDate + 'T19:00:00');
+      const diff = target - now;
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
       setTimeLeft({
-        days: Math.floor(diff / 86400000),
-        hours: Math.floor((diff % 86400000) / 3600000),
-        minutes: Math.floor((diff % 3600000) / 60000),
-        seconds: Math.floor((diff % 60000) / 1000),
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((diff % (1000 * 60)) / 1000),
       });
     };
-    calc();
-    const id = setInterval(calc, 1000);
-    return () => clearInterval(id);
+    calculate();
+    const interval = setInterval(calculate, 1000);
+    return () => clearInterval(interval);
   }, [targetDate]);
 
-<<<<<<< HEAD
   /* ══════════════════════════════════════════════
      THEME TOGGLE — blackout + video transition
      ══════════════════════════════════════════════ */
@@ -237,7 +187,7 @@ const toggleTheme = useCallback(() => {
 
     vid.ontimeupdate = () => {
       const switchPoint = vid.duration * 0.4;
-if (!themeSwitched && vid.currentTime >= switchPoint) {
+      if (!themeSwitched && vid.currentTime >= switchPoint) {
   themeSwitched = true;
 
   const root = document.documentElement;
@@ -294,219 +244,261 @@ if (!themeSwitched && vid.currentTime >= switchPoint) {
   vid.addEventListener('playing', onReady);
   vid.play().catch(() => setIsTransitioning(false));
 }, [theme, isTransitioning]);
-=======
-  /* ── Theme toggle ── */
-  const toggleTheme = useCallback(() => {
-    if (isTransitioning) return;
-    const next = theme === 'light' ? 'dark' : 'light';
-    const vid = next === 'dark' ? transitionVideoDarkRef.current : transitionVideoLightRef.current;
-    const overlay = overlayRef.current;
-    if (!vid || !overlay) return;
 
-    setIsTransitioning(true);
-    const pk = next === 'dark' ? 'dark' : 'light';
-    if (postersRef.current[pk]) {
-      overlay.style.backgroundImage = `url(${postersRef.current[pk]})`;
-      overlay.style.backgroundSize = 'cover';
-      overlay.style.backgroundPosition = 'center';
-    }
-    transitionVideoDarkRef.current.style.display = 'none';
-    transitionVideoLightRef.current.style.display = 'none';
-    vid.style.display = 'block';
-    vid.currentTime = 0;
-    overlay.classList.remove('fade-out');
-
-    let switched = false;
-    vid.ontimeupdate = () => {
-      if (!switched && vid.duration && vid.currentTime >= vid.duration / 2) {
-        switched = true;
-        const vars = THEMES[next];
-        const root = document.documentElement;
-        Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
-        document.querySelector('.app-wrapper')?.setAttribute('data-theme', next);
-      }
-    };
-    vid.onended = () => {
-      vid.ontimeupdate = null;
-      vid.onended = null;
-      setTheme(next);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          overlay.classList.add('fade-out');
-          setTimeout(() => {
-            vid.style.display = 'none';
-            overlay.classList.remove('fade-out');
-            overlay.style.backgroundImage = 'none';
-            setIsTransitioning(false);
-          }, 600);
-        });
-      });
-    };
-    vid.play().catch(() => setIsTransitioning(false));
-  }, [theme, isTransitioning]);
->>>>>>> ff56d43738903ae8c2ad78571efef490cfe4960d
-
-  /* ── Scroll Animations ── */
+  // ═══════════ SCROLL ANIMATIONS ═══════════
   const initScrollAnimations = useCallback(() => {
     const timer = setTimeout(() => {
       ScrollTrigger.getAll().forEach(t => t.kill());
 
+      // ── HERO: Fade out content on scroll ──
       if (heroRef.current) {
         gsap.to(heroContentRef.current, {
           y: -60, opacity: 0, ease: 'none',
-          scrollTrigger: { trigger: heroRef.current, start: '50% top', end: 'bottom top', scrub: true },
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: '50% top',
+            end: 'bottom top',
+            scrub: true,
+          },
         });
       }
 
+      // ── INVITATION: Side lines grow ──
       [invitationSideLeftRef, invitationSideRightRef].forEach(ref => {
         if (ref.current) {
-          gsap.fromTo(ref.current, { height: 0, opacity: 0 }, {
-            height: '12rem', opacity: 0.2, duration: 1.5, ease: 'power2.out',
-            scrollTrigger: { trigger: invitationRef.current, start: 'top 80%', toggleActions: 'play none none reverse' },
-          });
+          gsap.fromTo(ref.current,
+            { height: 0, opacity: 0 },
+            {
+              height: '10rem', opacity: 0.2, duration: 1.5, ease: 'power2.out',
+              scrollTrigger: { trigger: invitationRef.current, start: 'top 80%', toggleActions: 'play none none reverse' },
+            }
+          );
         }
       });
 
+      // ── INVITATION: Ornament top ──
       if (invitationOrnamentTopRef.current) {
         gsap.fromTo(invitationOrnamentTopRef.current,
           { scaleX: 0, opacity: 0 },
-          { scaleX: 1, opacity: 0.5, duration: 1.2, ease: 'power2.out',
-            scrollTrigger: { trigger: invitationRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } }
+          {
+            scaleX: 1, opacity: 0.4, duration: 1, ease: 'power2.out',
+            scrollTrigger: { trigger: invitationRef.current, start: 'top 75%', toggleActions: 'play none none reverse' },
+          }
         );
       }
 
+      // ── INVITATION: Quote text lines ──
       if (invitationTextRef.current) {
-        gsap.fromTo(invitationTextRef.current.querySelectorAll('.anim-line'),
+        const lines = invitationTextRef.current.querySelectorAll('.anim-line');
+        gsap.fromTo(lines,
           { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, stagger: 0.25, ease: 'power3.out',
-            scrollTrigger: { trigger: invitationTextRef.current, start: 'top 80%', toggleActions: 'play none none reverse' } }
+          {
+            y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: 'power3.out',
+            scrollTrigger: { trigger: invitationTextRef.current, start: 'top 80%', toggleActions: 'play none none reverse' },
+          }
         );
       }
 
-      gsap.fromTo('.dn-quote-mark.open', { x: -30, opacity: 0 },
-        { x: 0, opacity: 0.2, duration: 0.8, ease: 'back.out(1.7)',
-          scrollTrigger: { trigger: invitationRef.current, start: 'top 70%', toggleActions: 'play none none reverse' } });
-      gsap.fromTo('.dn-quote-mark.close', { x: 30, opacity: 0 },
-        { x: 0, opacity: 0.2, duration: 0.8, delay: 0.3, ease: 'back.out(1.7)',
-          scrollTrigger: { trigger: invitationRef.current, start: 'top 70%', toggleActions: 'play none none reverse' } });
+      // ── INVITATION: Quote marks ──
+      gsap.fromTo('.dn-quote-mark.open',
+        { x: -30, opacity: 0 },
+        {
+          x: 0, opacity: 0.2, duration: 0.8, ease: 'back.out(1.7)',
+          scrollTrigger: { trigger: invitationRef.current, start: 'top 70%', toggleActions: 'play none none reverse' },
+        }
+      );
+      gsap.fromTo('.dn-quote-mark.close',
+        { x: 30, opacity: 0 },
+        {
+          x: 0, opacity: 0.2, duration: 0.8, delay: 0.3, ease: 'back.out(1.7)',
+          scrollTrigger: { trigger: invitationRef.current, start: 'top 70%', toggleActions: 'play none none reverse' },
+        }
+      );
 
+      // ── INVITATION: Ornament bottom ──
       if (invitationOrnamentBottomRef.current) {
         gsap.fromTo(invitationOrnamentBottomRef.current,
           { scaleX: 0, opacity: 0 },
-          { scaleX: 1, opacity: 0.5, duration: 1.2, delay: 0.5, ease: 'power2.out',
-            scrollTrigger: { trigger: invitationRef.current, start: 'top 60%', toggleActions: 'play none none reverse' } }
+          {
+            scaleX: 1, opacity: 0.4, duration: 1, delay: 0.6, ease: 'power2.out',
+            scrollTrigger: { trigger: invitationRef.current, start: 'top 60%', toggleActions: 'play none none reverse' },
+          }
         );
       }
 
+      // ── INVITATION: Background text parallax ──
       gsap.to('.dn-invitation-bg-text', {
-        y: -100, ease: 'none',
-        scrollTrigger: { trigger: invitationRef.current, start: 'top bottom', end: 'bottom top', scrub: true },
+        y: -80, ease: 'none',
+        scrollTrigger: {
+          trigger: invitationRef.current, start: 'top bottom', end: 'bottom top', scrub: true,
+        },
       });
 
-      // LIEU
+      // ── LIEU: Header ──
       if (lieuHeaderRef.current) {
         gsap.fromTo(lieuHeaderRef.current.querySelector('.dn-lieu-title'),
           { y: 50, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
-            scrollTrigger: { trigger: lieuRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
+          {
+            y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+            scrollTrigger: { trigger: lieuRef.current, start: 'top 75%', toggleActions: 'play none none reverse' },
+          }
+        );
         gsap.fromTo(lieuHeaderRef.current.querySelector('.dn-lieu-subtitle'),
           { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: 'power3.out',
-            scrollTrigger: { trigger: lieuRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
-        gsap.fromTo(lieuHeaderRef.current.querySelector('.dn-lieu-crown'),
-          { scaleX: 0, opacity: 0 },
-          { scaleX: 1, opacity: 1, duration: 1, delay: 0.5, ease: 'power2.out',
-            scrollTrigger: { trigger: lieuRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
+          {
+            y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: 'power3.out',
+            scrollTrigger: { trigger: lieuRef.current, start: 'top 75%', toggleActions: 'play none none reverse' },
+          }
+        );
       }
+
+      // ── LIEU: Card ──
       if (lieuCardRef.current) {
         gsap.fromTo(lieuCardRef.current,
           { y: 80, opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out',
-            scrollTrigger: { trigger: lieuCardRef.current, start: 'top 85%', toggleActions: 'play none none reverse' } });
-        gsap.fromTo(lieuCardRef.current.querySelectorAll('.dn-lieu-name, .dn-gold-sep, .dn-lieu-datetime, .dn-lieu-address, .dn-lieu-map-wrapper, .dn-lieu-btn-wrapper'),
+          {
+            y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out',
+            scrollTrigger: { trigger: lieuCardRef.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+          }
+        );
+        const cardChildren = lieuCardRef.current.querySelectorAll('.dn-lieu-name, .dn-gold-sep, .dn-lieu-datetime, .dn-lieu-address, .dn-lieu-map-wrapper, .dn-lieu-btn-wrapper');
+        gsap.fromTo(cardChildren,
           { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, stagger: 0.12, ease: 'power2.out',
-            scrollTrigger: { trigger: lieuCardRef.current, start: 'top 70%', toggleActions: 'play none none reverse' } });
+          {
+            y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out',
+            scrollTrigger: { trigger: lieuCardRef.current, start: 'top 70%', toggleActions: 'play none none reverse' },
+          }
+        );
       }
 
-      // COUNTDOWN
+      // ── COUNTDOWN: Title ──
       if (countdownTitleRef.current) {
         gsap.fromTo(countdownTitleRef.current,
           { y: 40, opacity: 0, scale: 0.9 },
-          { y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'back.out(1.4)',
-            scrollTrigger: { trigger: countdownRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
-      }
-      gsap.fromTo('.dn-cd-subtitle-row', { width: '0%', opacity: 0 },
-        { width: '100%', opacity: 1, duration: 1.2, delay: 0.3, ease: 'power2.out',
-          scrollTrigger: { trigger: countdownRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
-      if (countdownCardRef.current) {
-        gsap.fromTo(countdownCardRef.current,
-          { y: 60, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.4, delay: 0.4, ease: 'power3.out',
-            scrollTrigger: { trigger: countdownRef.current, start: 'top 70%', toggleActions: 'play none none reverse' } });
+          {
+            y: 0, opacity: 1, scale: 1, duration: 1, ease: 'back.out(1.4)',
+            scrollTrigger: { trigger: countdownRef.current, start: 'top 75%', toggleActions: 'play none none reverse' },
+          }
+        );
       }
 
-      // FOOTER
+      gsap.fromTo('.dn-cd-subtitle-row',
+        { width: '0%', opacity: 0 },
+        {
+          width: '100%', opacity: 1, duration: 1, delay: 0.3, ease: 'power2.out',
+          scrollTrigger: { trigger: countdownRef.current, start: 'top 75%', toggleActions: 'play none none reverse' },
+        }
+      );
+
+      if (countdownCardRef.current) {
+        gsap.fromTo(countdownCardRef.current,
+          { y: 60, opacity: 0, rotateX: 10 },
+          {
+            y: 0, opacity: 1, rotateX: 0, duration: 1.2, delay: 0.4, ease: 'power3.out',
+            scrollTrigger: { trigger: countdownRef.current, start: 'top 70%', toggleActions: 'play none none reverse' },
+          }
+        );
+      }
+
+      // ── FOOTER ──
       if (footerRef.current) {
         gsap.fromTo(footerRef.current.children,
           { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, stagger: 0.15, ease: 'power2.out',
-            scrollTrigger: { trigger: footerRef.current, start: 'top 90%', toggleActions: 'play none none reverse' } });
+          {
+            y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power2.out',
+            scrollTrigger: { trigger: footerRef.current, start: 'top 90%', toggleActions: 'play none none reverse' },
+          }
+        );
       }
 
+      // ── BORDERS ──
       document.querySelectorAll('.dn-section-border').forEach(border => {
-        gsap.fromTo(border, { width: '0%' },
-          { width: '60%', duration: 1.4, ease: 'power2.out',
-            scrollTrigger: { trigger: border.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' } });
+        gsap.fromTo(border,
+          { width: '0%' },
+          {
+            width: '60%', duration: 1.2, ease: 'power2.out',
+            scrollTrigger: { trigger: border.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' },
+          }
+        );
       });
 
+      // ── GOLD SEPARATORS ──
       document.querySelectorAll('.dn-gold-sep').forEach(sep => {
-        gsap.fromTo(sep, { scaleX: 0 },
-          { scaleX: 1, duration: 1, ease: 'power2.out',
-            scrollTrigger: { trigger: sep, start: 'top 85%', toggleActions: 'play none none reverse' } });
+        gsap.fromTo(sep,
+          { scaleX: 0 },
+          {
+            scaleX: 1, duration: 0.8, ease: 'power2.out',
+            scrollTrigger: { trigger: sep, start: 'top 85%', toggleActions: 'play none none reverse' },
+          }
+        );
       });
 
       ScrollTrigger.refresh();
     }, 100);
+
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (isOpen) initScrollAnimations();
-    return () => { ScrollTrigger.getAll().forEach(t => t.kill()); };
+    if (isOpen) {
+      initScrollAnimations();
+    }
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
   }, [isOpen, initScrollAnimations]);
 
-<<<<<<< HEAD
   /* ═══════════════════════════════════
      PHASE 1 HANDLER
      ═══════════════════════════════════ */
-=======
-  /* ── Phase 1 (untouched) ── */
->>>>>>> ff56d43738903ae8c2ad78571efef490cfe4960d
   const handleStartTransition = () => {
     if (hasStarted) return;
     setHasStarted(true);
-    if (videoRef.current) videoRef.current.play();
+
+    if (videoRef.current) {
+      videoRef.current.play();
+    }
+
     const tl = gsap.timeline();
-    tl.to(flashRef.current, { opacity: 1, duration: 0.6, delay: 2, ease: "power2.in" })
+
+    tl.to(flashRef.current, {
+      opacity: 1, duration: 0.6, delay: 2, ease: "power2.in",
+    })
       .call(() => {
-        setIsOpen(true); window.scrollTo(0, 0);
-        if (audioRef.current) { audioRef.current.volume = 0.4; audioRef.current.play().catch(() => {}); }
+        setIsOpen(true);
+        window.scrollTo(0, 0);
+
+        if (audioRef.current) {
+          audioRef.current.volume = 0.4;
+          audioRef.current.play().catch(() => {});
+        }
       }, null, "+=0.1")
-      .fromTo(mainContentRef.current, { scale: 1.05, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, ease: "power2.out" })
-      .to(flashRef.current, { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "-=1.5");
+      .fromTo(mainContentRef.current,
+        { scale: 1.05, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 2, ease: "power2.out" }
+      )
+      .to(flashRef.current, {
+        opacity: 0, duration: 1.5, ease: "power1.inOut"
+      }, "-=1.5");
   };
 
   const toggleMute = () => {
-    if (audioRef.current) { audioRef.current.muted = !audioRef.current.muted; setIsMuted(!isMuted); }
+    if (audioRef.current) {
+      audioRef.current.muted = !audioRef.current.muted;
+      setIsMuted(!isMuted);
+    }
   };
 
   return (
     <div className="app-wrapper" data-theme={theme}>
-      <div ref={flashRef} className="flash-overlay" />
-      <audio ref={audioRef} loop preload="auto"><source src="/music.mp3" type="audio/mpeg" /></audio>
 
-<<<<<<< HEAD
+      <div ref={flashRef} className="flash-overlay" />
+      <audio ref={audioRef} loop preload="auto">
+        <source src="/music.mp3" type="audio/mpeg" />
+      </audio>
+
+      {/* ── Blackout solide ── */}
+      <div ref={blackoutRef} className="dn-transition-blackout" />
 
       {/* ── Transition video overlay ── */}
       <div className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}>
@@ -526,22 +518,27 @@ if (!themeSwitched && vid.currentTime >= switchPoint) {
           src="/transition-to-light.mp4"
           style={{ display: 'none' }}
         />
-=======
-      <div ref={overlayRef} className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}>
-        <video ref={transitionVideoDarkRef} playsInline muted preload="auto" src="/transition-to-dark.mp4" style={{ display: 'none' }} />
-        <video ref={transitionVideoLightRef} playsInline muted preload="auto" src="/transition-to-light.mp4" style={{ display: 'none' }} />
->>>>>>> ff56d43738903ae8c2ad78571efef490cfe4960d
       </div>
 
+      {/* ── Fixed Controls (mute + theme) ── */}
       {isOpen && (
         <div className="dn-fixed-controls">
           <button onClick={toggleMute} className="dn-control-btn" aria-label="Toggle musique">
-            <div className="dn-control-icon">{isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}</div>
-            {!isMuted && <div className="dn-music-bars"><span className="dn-bar dn-bar-1" /><span className="dn-bar dn-bar-2" /><span className="dn-bar dn-bar-3" /></div>}
+            <div className="dn-control-icon">
+              {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </div>
+            {!isMuted && (
+              <div className="dn-music-bars">
+                <span className="dn-bar dn-bar-1" />
+                <span className="dn-bar dn-bar-2" />
+                <span className="dn-bar dn-bar-3" />
+              </div>
+            )}
           </button>
           <button onClick={toggleTheme} className="dn-control-btn dn-theme-btn" aria-label="Toggle thème">
             <div className={`dn-theme-icons ${theme === 'dark' ? 'is-dark' : ''}`}>
-              <Sun size={18} className="dn-sun-icon" /><Moon size={18} className="dn-moon-icon" />
+              <Sun size={18} className="dn-sun-icon" />
+              <Moon size={18} className="dn-moon-icon" />
             </div>
           </button>
         </div>
@@ -550,18 +547,20 @@ if (!themeSwitched && vid.currentTime >= switchPoint) {
       {/* --- PHASE 1 : L'OUVERTURE --- */}
       {!isOpen && (
         <div className="ouverture-wrapper" onClick={handleStartTransition}>
-          <div className={`ouverture-poster ${hasStarted ? 'hidden' : ''}`} style={{ backgroundImage: "url('/poster.jpg')" }} />
+          <div
+            className={`ouverture-poster ${hasStarted ? 'hidden' : ''}`}
+            style={{ backgroundImage: "url('/poster.jpg')" }}
+          />
           <video ref={videoRef} className="ouverture-video" playsInline src="/ouverture.mp4" />
         </div>
       )}
 
-      {/* --- PHASE 2 : LE SITE ROYAL --- */}
+      {/* --- PHASE 2 : LE SITE (DAYNIGHT REDESIGN) --- */}
       <main ref={mainContentRef} className={`main-content ${!isOpen ? 'hidden' : ''}`}>
 
         {/* ════════════ HERO ════════════ */}
         <header ref={heroRef} className="dn-hero">
           <div className="dn-hero-media">
-<<<<<<< HEAD
             <video
               className="dn-hero-video dn-hero-video--light"
               autoPlay loop muted playsInline
@@ -584,32 +583,27 @@ if (!themeSwitched && vid.currentTime >= switchPoint) {
               Amel
             </h1>
 
-=======
-            <video className="dn-hero-video" autoPlay loop muted playsInline src="/lightbg.mp4" style={{ opacity: theme === 'light' ? 1 : 0 }} />
-            <video className="dn-hero-video" autoPlay loop muted playsInline src="/darkbg.mp4" style={{ opacity: theme === 'dark' ? 1 : 0 }} />
-          </div>
-          <div ref={heroContentRef} className="dn-hero-content">
-            <h1 className="dn-hero-title">Yacine & Amel</h1>
->>>>>>> ff56d43738903ae8c2ad78571efef490cfe4960d
             <div className="dn-hero-date-block">
               <p className="dn-hero-date">14 AOÛT 2026</p>
             </div>
           </div>
-          <div className="dn-scroll-indicator"><div className="dn-scroll-line" /></div>
+
+          <div className="dn-scroll-indicator">
+            <div className="dn-scroll-line" />
+          </div>
         </header>
 
         {/* ════════════ INVITATION ════════════ */}
         <section ref={invitationRef} className="dn-invitation">
-          <FloatingParticles count={15} />
           <div className="dn-invitation-glow" />
           <div ref={invitationSideLeftRef} className="dn-invitation-side-line left" />
           <div ref={invitationSideRightRef} className="dn-invitation-side-line right" />
-          <div className="dn-invitation-bg-text">Félicitations</div>
+          <div className="dn-invitation-bg-text">Mariage</div>
 
           <div className="dn-invitation-content">
             <div ref={invitationOrnamentTopRef} className="dn-ornament">
               <div className="dn-gold-line-r" />
-              <svg width="20" height="20" viewBox="0 0 18 18" fill="none">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <path d="M9 1 L10.2 6.8 L16 9 L10.2 11.2 L9 17 L7.8 11.2 L2 9 L7.8 6.8 Z" fill="var(--gold)" opacity="0.8" />
               </svg>
               <div className="dn-gold-line-l" />
@@ -635,47 +629,55 @@ if (!themeSwitched && vid.currentTime >= switchPoint) {
 
         {/* ════════════ LE LIEU ════════════ */}
         <section ref={lieuRef} className="dn-lieu">
-          <FloatingParticles count={10} />
           <div className="dn-section-border top" />
           <div className="dn-section-border bottom" />
 
           <div ref={lieuHeaderRef} className="dn-lieu-header">
             <p className="dn-lieu-title">Le Lieu</p>
             <p className="dn-lieu-subtitle">Où nous célébrons</p>
-            <div className="dn-lieu-crown">
-              <div className="dn-lieu-crown-line" />
-              <div className="dn-lieu-crown-diamond" />
-              <div className="dn-lieu-crown-line right" />
-            </div>
           </div>
 
           <div ref={lieuCardRef} className="dn-lieu-card">
             <div className="dn-lieu-image-wrapper">
               <img src={fleur} alt="Salle Les Roses d'Or" className="dn-lieu-image" />
             </div>
+
             <div className="dn-lieu-card-body">
               <div className="dn-lieu-name">
                 <p className="dn-lieu-name-text">Salle Les Roses d'Or</p>
               </div>
+
               <div className="dn-gold-sep" />
+
               <div className="dn-lieu-datetime">
                 <p className="dn-lieu-datetime-text">
-                  14 Août 2026<span className="dn-lieu-dot">·</span><span>19:00</span>
+                  14 Août 2026
+                  <span className="dn-lieu-dot">·</span>
+                  <span>19:00</span>
                 </p>
               </div>
+
               <div className="dn-gold-sep thin" />
+
               <div className="dn-lieu-address">
                 <p className="dn-lieu-city">Sidi Abdellah</p>
                 <p className="dn-lieu-country">Alger, Algérie</p>
               </div>
+
               <div className="dn-lieu-map-wrapper">
-                <iframe title="Location map"
+                <iframe
+                  title="Location map"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3202.8!2d2.8!3d36.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDQyJzAwLjAiTiAywrA0OCcwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1620000000000!5m2!1sfr!2sdz"
-                  width="100%" height="100%" allowFullScreen loading="lazy" />
+                  width="100%" height="100%"
+                  className="dn-lieu-map"
+                  allowFullScreen loading="lazy"
+                />
               </div>
+
               <div className="dn-lieu-btn-wrapper">
                 <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="dn-lieu-btn">
-                  <Navigation size={14} />Ouvrir l'itinéraire
+                  <Navigation size={14} />
+                  Ouvrir l'itinéraire
                 </a>
               </div>
             </div>
@@ -684,16 +686,18 @@ if (!themeSwitched && vid.currentTime >= switchPoint) {
 
         {/* ════════════ COUNTDOWN ════════════ */}
         <section ref={countdownRef} className="dn-countdown">
-          <FloatingParticles count={8} />
           <div className="dn-section-border top" />
           <div className="dn-section-border bottom" />
+
           <div className="dn-countdown-inner">
             <h2 ref={countdownTitleRef} className="dn-cd-title">Compte à rebours</h2>
+
             <div className="dn-cd-subtitle-row">
               <div className="dn-cd-sub-line" />
               <p className="dn-cd-subtitle">Jusqu'au jour J</p>
               <div className="dn-cd-sub-line right" />
             </div>
+
             <div ref={countdownCardRef} className="dn-cd-card">
               <div className="dn-cd-numbers">
                 <CountdownUnit value={timeLeft.days} label="Jours" />
@@ -711,20 +715,15 @@ if (!themeSwitched && vid.currentTime >= switchPoint) {
         {/* ════════════ FOOTER ════════════ */}
         <footer className="dn-footer">
           <div ref={footerRef} className="dn-footer-inner">
-<<<<<<< HEAD
             <p className="dn-footer-families">Familles Belkacem &amp; Mansouri</p>
-=======
-            <div className="dn-footer-flourish">
-              <div className="dn-footer-flourish-line" />
-              <div className="dn-footer-flourish-dot" />
-              <div className="dn-footer-flourish-line" />
-            </div>
-            <p className="dn-footer-families">Familles Belkacem & Mansouri</p>
-            <span className="dn-footer-script">avec amour</span>
->>>>>>> ff56d43738903ae8c2ad78571efef490cfe4960d
             <div className="dn-footer-divider" />
             <span className="dn-footer-credit">Made with love by </span>
-            <a href="https://www.instagram.com/digital.invites.dz?igsh=ajZkZW41dXlkd3Q3" target="_blank" rel="noopener noreferrer" className="dn-footer-link">
+            <a
+              href="https://www.instagram.com/digital.invites.dz?igsh=ajZkZW41dXlkd3Q3"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="dn-footer-link"
+            >
               <span className="dn-footer-credit">Digital Invitation</span>
             </a>
           </div>

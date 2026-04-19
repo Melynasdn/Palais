@@ -57,18 +57,11 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 }
 .dn-transition-overlay {
   position: fixed; inset: 0; z-index: 998;
-<<<<<<< HEAD
   display: flex; align-items: center; justify-content: center;
   pointer-events: none;
 }
 .dn-transition-overlay.active {
   pointer-events: all;
-=======
-  background: transparent;
-  background-repeat: no-repeat;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.6s ease-in;
->>>>>>> ff56d43738903ae8c2ad78571efef490cfe4960d
 }
 .dn-transition-overlay.active { opacity: 1; pointer-events: all; }
 .dn-transition-overlay.fade-out { opacity: 0; transition: opacity 0.6s ease-out; }
