@@ -99,11 +99,14 @@ const App = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [theme, setTheme] = useState('light');
   const [isTransitioning, setIsTransitioning] = useState(false);
+
   const videoRef = useRef(null);
   const flashRef = useRef(null);
   const mainContentRef = useRef(null);
   const audioRef = useRef(null);
-  const transitionVideoRef = useRef(null);
+  const blackoutRef = useRef(null);
+  const transitionVideoDarkRef = useRef(null);
+  const transitionVideoLightRef = useRef(null);
 
   // Refs for scroll animations
   const heroRef = useRef(null);
@@ -153,67 +156,93 @@ const App = () => {
     return () => clearInterval(interval);
   }, [targetDate]);
 
-  /* ── Theme toggle with transition video ── */
+  /* ══════════════════════════════════════════════
+     THEME TOGGLE — blackout + video transition
+     ══════════════════════════════════════════════ */
 const toggleTheme = useCallback(() => {
   if (isTransitioning) return;
   const next = theme === 'light' ? 'dark' : 'light';
-
-  const vid = transitionVideoRef.current;
+  const vid = next === 'dark'
+    ? transitionVideoDarkRef.current
+    : transitionVideoLightRef.current;
   if (!vid) return;
 
-  // Bloque immédiatement les clics
   setIsTransitioning(true);
 
-  vid.src = next === 'dark' ? '/transition-to-dark.mp4' : '/transition-to-light.mp4';
-  vid.load();
+  // Préparer la vidéo mais ne pas la montrer encore
+  transitionVideoDarkRef.current.style.display = 'none';
+  transitionVideoLightRef.current.style.display = 'none';
+  vid.style.display = 'block';
+  vid.style.opacity = '0';
+  vid.currentTime = 0;
 
-  vid.oncanplay = () => {
-    vid.oncanplay = null;
-    vid.play().catch(() => {});
-  };
-    
-  // Switch le thème directement sur le DOM sans setState
-  vid.ontimeupdate = () => {
-    if (vid.currentTime >= vid.duration / 2) {
+  // Attendre que la vidéo ait un vrai frame prêt à afficher
+  const onReady = () => {
+    vid.removeEventListener('playing', onReady);
+
+    // La vidéo joue vraiment → la rendre visible d'un coup
+    vid.style.opacity = '1';
+
+    let themeSwitched = false;
+
+    vid.ontimeupdate = () => {
+      const switchPoint = vid.duration * 0.4;
+if (!themeSwitched && vid.currentTime >= switchPoint) {
+  themeSwitched = true;
+
+  const root = document.documentElement;
+  const wrapper = document.querySelector('.app-wrapper');
+  
+  // Couper les transitions sur TOUT
+  root.style.setProperty('transition', 'none');
+  if (wrapper) wrapper.style.transition = 'none';
+  
+  // Couper aussi la transition sur les médias du hero
+  const heroLight = document.querySelector('.dn-hero-video--light');
+  const heroDark = document.querySelector('.dn-hero-video--dark');
+  if (heroLight) heroLight.style.transition = 'none';
+  if (heroDark) heroDark.style.transition = 'none';
+
+  // Appliquer le thème
+  const vars = THEMES[next];
+  Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
+  if (wrapper) wrapper.setAttribute('data-theme', next);
+
+  // Switcher les fonds hero immédiatement
+  if (next === 'dark') {
+    if (heroLight) heroLight.style.opacity = '0';
+    if (heroDark) heroDark.style.opacity = '1';
+  } else {
+    if (heroLight) heroLight.style.opacity = '1';
+    if (heroDark) heroDark.style.opacity = '0';
+  }
+
+  void document.body.offsetHeight;
+
+  requestAnimationFrame(() => {
+    root.style.removeProperty('transition');
+    if (wrapper) wrapper.style.transition = '';
+    if (heroLight) heroLight.style.transition = '';
+    if (heroDark) heroDark.style.transition = '';
+  });
+}
+    };
+
+    vid.onended = () => {
       vid.ontimeupdate = null;
-      // Applique le thème via DOM directement (pas de re-render)
-      const vars = next === 'dark' ? {
-        '--bg-primary': '#08080D', '--bg-secondary': '#0F0F17',
-        '--bg-card': 'rgba(22,22,32,0.92)', '--bg-card-solid': '#16161F',
-        '--text-primary': '#F0EBE3', '--text-secondary': '#B0A79D',
-        '--text-muted': '#6A6058', '--gold': '#D4A849',
-        '--gold-light': 'rgba(212,168,73,0.10)', '--gold-glow': 'rgba(212,168,73,0.20)',
-        '--border': 'rgba(212,168,73,0.15)', '--border-subtle': 'rgba(240,235,227,0.05)',
-        '--shadow-sm': '0 2px 8px rgba(0,0,0,0.2)', '--shadow-md': '0 8px 32px rgba(0,0,0,0.3)',
-        '--shadow-lg': '0 16px 48px rgba(0,0,0,0.4)',
-        '--hero-overlay': 'linear-gradient(180deg, rgba(8,8,13,0) 0%, rgba(8,8,13,0.15) 50%, rgba(8,8,13,0.92) 100%)',
-        '--hero-overlay-top': 'linear-gradient(180deg, rgba(8,8,13,0.5) 0%, rgba(8,8,13,0) 30%)',
-      } : {
-        '--bg-primary': '#FAF7F2', '--bg-secondary': '#F3EDE4',
-        '--bg-card': 'rgba(255,255,255,0.92)', '--bg-card-solid': '#FFFFFF',
-        '--text-primary': '#2C1810', '--text-secondary': '#6B5B4F',
-        '--text-muted': '#9B8B7F', '--gold': '#B8860B',
-        '--gold-light': 'rgba(184,134,11,0.12)', '--gold-glow': 'rgba(184,134,11,0.25)',
-        '--border': 'rgba(184,134,11,0.18)', '--border-subtle': 'rgba(44,24,16,0.07)',
-        '--shadow-sm': '0 2px 8px rgba(44,24,16,0.06)', '--shadow-md': '0 8px 32px rgba(44,24,16,0.08)',
-        '--shadow-lg': '0 16px 48px rgba(44,24,16,0.12)',
-        '--hero-overlay': 'linear-gradient(180deg, rgba(250,247,242,0) 0%, rgba(250,247,242,0.15) 50%, rgba(250,247,242,0.92) 100%)',
-        '--hero-overlay-top': 'linear-gradient(180deg, rgba(250,247,242,0.5) 0%, rgba(250,247,242,0) 30%)',
-      };
-      const root = document.documentElement;
-      Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
-      document.querySelector('.app-wrapper')?.setAttribute('data-theme', next);
-    }
+      vid.onended = null;
+      vid.style.opacity = '0';
+      // Attendre que le fade out soit fait avant de cacher
+      setTimeout(() => {
+        vid.style.display = 'none';
+        setTheme(next);
+        setIsTransitioning(false);
+      }, 150);
+    };
   };
 
-  vid.onended = () => {
-    vid.ontimeupdate = null;
-    vid.onended = null;
-    vid.oncanplay = null;
-    // Maintenant sync le React state APRÈS la vidéo
-    setTheme(next);
-    setIsTransitioning(false);
-  };
+  vid.addEventListener('playing', onReady);
+  vid.play().catch(() => setIsTransitioning(false));
 }, [theme, isTransitioning]);
 
   // ═══════════ SCROLL ANIMATIONS ═══════════
@@ -420,7 +449,7 @@ const toggleTheme = useCallback(() => {
   }, [isOpen, initScrollAnimations]);
 
   /* ═══════════════════════════════════
-     PHASE 1 HANDLER (UNTOUCHED)
+     PHASE 1 HANDLER
      ═══════════════════════════════════ */
   const handleStartTransition = () => {
     if (hasStarted) return;
@@ -468,10 +497,26 @@ const toggleTheme = useCallback(() => {
         <source src="/music.mp3" type="audio/mpeg" />
       </audio>
 
+
       {/* ── Transition video overlay ── */}
       <div className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}>
-  <video key="transition-vid" ref={transitionVideoRef} playsInline muted preload="auto" />
-</div>
+        <video
+          ref={transitionVideoDarkRef}
+          playsInline
+          muted
+          preload="auto"
+          src="/transition-to-dark.mp4"
+          style={{ display: 'none' }}
+        />
+        <video
+          ref={transitionVideoLightRef}
+          playsInline
+          muted
+          preload="auto"
+          src="/transition-to-light.mp4"
+          style={{ display: 'none' }}
+        />
+      </div>
 
       {/* ── Fixed Controls (mute + theme) ── */}
       {isOpen && (
@@ -520,24 +565,21 @@ const toggleTheme = useCallback(() => {
               src="/lightbg.mp4"
               style={{ opacity: theme === 'light' ? 1 : 0 }}
             />
-            <video
+            <img
               className="dn-hero-video dn-hero-video--dark"
-              autoPlay loop muted playsInline
-              src="/darkbg.mp4"
+              src="/darkbg.jpg"
+              alt=""
               style={{ opacity: theme === 'dark' ? 1 : 0 }}
             />
           </div>
           <div className="dn-hero-overlay-top" />
-          <div className="dn-hero-overlay-bottom" />
 
           <div ref={heroContentRef} className="dn-hero-content">
             <h1 className="dn-hero-title">
               Yacine
-              & 
+              &amp;
               Amel
             </h1>
-
-
 
             <div className="dn-hero-date-block">
               <p className="dn-hero-date">14 AOÛT 2026</p>
@@ -566,13 +608,13 @@ const toggleTheme = useCallback(() => {
             </div>
 
             <div ref={invitationTextRef} className="dn-quote-wrapper">
-              <span className="dn-quote-mark open">"</span>
+              <span className="dn-quote-mark open">&ldquo;</span>
               <p className="dn-invitation-text">
                 <span className="anim-line">Dans la joie et la gratitude envers Allah,</span><br />
                 <span className="anim-line">nous avons l'honneur de vous convier</span><br />
                 <span className="anim-line">à la célébration de notre mariage.</span>
               </p>
-              <span className="dn-quote-mark close">"</span>
+              <span className="dn-quote-mark close">&rdquo;</span>
             </div>
 
             <div ref={invitationOrnamentBottomRef} className="dn-ornament">
@@ -671,7 +713,7 @@ const toggleTheme = useCallback(() => {
         {/* ════════════ FOOTER ════════════ */}
         <footer className="dn-footer">
           <div ref={footerRef} className="dn-footer-inner">
-            <p className="dn-footer-families">Familles Belkacem & Mansouri</p>
+            <p className="dn-footer-families">Familles Belkacem &amp; Mansouri</p>
             <div className="dn-footer-divider" />
             <span className="dn-footer-credit">Made with love by </span>
             <a
