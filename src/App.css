@@ -655,7 +655,7 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 }
 
 .dn-rsvp-card {
-  max-width: 80%; margin: 0 auto;
+  max-width: 90%; margin: 0 auto;
   padding: 36px 32px 40px;
   background: #fff; border-radius: 20px;
   box-shadow: 0 8px 40px rgba(44,24,16,0.08);
@@ -736,106 +736,211 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 .dn-rsvp-ok-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; color: var(--text-primary); margin-bottom: 8px; transition: color 0.8s var(--ease); }
 .dn-rsvp-ok-text { font-family: var(--font-body); font-weight: 200; font-size: 0.82rem; color: var(--text-muted); line-height: 1.8; transition: color 0.8s var(--ease); }
 
-/* ══════════════════════════════════════════════
-   COUNTDOWN
-   ══════════════════════════════════════════════ */
-.dn-countdown {
-  position: relative; padding: 100px 24px 120px;
-  text-align: center; background: var(--olive);
-  overflow: hidden; transition: background 0.8s var(--ease);
-}
-.dn-countdown-inner { position: relative; z-index: 2; }
-.dn-cd-title {
-  font-family: var(--font-display);
-  font-size: clamp(2.2rem, 6vw, 3.2rem);
-  font-weight: 300; letter-spacing: 0.1em;
-  color: var(--bg-primary); margin-bottom: 8px;
-  transition: color 0.8s var(--ease);
-}
-.dn-cd-subtitle-row {
-  display: flex; align-items: center; justify-content: center;
-  gap: 16px; max-width: 300px; margin: 0 auto 48px;
-}
-.dn-cd-sub-line {
-  flex: 1; height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold)); opacity: 0.3;
-}
-.dn-cd-sub-line.right { background: linear-gradient(to left, transparent, var(--gold)); }
-.dn-cd-subtitle {
-  font-family: var(--font-body); font-weight: 200; font-size: 0.65rem;
-  letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--bg-card-solid); white-space: nowrap;
-  transition: color 0.8s var(--ease);
-}
-.dn-cd-card {
-  max-width: 440px; margin: 0 auto; padding: 48px 28px;
-  background: var(--bg-card-solid); border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: var(--shadow-lg), 0 0 60px var(--gold-light);
-  transition: all 0.8s var(--ease); position: relative;
-}
-.dn-cd-card::before {
-  content: ''; position: absolute; top: -1px; left: 20%; right: 20%;
-  height: 2px; background: linear-gradient(to right, transparent, var(--gold), transparent); opacity: 0.5;
-}
-.dn-cd-card::after {
-  content: ''; position: absolute; bottom: -1px; left: 20%; right: 20%;
-  height: 2px; background: linear-gradient(to right, transparent, var(--gold), transparent); opacity: 0.3;
-}
-.dn-cd-numbers { display: flex; align-items: flex-start; justify-content: center; gap: 2px; }
-.cd-unit { flex: 1; text-align: center; }
-.cd-value-wrap { transition: transform 0.4s var(--ease-bounce); }
-.cd-value-wrap.cd-flip { transform: scale(1.08); }
-.cd-value {
-  font-family: var(--font-display);
-  font-size: clamp(2.2rem, 7vw, 3.2rem);
-  font-weight: 300; color: var(--text-primary);
-  line-height: 1; transition: color 0.8s var(--ease);
-}
-.cd-label {
-  font-family: var(--font-body); font-weight: 200; font-size: 0.58rem;
-  letter-spacing: 0.25em; text-transform: uppercase;
-  color: var(--text-muted); margin-top: 12px;
-  transition: color 0.8s var(--ease);
-}
-.cd-sep { display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 10px; }
-.cd-sep-dot { width: 4px; height: 4px; background: var(--gold); transform: rotate(45deg); opacity: 0.5; }
-.cd-sep-line { width: 1px; height: 20px; background: var(--gold); opacity: 0.12; }
+
+
+
+
 
 /* ══════════════════════════════════════════════
-   FOOTER
+   COUNTDOWN — Minimal Ring Design
    ══════════════════════════════════════════════ */
+.dn-countdown {
+  position: relative;
+  text-align: center;
+  background: #3a4a30;
+  overflow: hidden;
+  padding: 80px 24px 90px;
+  transition: background 0.8s var(--ease);
+}
+
+.dn-countdown::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 40%,
+    rgba(232,201,154,0.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.dn-countdown::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%; height: 1px;
+  background: linear-gradient(to right,
+    transparent, rgba(232,201,154,0.3), transparent);
+}
+
+.dn-countdown-inner { position: relative; z-index: 2; }
+
+/* ── Header ── */
+.dn-cd-header { margin-bottom: 48px; }
+
+.dn-cd-surtitle {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  color: rgba(232,201,154,0.5);
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+
+.dn-cd-title-new {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 300;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: rgba(200,189,164,0.75);
+  margin-bottom: 20px;
+}
+
+.dn-cd-sep-line {
+  width: 32px; height: 1px;
+  background: rgba(232,201,154,0.3);
+  margin: 0 auto;
+}
+
+/* ── Grand anneau ── */
+.dn-cd-main-ring-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.dn-cd-main-svg {
+  filter: drop-shadow(0 0 20px rgba(232,201,154,0.1));
+}
+
+/* ── Petits anneaux ── */
+.dn-cd-small-rings {
+  display: flex;
+  justify-content: center;
+  gap: clamp(12px, 5vw, 32px);
+  margin-bottom: 44px;
+}
+
+.dn-cd-small-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dn-cd-small-item svg {
+  filter: drop-shadow(0 0 8px rgba(232,201,154,0.08));
+}
+
+/* ── Date ── */
+.dn-cd-date-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.dn-cd-date-line {
+  width: 40px; height: 1px;
+  background: rgba(232,201,154,0.2);
+}
+
+.dn-cd-date-txt {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(200,189,164,0.5);
+}
+.dn-cd-rings-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(8px, 4vw, 24px);
+  margin-bottom: 44px;
+  flex-wrap: nowrap;
+}
+
+.dn-cd-ring-item svg {
+  filter: drop-shadow(0 0 10px rgba(200,189,164,0.1));
+  transition: filter 0.3s ease;
+}
+.dn-cd-ring-item:hover svg {
+  filter: drop-shadow(0 0 20px rgba(200,189,164,0.25));
+}
+
+
+
+
+
+
+
+
+
+
+
 .dn-footer {
-  padding: 64px 24px 40px; text-align: center;
+  background: var(--cream, #FAF6EE);
+  padding: 40px 20px;
+  text-align: center;
+  border-top: 1px solid rgba(74, 90, 63, 0.15);
+  transition: background 0.5s ease;
+}
+
+[data-theme="dark"] .dn-footer {
   background: var(--bg-secondary);
-  transition: all 0.8s var(--ease);
-  position: relative; overflow: hidden;
+  border-top: 1px solid var(--border);
 }
-.dn-footer::before {
-  content: ''; position: absolute; top: 0; left: 50%;
-  transform: translateX(-50%); width: 60%; height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent); opacity: 0.25;
+
+.dn-footer-inner {
+  max-width: 600px;
+  margin: 0 auto;
 }
-.dn-footer-inner { max-width: 400px; margin: 0 auto; }
-.dn-footer-families {
-  font-family: var(--font-display); font-size: 1.3rem;
-  font-weight: 400; color: var(--text-primary);
-  letter-spacing: 0.08em; margin-bottom: 16px;
-  transition: color 0.8s var(--ease);
-}
-.dn-footer-divider {
-  width: 50px; height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-  opacity: 0.3; margin: 0 auto 16px;
-}
+
 .dn-footer-credit {
-  font-family: var(--font-body); font-weight: 200; font-size: 0.68rem;
-  color: var(--text-muted); letter-spacing: 0.12em;
-  transition: color 0.8s var(--ease);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--olive, #4A5A3A);
+  letter-spacing: 0.05em;
+  opacity: 0.8;
 }
-.dn-footer-link { text-decoration: none; transition: opacity 0.3s ease; }
-.dn-footer-link:hover { opacity: 0.7; }
-.dn-footer-link .dn-footer-credit { color: var(--gold); }
+
+[data-theme="dark"] .dn-footer-credit {
+  color: var(--text-secondary);
+}
+
+.dn-footer-link {
+  color: var(--olive, #4A5A3A);
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Effet underline animé (très clean ✨) */
+.dn-footer-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+
+.dn-footer-link:hover::after {
+  width: 100%;
+}
+
+.dn-footer-link:hover {
+  opacity: 0.7;
+}
+
+/* Mode dark */
+[data-theme="dark"] .dn-footer-link {
+  color: var(--gold);
+}
+
+
+
+
 
 /* ══════════════════════════════════════════════
    RESPONSIVE

@@ -50,20 +50,6 @@ const THEMES = {
   },
 };
 
-const CountdownUnit = ({ value, label }) => {
-  const prevValue = useRef(value);
-  const [flip, setFlip] = useState(false);
-  useEffect(() => {
-    if (prevValue.current !== value) { setFlip(true); const t = setTimeout(() => setFlip(false), 500); prevValue.current = value; return () => clearTimeout(t); }
-  }, [value]);
-  return (
-    <div className="cd-unit">
-      <div className={`cd-value-wrap ${flip ? 'cd-flip' : ''}`}><span className="cd-value">{String(value).padStart(2, '0')}</span></div>
-      <p className="cd-label">{label}</p>
-    </div>
-  );
-};
-const CountdownSeparator = () => (<div className="cd-sep"><div className="cd-sep-dot" /><div className="cd-sep-line" /></div>);
 
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -699,30 +685,100 @@ const App = () => {
           </div>
         </section>
 
-    {/* COUNTDOWN */}
-        <section ref={countdownRef} className="dn-countdown">
-          <div className="dn-section-border top" /><div className="dn-section-border bottom" />
-          <div className="dn-countdown-inner">
-            <h2 ref={countdownTitleRef} className="dn-cd-title">Compte à rebours</h2>
-            <div className="dn-cd-subtitle-row"><div className="dn-cd-sub-line" /><p className="dn-cd-subtitle">Jusqu'au jour J</p><div className="dn-cd-sub-line right" /></div>
-            <div ref={countdownCardRef} className="dn-cd-card">
-              <div className="dn-cd-numbers">
-                <CountdownUnit value={timeLeft.days} label="Jours" /><CountdownSeparator />
-                <CountdownUnit value={timeLeft.hours} label="Heures" /><CountdownSeparator />
-                <CountdownUnit value={timeLeft.minutes} label="Minutes" /><CountdownSeparator />
-                <CountdownUnit value={timeLeft.seconds} label="Secondes" />
-              </div>
-            </div>
-          </div>
-        </section>
+{/* COUNTDOWN */}
+<section ref={countdownRef} className="dn-countdown">
+  <div className="dn-countdown-inner">
 
-        {/* FOOTER */}
-        <footer className="dn-footer">
-          <div ref={footerRef} className="dn-footer-inner">
-            <span className="dn-footer-credit">Made with love by </span>
-            <a href="https://www.instagram.com/digital.invites.dz?igsh=ajZkZW41dXlkd3Q3" target="_blank" rel="noopener noreferrer" className="dn-footer-link"><span className="dn-footer-credit">Digital Invitation</span></a>
+    <div ref={countdownTitleRef} className="dn-cd-header">
+      <p className="dn-cd-surtitle">David & Ilona</p>
+      <h2 className="dn-cd-title-new">Compte à Rebours</h2>
+      <div className="dn-cd-sep-line" />
+    </div>
+
+    <div ref={countdownCardRef} className="dn-cd-rings-wrap">
+      {[
+        { value: timeLeft.days,    label: 'JOURS',    max: 365, id: 'rg1' },
+        { value: timeLeft.hours,   label: 'HEURES',   max: 24,  id: 'rg2' },
+        { value: timeLeft.minutes, label: 'MINUTES',  max: 60,  id: 'rg3' },
+        { value: timeLeft.seconds, label: 'SECONDES', max: 60,  id: 'rg4' },
+      ].map(({ value, label, max, id }) => {
+        const r = 36;
+        const circ = 2 * Math.PI * r;
+        const dash = circ * Math.min(value / max, 1);
+        return (
+          <div key={id} className="dn-cd-ring-item">
+            <svg width="92" height="92" viewBox="0 0 92 92">
+              <defs>
+                <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#c8bda4"/>
+                  <stop offset="100%" stopColor="#a89880" stopOpacity="0.8"/>
+                </linearGradient>
+              </defs>
+
+              {/* Track */}
+              <circle cx="46" cy="46" r={r}
+                fill="none"
+                stroke="rgba(200,189,164,0.1)"
+                strokeWidth="2.5"
+              />
+
+              {/* Progress */}
+              <circle cx="46" cy="46" r={r}
+                fill="none"
+                stroke={`url(#${id})`}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeDasharray={`${dash} ${circ}`}
+                transform="rotate(-90 46 46)"
+                style={{ transition: 'stroke-dasharray 1s ease' }}
+              />
+
+              {/* Valeur */}
+              <text x="46" y="42" textAnchor="middle"
+                fontFamily="Cormorant Garamond, Georgia, serif"
+                fontSize="22" fontWeight="300" fill="#f0e6cc">
+                {String(value).padStart(2, '0')}
+              </text>
+
+              {/* Label */}
+              <text x="46" y="56" textAnchor="middle"
+                fontFamily="Josefin Sans, sans-serif"
+                fontSize="6" fontWeight="300"
+                fill="rgba(200,189,164,0.55)" letterSpacing="2">
+                {label}
+              </text>
+            </svg>
           </div>
-        </footer>
+        );
+      })}
+    </div>
+
+    <div className="dn-cd-date-row">
+      <div className="dn-cd-date-line" />
+      <span className="dn-cd-date-txt">14 Août 2026</span>
+      <div className="dn-cd-date-line" />
+    </div>
+
+  </div>
+</section>
+
+
+    <footer className="dn-footer">
+  <div ref={footerRef} className="dn-footer-inner">
+    <p className="dn-footer-credit">
+      Made with love by{" "}
+      <a
+        className="dn-footer-link"
+        href="https://www.instagram.com/digital.invites.dz"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Digital Invitation
+      </a>
+    </p>
+  </div>
+</footer>
+
       </main>
     </div>
   );
