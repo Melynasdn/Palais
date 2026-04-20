@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Navigation, Volume2, VolumeX, Sun, Moon, Clock, MapPin, Heart, Users, Wine, UtensilsCrossed, Music, Send } from 'lucide-react';
+import { Volume2, VolumeX, Sun, Moon, Clock, MapPin, Heart, Users, Wine, UtensilsCrossed, Music, Send } from 'lucide-react';
 
-import fleur from './assets/fleur.jpg';
 import './App.css';
 
 if (typeof window !== 'undefined') {
