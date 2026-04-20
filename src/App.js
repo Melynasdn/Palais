@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Volume2, VolumeX, Sun, Moon, Clock, MapPin, Heart, Users, Wine, UtensilsCrossed, Music, Send } from 'lucide-react';
-
+import { Volume2, VolumeX, Sun, Moon, Heart, Wine, UtensilsCrossed, Music, Send, Origami,Star } from 'lucide-react';
+import couple from './assets/couple.png';
 import './App.css';
 
 if (typeof window !== 'undefined') {
@@ -49,14 +49,6 @@ const THEMES = {
     '--hero-overlay-top': 'linear-gradient(180deg, rgba(8,8,13,0.5) 0%, rgba(8,8,13,0) 30%)',
   },
 };
-
-const PROGRAM_STEPS = [
-  { time: '17:00', title: 'Accueil des invités', desc: 'Réception et bienvenue', icon: Users },
-  { time: '18:00', title: 'Cérémonie', desc: 'Cérémonie de mariage', icon: Heart },
-  { time: '19:30', title: 'Cocktail', desc: 'Apéritifs et rafraîchissements', icon: Wine },
-  { time: '21:00', title: 'Dîner', desc: 'Banquet de mariage', icon: UtensilsCrossed },
-  { time: '23:00', title: 'Soirée', desc: 'Musique et célébrations', icon: Music },
-];
 
 const CountdownUnit = ({ value, label }) => {
   const prevValue = useRef(value);
@@ -244,121 +236,428 @@ const App = () => {
       )}
 
       <main ref={mainContentRef} className={`main-content ${!isOpen ? 'hidden' : ''}`}>
-        {/* HERO */}
-        <header ref={heroRef} className="dn-hero">
-          <div className="dn-hero-media">
-            <video className="dn-hero-video dn-hero-video--light" autoPlay loop muted playsInline src="/lightbg.mp4" style={{ opacity: theme === 'light' ? 1 : 0 }} />
-            <img className="dn-hero-video dn-hero-video--dark" src="/darkbg.jpg" alt="" style={{ opacity: theme === 'dark' ? 1 : 0 }} />
-          </div>
-          <div className="dn-hero-overlay-top" />
-          <div ref={heroContentRef} className="dn-hero-content">
-            <h1 className="dn-hero-title">Yacine &amp; Amel</h1>
-            <div className="dn-hero-date-block"><p className="dn-hero-date">14 AOÛT 2026</p></div>
-          </div>
-          <div className="dn-scroll-indicator"><div className="dn-scroll-line" /></div>
-        </header>
 
-        {/* INVITATION */}
-        <section ref={invitationRef} className="dn-invitation">
-          <div className="dn-invitation-glow" />
-          <div ref={invitationSideLeftRef} className="dn-invitation-side-line left" />
-          <div ref={invitationSideRightRef} className="dn-invitation-side-line right" />
-          <div className="dn-invitation-bg-text">Mariage</div>
-          <div className="dn-invitation-content">
-            <div ref={invitationOrnamentTopRef} className="dn-ornament">
-              <div className="dn-gold-line-r" />
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1 L10.2 6.8 L16 9 L10.2 11.2 L9 17 L7.8 11.2 L2 9 L7.8 6.8 Z" fill="var(--gold)" opacity="0.8" /></svg>
-              <div className="dn-gold-line-l" />
-            </div>
-            <div ref={invitationTextRef} className="dn-quote-wrapper">
-              <span className="dn-quote-mark open">&ldquo;</span>
-              <p className="dn-invitation-text">
-                <span className="anim-line">Dans la joie et la gratitude envers Allah,</span><br />
-                <span className="anim-line">nous avons l'honneur de vous convier</span><br />
-                <span className="anim-line">à la célébration de notre mariage.</span>
-              </p>
-              <span className="dn-quote-mark close">&rdquo;</span>
-            </div>
-            <div ref={invitationOrnamentBottomRef} className="dn-ornament">
-              <div className="dn-gold-line-r" /><span className="dn-gold-flower">✿</span><div className="dn-gold-line-l" />
-            </div>
-          </div>
-        </section>
+       {/* ════════════ HERO ════════════ */}
+   
+<header ref={heroRef} className="dn-hero">
+  <div className="dn-hero-media">
+    <video
+      className="dn-hero-video dn-hero-video--light"
+      autoPlay loop muted playsInline
+      src="/lightbg.mp4"
+      style={{ opacity: theme === 'light' ? 1 : 0 }}
+    />
+    <img
+      className="dn-hero-video dn-hero-video--dark"
+      src="/darkbg.jpg"
+      alt=""
+      style={{ opacity: theme === 'dark' ? 1 : 0 }}
+    />
+  </div>
+  <div className="dn-hero-overlay-top" />
 
-        {/* EVENT DETAILS — cream/beige style like inspiration */}
-        <section ref={eventRef} className="dn-event">
-          <div ref={eventHeaderRef} className="dn-event-header">
-            <p className="dn-event-surtitle">REJOIGNEZ-NOUS</p>
-            <h2 className="dn-event-title">La Cérémonie</h2>
-            <p className="dn-event-desc">Nous avons hâte de célébrer ce jour spécial avec vous. Voici tout ce que vous devez savoir.</p>
+  <div
+    ref={heroContentRef}
+    className="dn-hero-content"
+    style={{
+      opacity: isTransitioning ? 0 : 1,
+      transition: 'opacity 0.3s ease',
+      pointerEvents: isTransitioning ? 'none' : 'auto',
+      marginTop: ' -18vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    }}
+  >
+    {/* We are getting married */}
+    <p style={{
+      fontFamily: '"Playfair Display", serif',
+      fontSize: 'clamp(0.60rem, 1.8vw, 0.78rem)',
+      letterSpacing: '0.5em',
+      textTransform: 'uppercase',
+      fontWeight: 800,
+      color: theme === 'dark' ? '#c8bda4' : '#4a5a3f',
+      marginBottom: '1rem',
+      marginTop: 0,
+      transition: 'color 0.5s ease',
+      opacity: 0.85,
+    }}>
+      We are getting married
+    </p>
+
+    {/* Yacine & Amel */}
+    <h1 style={{
+      fontFamily: '"Great Vibes", cursive',
+      fontSize: 'clamp(3.2rem, 13vw, 6rem)',
+      fontWeight: 400,
+      color: theme === 'dark' ? '#f0e6cc' : '#3d4e35',
+      lineHeight: 1.05,
+      margin: '0 0 0.6rem 0',
+      textShadow: theme === 'dark'
+        ? '0 2px 40px rgba(0,0,0,0.35)'
+        : '0 2px 24px rgba(255,255,255,0.5)',
+      transition: 'color 0.5s ease, text-shadow 0.5s ease',
+      letterSpacing: '0.02em',
+    }}>
+      David &amp; Ilona
+    </h1>
+
+    {/* Ligne décorative */}
+    <div style={{
+      width: '40px',
+      height: '1px',
+      background: theme === 'dark' ? 'rgba(200,189,164,0.4)' : 'rgba(74,90,63,0.35)',
+      margin: '0.1rem 0 0.75rem',
+      transition: 'background 0.5s ease',
+    }} />
+
+    {/* Date */}
+    <p style={{
+      fontFamily: '"Playfair Display", serif',
+      fontSize: 'clamp(0.65rem, 2vw, 0.82rem)',
+      letterSpacing: '0.38em',
+      textTransform: 'uppercase',
+      fontWeight: 800,
+      fontStyle: 'italic',
+      color: theme === 'dark' ? 'rgba(200,189,164,0.7)' : 'rgba(74,90,63,0.75)',
+      margin: 0,
+      transition: 'color 0.5s ease',
+    }}>
+      14 Août 2026
+    </p>
+  </div>
+
+  {/* Scroll indicator */}
+  <div
+    className="dn-scroll-indicator"
+    style={{
+      opacity: isTransitioning ? 0 : 1,
+      transition: 'opacity 0.3s ease',
+    }}
+  >
+    <div className="dn-scroll-line" />
+  </div>
+</header>
+
+
+
+{/* ════════════ WELCOME / INVITATION ════════════ */}
+<section className="dn-welcome">
+
+  <h2 className="dn-welcome-title">
+    Bienvenue !
+  </h2>
+
+  <p className="dn-welcome-text">
+    C’est avec beaucoup d’amour que nous vous convions à célébrer notre mariage à Chantilly, et à vivre à nos côtés un instant précieux et inoubliable.
+  </p>
+
+<div className="dn-welcome-ribbon">
+  <div className="dn-ribbon-track">
+    {['/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg',
+      '/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg',
+    ].map((src, i) => (
+      <div key={i} className="dn-ribbon-item" style={{ backgroundImage: `url('${src}')` }} />
+    ))}
+  </div>
+</div>
+</section>
+
+
+
+       {/* ════════════ PROGRAMME DU JOUR ════════════ */}
+{/* <section className="dn-day-program">
+
+
+  <div className="dn-dp-header">
+    <h2 className="dn-dp-title">Programme du Jour</h2>
+    <p className="dn-dp-subtitle">Ce que nous avons préparé pour vous</p>
+  </div>
+
+  <div className="dn-dp-timeline">
+    
+
+    {[
+      {
+        time: '16h30',
+        name: 'Arrivée des Invités',
+        desc: 'Accueil et réception',
+        icon: 'guests',
+      },
+      {
+        time: '17h00',
+        name: 'Cérémonie',
+        desc: 'Mariage civil',
+        icon: 'heart',
+      },
+      {
+        time: '18h00',
+        name: 'Cocktail',
+        desc: 'Apéritifs et boissons',
+        icon: 'glass',
+      },
+      {
+        time: '20h00',
+        name: 'Dîner',
+        desc: 'Banquet de mariage',
+        icon: 'fork',
+      },
+      {
+  time: '22h00',
+  name: 'Fête',
+  desc: 'Musique et célébration',
+  icon: 'party',
+},
+{
+  time: '04h00',
+  name: 'Fin de la Soirée',
+  desc: 'Au revoir et bonne nuit',
+  icon: 'end',
+},
+    ].map(({ time, name, desc, icon }) => (
+      <div className="dn-dp-item" key={time}>
+        <div className="dn-dp-icon-wrap">
+          {icon === 'guests' && (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          )}
+          {icon === 'heart' && (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          )}
+          {icon === 'glass' && (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 22h8M12 11v11M5 2l2 9a5 5 0 0 0 10 0l2-9H5z"/>
+            </svg>
+          )}
+          {icon === 'fork' && (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+            </svg>
+          )}
+       {icon === 'party' && (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18V5l12-2v13"/>
+    <circle cx="6" cy="18" r="3"/>
+    <circle cx="18" cy="16" r="3"/>
+  </svg>
+)}
+{icon === 'end' && (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M12 8v4l3 3"/>
+  </svg>
+)}
+        </div>
+        <div className="dn-dp-info">
+          <div className="dn-dp-time-name">
+            <span className="dn-dp-badge">{time}</span>
+            <p className="dn-dp-event-name">{name}</p>
           </div>
-          <div ref={eventCardRef} className="dn-event-card">
-            <div className="dn-event-sparkle">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <path d="M20 2L23 16L36 20L23 24L20 38L17 24L4 20L17 16Z" stroke="#C4A265" strokeWidth="1.2" fill="none" />
-                <path d="M20 10L21 16L26 20L21 24L20 30L19 24L14 20L19 16Z" fill="#C4A265" opacity="0.25" />
+          <p className="dn-dp-desc">{desc}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+ */}
+
+
+ <section className="dn-day-program-v2">
+  <div className="dn-dp-header">
+    <h2 className="dn-dp-title">Programme du Jour</h2>
+    <p className="dn-dp-subtitle">Ce que nous avons préparé pour vous</p>
+  </div>
+
+  <div className="dn-dp-timeline-v2">
+    {/* Ligne verticale de fond */}
+    <div className="dn-dp-line-track-v2"></div>
+
+    {[
+      {
+        time: '16h30',
+        name: 'Arrivée des Invités',
+        desc: 'Accueil et réception',
+        icon: 'guests',
+      },
+      {
+        time: '17h00',
+        name: 'Cérémonie',
+        desc: 'Mariage civil',
+        icon: 'heart',
+      },
+      {
+        time: '18h00',
+        name: 'Cocktail',
+        desc: 'Apéritifs et boissons',
+        icon: 'glass',
+      },
+      {
+        time: '20h00',
+        name: 'Dîner',
+        desc: 'Banquet de mariage',
+        icon: 'fork',
+      },
+      {
+        time: '22h00',
+        name: 'Fête',
+        desc: 'Musique et célébration',
+        icon: 'party',
+      },
+      {
+        time: '04h00',
+        name: 'Fin de la Soirée',
+        desc: 'Au revoir et bonne nuit',
+        icon: 'end',
+      },
+    ].map(({ time, name, desc, icon }, index) => (
+      <div className={`dn-dp-item-v2 ${index % 2 === 0 ? 'dn-dp-item-left' : 'dn-dp-item-right'}`} key={time}>
+        
+        {/* Le point central sur la ligne avec icône et heure */}
+        <div className="dn-dp-marker">
+          <div className="dn-dp-icon-wrap-v2">
+            {icon === 'guests' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
               </svg>
-            </div>
-            <h3 className="dn-event-name">Cérémonie de Mariage</h3>
-            <div className="dn-event-sep" />
-            <div className="dn-event-info"><Clock size={16} strokeWidth={1.5} /><span>19:00</span></div>
-            <div className="dn-event-info"><MapPin size={16} strokeWidth={1.5} /><span>Salle Les Roses d'Or</span></div>
-            <p className="dn-event-addr">Sidi Abdellah</p>
-            <p className="dn-event-addr sub">Alger, Algérie</p>
-            <div className="dn-event-map">
-              <iframe title="Ceremony location" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3202.8!2d2.8!3d36.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDQyJzAwLjAiTiAywrA0OCcwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1620000000000!5m2!1sfr!2sdz" width="100%" height="100%" allowFullScreen loading="lazy" />
-            </div>
+            )}
+            {/* ...autres SVG d'icônes ici... */}
+            {icon === 'heart' && <Heart/>}
+            {icon === 'glass' && <Wine />}
+            {icon === 'fork' && <UtensilsCrossed />}
+            {icon === 'party' && <Music /> }
+            {icon === 'end' && <Origami />}
           </div>
-        </section>
+          <span className="dn-dp-badge-v2">{time}</span>
+        </div>
 
-        {/* DAY PROGRAM — olive green like inspiration */}
-        <section ref={programRef} className="dn-program">
-          <div ref={programHeaderRef} className="dn-program-header">
-            <h2 className="dn-program-title">Programme</h2>
-            <p className="dn-program-subtitle">Ce que nous avons préparé pour vous</p>
-          </div>
-          <div ref={programTimelineRef} className="dn-tl">
-            <div className="dn-tl-line"><div className="dn-tl-line-fill" /></div>
-            {PROGRAM_STEPS.map((step, i) => {
-              const Icon = step.icon;
-              return (
-                <div className="dn-tl-item" key={i}>
-                  <div className="dn-tl-dot"><Icon size={18} strokeWidth={1.5} /></div>
-                  <div className="dn-tl-body">
-                    <span className="dn-tl-time">{step.time}</span>
-                    <span className="dn-tl-name">{step.title}</span>
-                    <span className="dn-tl-desc">{step.desc}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+        {/* Le bloc d'information sur le côté */}
+        <div className="dn-dp-info-card">
+          <h3 className="dn-dp-event-name-v2">{name}</h3>
+          <p className="dn-dp-desc-v2">{desc}</p>
+        </div>
 
-        {/* LE LIEU */}
-     {/*    <section ref={lieuRef} className="dn-lieu">
-          <div className="dn-section-border top" /><div className="dn-section-border bottom" />
-          <div ref={lieuHeaderRef} className="dn-lieu-header">
-            <p className="dn-lieu-title">Le Lieu</p><p className="dn-lieu-subtitle">Où nous célébrons</p>
-          </div>
-          <div ref={lieuCardRef} className="dn-lieu-card">
-            <div className="dn-lieu-image-wrapper"><img src={fleur} alt="Salle Les Roses d'Or" className="dn-lieu-image" /></div>
-            <div className="dn-lieu-card-body">
-              <div className="dn-lieu-name"><p className="dn-lieu-name-text">Salle Les Roses d'Or</p></div>
-              <div className="dn-gold-sep" />
-              <div className="dn-lieu-datetime"><p className="dn-lieu-datetime-text">14 Août 2026<span className="dn-lieu-dot">·</span><span>19:00</span></p></div>
-              <div className="dn-gold-sep thin" />
-              <div className="dn-lieu-address"><p className="dn-lieu-city">Sidi Abdellah</p><p className="dn-lieu-country">Alger, Algérie</p></div>
-              <div className="dn-lieu-map-wrapper">
-                <iframe title="Location map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3202.8!2d2.8!3d36.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDQyJzAwLjAiTiAywrA0OCcwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1620000000000!5m2!1sfr!2sdz" width="100%" height="100%" className="dn-lieu-map" allowFullScreen loading="lazy" />
-              </div>
-              <div className="dn-lieu-btn-wrapper"><a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="dn-lieu-btn"><Navigation size={14} />Ouvrir l'itinéraire</a></div>
-            </div>
-          </div>
-        </section> */}
+      </div>
+    ))}
+  </div>
+</section>
+
+
+
+{/* ════════════ DÉTAILS DE L'ÉVÉNEMENT ════════════ */}
+<section className="dn-event-details">
+
+  <div className="dn-ed-header">
+    <p className="dn-ed-join">REJOIGNEZ-NOUS</p>
+    <h2 className="dn-ed-title">Détails de l'Événement</h2>
+    <p className="dn-ed-intro">
+      Nous avons hâte de célébrer ce jour spécial avec vous.
+      <br />
+      Voici tout ce que vous devez savoir.
+    </p>
+  </div>
+
+  <div className="dn-ed-card">
+    <div className="dn-ed-icon-wrap">
+      <Star size={24} strokeWidth={1.5} className="dn-ed-icon" />
+    </div>
+
+    <p className="dn-ed-event-title">Cérémonie de Mariage</p>
+
+    <div className="dn-ed-meta">
+      <div className="dn-ed-meta-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+        <span>19h00</span>
+      </div>
+
+      <div className="dn-ed-meta-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span>Château de Chantilly</span>
+      </div>
+    </div>
+
+    <p className="dn-ed-address">
+      60500 Chantilly<br />
+      France
+    </p>
+
+    <div className="dn-ed-map-wrap">
+      <iframe
+        title="Carte du lieu"
+        src="https://maps.google.com/maps?q=Chateau+de+Chantilly,+France&output=embed"
+        width="100%"
+        height="100%"
+        loading="lazy"
+        allowFullScreen
+        className="dn-ed-map"
+      />
+    </div>
+
+    <p className="dn-ed-caption">
+      Rejoignez-nous dans un cadre royal et élégant pour célébrer ce moment inoubliable.
+    </p>
+
+    <a
+      href="https://maps.google.com/?q=Chateau+de+Chantilly,+France"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="dn-ed-btn"
+    >
+      Ouvrir dans Maps
+    </a>
+
+    <button
+      className="dn-ed-btn"
+      onClick={() => {
+        const ics = [
+          'BEGIN:VCALENDAR',
+          'VERSION:2.0',
+          'BEGIN:VEVENT',
+          'DTSTART:20260814T190000',
+          'DTEND:20260815T030000',
+          'SUMMARY:Mariage',
+          'LOCATION:Château de Chantilly, France',
+          'DESCRIPTION:Cérémonie de mariage',
+          'END:VEVENT',
+          'END:VCALENDAR'
+        ].join('\n');
+
+        const blob = new Blob([ics], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'event.ics';
+        a.click();
+        URL.revokeObjectURL(url);
+      }}
+    >
+      Ajouter au Calendrier
+    </button>
+
+  </div>
+
+</section>
+
+<div className="dn-svg-divider">
+  <img src={couple} alt="Couple Illustration" className="dn-couple-illustration" />
+</div>
+
+
 
         {/* RSVP — cream bg, olive button like inspiration */}
-        <section ref={rsvpRef} className="dn-rsvp">
+<section ref={rsvpRef} className="dn-rsvp">
           <div ref={rsvpHeaderRef} className="dn-rsvp-header">
             <p className="dn-rsvp-surtitle">SOYEZ NOTRE INVITÉ</p>
             <h2 className="dn-rsvp-title">RSVP</h2>
@@ -395,7 +694,7 @@ const App = () => {
                   <label className="dn-rsvp-label">Message pour les mariés</label>
                   <textarea className="dn-rsvp-textarea" placeholder="Partagez vos vœux..." rows={4} value={rsvpData.message} onChange={(e) => setRsvpData({ ...rsvpData, message: e.target.value })} />
                 </div>
-                <button className="dn-rsvp-btn" onClick={handleRsvpSubmit}><Send size={16} />Envoyer le RSVP</button>
+                  <button className="dn-rsvp-btn" onClick={handleRsvpSubmit}><Send size={16} />Envoyer le RSVP</button>
               </>
             ) : (
               <div className="dn-rsvp-ok">
@@ -407,7 +706,7 @@ const App = () => {
           </div>
         </section>
 
-        {/* COUNTDOWN */}
+    {/* COUNTDOWN */}
         <section ref={countdownRef} className="dn-countdown">
           <div className="dn-section-border top" /><div className="dn-section-border bottom" />
           <div className="dn-countdown-inner">
@@ -437,5 +736,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
