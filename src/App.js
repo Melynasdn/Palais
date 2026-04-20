@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Volume2, VolumeX, Sun, Moon, Heart, Wine, UtensilsCrossed, Music, Send, Origami,Star } from 'lucide-react';
-import couple from './assets/couple.png';
 import CoupleFrame from './assets/CoupleFrame.png';
 import './App.css';
 
@@ -720,8 +719,6 @@ const App = () => {
         {/* FOOTER */}
         <footer className="dn-footer">
           <div ref={footerRef} className="dn-footer-inner">
-            <p className="dn-footer-families">Familles Belkacem &amp; Mansouri</p>
-            <div className="dn-footer-divider" />
             <span className="dn-footer-credit">Made with love by </span>
             <a href="https://www.instagram.com/digital.invites.dz?igsh=ajZkZW41dXlkd3Q3" target="_blank" rel="noopener noreferrer" className="dn-footer-link"><span className="dn-footer-credit">Digital Invitation</span></a>
           </div>
