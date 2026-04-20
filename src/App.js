@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Volume2, VolumeX, Sun, Moon, Heart, Wine, UtensilsCrossed, Music, Send, Origami,Star } from 'lucide-react';
 import couple from './assets/couple.png';
+import CoupleFrame from './assets/CoupleFrame.png';
 import './App.css';
 
 if (typeof window !== 'undefined') {
@@ -211,10 +212,7 @@ const App = () => {
     <div className="app-wrapper" data-theme={theme}>
       <div ref={flashRef} className="flash-overlay" />
       <audio ref={audioRef} loop preload="auto"><source src="/music.mp3" type="audio/mpeg" /></audio>
-      <div className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}>
-        <video ref={transitionVideoDarkRef} playsInline muted preload="auto" src="/transition-to-dark.mp4" style={{ display: 'none' }} />
-        <video ref={transitionVideoLightRef} playsInline muted preload="auto" src="/transition-to-light.mp4" style={{ display: 'none' }} />
-      </div>
+
 
       {isOpen && (
         <div className="dn-fixed-controls">
@@ -254,22 +252,25 @@ const App = () => {
       style={{ opacity: theme === 'dark' ? 1 : 0 }}
     />
   </div>
+
+  {/* Transition overlay DANS le hero */}
+  <div className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}>
+    <video ref={transitionVideoDarkRef} playsInline muted preload="auto" src="/transition-to-dark.mp4" style={{ display: 'none' }} />
+    <video ref={transitionVideoLightRef} playsInline muted preload="auto" src="/transition-to-light.mp4" style={{ display: 'none' }} />
+  </div>
+
   <div className="dn-hero-overlay-top" />
 
   <div
     ref={heroContentRef}
     className="dn-hero-content"
     style={{
-      opacity: isTransitioning ? 0 : 1,
-      transition: 'opacity 0.3s ease',
-      pointerEvents: isTransitioning ? 'none' : 'auto',
-      marginTop: ' -18vh',
+      marginTop: '-18vh',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
     }}
   >
-    {/* We are getting married */}
     <p style={{
       fontFamily: '"Playfair Display", serif',
       fontSize: 'clamp(0.60rem, 1.8vw, 0.78rem)',
@@ -285,7 +286,6 @@ const App = () => {
       We are getting married
     </p>
 
-    {/* Yacine & Amel */}
     <h1 style={{
       fontFamily: '"Great Vibes", cursive',
       fontSize: 'clamp(3.2rem, 13vw, 6rem)',
@@ -302,7 +302,6 @@ const App = () => {
       David &amp; Ilona
     </h1>
 
-    {/* Ligne décorative */}
     <div style={{
       width: '40px',
       height: '1px',
@@ -311,7 +310,6 @@ const App = () => {
       transition: 'background 0.5s ease',
     }} />
 
-    {/* Date */}
     <p style={{
       fontFamily: '"Playfair Display", serif',
       fontSize: 'clamp(0.65rem, 2vw, 0.82rem)',
@@ -327,18 +325,10 @@ const App = () => {
     </p>
   </div>
 
-  {/* Scroll indicator */}
-  <div
-    className="dn-scroll-indicator"
-    style={{
-      opacity: isTransitioning ? 0 : 1,
-      transition: 'opacity 0.3s ease',
-    }}
-  >
+  <div className="dn-scroll-indicator">
     <div className="dn-scroll-line" />
   </div>
 </header>
-
 
 
 {/* ════════════ WELCOME / INVITATION ════════════ */}
@@ -650,9 +640,13 @@ const App = () => {
 
 </section>
 
-<div className="dn-svg-divider">
-  <img src={couple} alt="Couple Illustration" className="dn-couple-illustration" />
+
+
+<div className="dn-img-divider">
+  <img src={CoupleFrame} alt="Couple Illustration" className="couple-illustration" />
 </div>
+
+
 
 
 
