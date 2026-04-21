@@ -170,7 +170,22 @@ const App = () => {
       if (countdownTitleRef.current) gsap.fromTo(countdownTitleRef.current, { y: 40, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 1, ease: 'back.out(1.4)', scrollTrigger: { trigger: countdownRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
       gsap.fromTo('.dn-cd-subtitle-row', { width: '0%', opacity: 0 }, { width: '100%', opacity: 1, duration: 1, delay: 0.3, ease: 'power2.out', scrollTrigger: { trigger: countdownRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
       if (countdownCardRef.current) gsap.fromTo(countdownCardRef.current, { y: 60, opacity: 0, rotateX: 10 }, { y: 0, opacity: 1, rotateX: 0, duration: 1.2, delay: 0.4, ease: 'power3.out', scrollTrigger: { trigger: countdownRef.current, start: 'top 70%', toggleActions: 'play none none reverse' } });
-      if (footerRef.current) gsap.fromTo(footerRef.current.children, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power2.out', scrollTrigger: { trigger: footerRef.current, start: 'top 90%', toggleActions: 'play none none reverse' } });
+      if (footerRef.current) gsap.fromTo(
+  footerRef.current.children,
+  { y: 30, opacity: 0 },
+  {
+    y: 0,
+    opacity: 1,
+    duration: 0.8,
+    stagger: 0.15,
+    ease: 'power2.out',
+    scrollTrigger: {
+      trigger: footerRef.current,
+      start: 'top 90%',
+      toggleActions: 'play none none none'
+    }
+  }
+);
       document.querySelectorAll('.dn-section-border').forEach(b => gsap.fromTo(b, { width: '0%' }, { width: '60%', duration: 1.2, ease: 'power2.out', scrollTrigger: { trigger: b.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' } }));
       document.querySelectorAll('.dn-gold-sep').forEach(s => gsap.fromTo(s, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: s, start: 'top 85%', toggleActions: 'play none none reverse' } }));
       ScrollTrigger.refresh();
@@ -833,6 +848,7 @@ const handleRsvpSubmit = async () => {
         Digital Invitation
       </a>
     </p>
+    <Heart style={{color:'#3A4A2C'}}/>
   </div>
 </footer>
 

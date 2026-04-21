@@ -873,19 +873,12 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
 
 
-
-
 .dn-footer {
-  background: var(--cream, #FAF6EE);
+  background: #FAF6EE;
   padding: 40px 20px;
   text-align: center;
-  border-top: 1px solid rgba(74, 90, 63, 0.15);
-  transition: background 0.5s ease;
-}
-
-[data-theme="dark"] .dn-footer {
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border);
+  height: 100%;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .dn-footer-inner {
@@ -894,50 +887,20 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 }
 
 .dn-footer-credit {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  color: var(--olive, #4A5A3A);
+  font-size: 1rem;
+  color: #333;
   letter-spacing: 0.05em;
-  opacity: 0.8;
-}
-
-[data-theme="dark"] .dn-footer-credit {
-  color: var(--text-secondary);
 }
 
 .dn-footer-link {
-  color: var(--olive, #4A5A3A);
+  color: var(--olive);
   font-weight: 500;
   text-decoration: none;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-/* Effet underline animé (très clean ✨) */
-.dn-footer-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -3px;
-  width: 0%;
-  height: 1px;
-  background: currentColor;
-  transition: width 0.3s ease;
-}
-
-.dn-footer-link:hover::after {
-  width: 100%;
 }
 
 .dn-footer-link:hover {
-  opacity: 0.7;
+  text-decoration: underline;
 }
-
-/* Mode dark */
-[data-theme="dark"] .dn-footer-link {
-  color: var(--gold);
-}
-
 
 
 
