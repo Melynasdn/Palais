@@ -845,7 +845,7 @@ const handleRsvpSubmit = async () => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Digital Invitation
+        RF-Invites
       </a>
     </p>
   </div>
