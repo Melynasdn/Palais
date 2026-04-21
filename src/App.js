@@ -848,7 +848,6 @@ const handleRsvpSubmit = async () => {
         Digital Invitation
       </a>
     </p>
-    <Heart style={{color:'#3A4A2C'}}/>
   </div>
 </footer>
 
