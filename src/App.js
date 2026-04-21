@@ -191,7 +191,48 @@ const App = () => {
   };
 
   const toggleMute = () => { if (audioRef.current) { audioRef.current.muted = !audioRef.current.muted; setIsMuted(!isMuted); } };
-  const handleRsvpSubmit = () => { if (!rsvpData.fullName || !rsvpData.attending) return; console.log('RSVP:', rsvpData); setRsvpSubmitted(true); };
+
+
+  /* ===============RSVP =================== */
+const [isSubmitting, setIsSubmitting] = useState(false);
+const [submitError, setSubmitError] = useState('');
+
+const SHEETDB_URL = 'https://sheetdb.io/api/v1/4ftqiihm01qka'; 
+
+const handleRsvpSubmit = async () => {
+  if (!rsvpData.fullName || !rsvpData.attending) {
+    setSubmitError('Veuillez remplir les champs obligatoires.');
+    return;
+  }
+
+  setIsSubmitting(true);
+  setSubmitError('');
+
+  try {
+    const response = await fetch(SHEETDB_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: {
+          timestamp: new Date().toLocaleString('fr-FR'),
+          fullName: rsvpData.fullName,
+          email: rsvpData.email || '—',
+          attending: rsvpData.attending === 'yes' ? '✅ Présent' : '❌ Absent',
+          message: rsvpData.message || '—',
+        }
+      }),
+    });
+
+    if (!response.ok) throw new Error('Erreur réseau');
+
+    setRsvpSubmitted(true);
+  } catch (err) {
+    setSubmitError('Une erreur est survenue. Veuillez réessayer.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="app-wrapper" data-theme={theme}>
@@ -673,7 +714,23 @@ const App = () => {
                   <label className="dn-rsvp-label">Message pour les mariés</label>
                   <textarea className="dn-rsvp-textarea" placeholder="Partagez vos vœux..." rows={4} value={rsvpData.message} onChange={(e) => setRsvpData({ ...rsvpData, message: e.target.value })} />
                 </div>
-                  <button className="dn-rsvp-btn" onClick={handleRsvpSubmit}><Send size={16} />Envoyer le RSVP</button>
+
+                {submitError && (
+  <p style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.5rem', textAlign: 'center' }}>
+    {submitError}
+  </p>
+)}
+
+<button
+  className="dn-rsvp-btn"
+  onClick={handleRsvpSubmit}
+  disabled={isSubmitting}
+  style={{ opacity: isSubmitting ? 0.6 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+>
+  <Send size={16} />
+  {isSubmitting ? 'Envoi en cours…' : 'Envoyer le RSVP'}
+</button>
+
               </>
             ) : (
               <div className="dn-rsvp-ok">
