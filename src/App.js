@@ -841,7 +841,7 @@ const handleRsvpSubmit = async () => {
       Made with love by{" "}
       <a
         className="dn-footer-link"
-        href="https://www.instagram.com/digital.invites.dz"
+        href="https://www.instagram.com/rfinvites"
         target="_blank"
         rel="noopener noreferrer"
       >
