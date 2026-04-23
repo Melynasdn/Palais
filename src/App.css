@@ -772,7 +772,7 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
   text-align: center;
   background: #3a4a30;
   overflow: hidden;
-  padding: 80px 24px 90px;
+  padding: 80px 30px 90px;
   transition: background 0.8s var(--ease);
 }
 
