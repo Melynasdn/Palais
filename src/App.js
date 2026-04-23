@@ -385,7 +385,7 @@ useEffect(() => {
   style={{
     width: '100%',
     padding: '14px 24px',
-    background: '#c46565',
+    background: '#C4A265',
     color: '#1a1a1a',
     border: 'none',
     borderRadius: '12px',
