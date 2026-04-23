@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Volume2, VolumeX, Sun, Moon, Heart, Wine, UtensilsCrossed, Music, Send, Origami,Star } from 'lucide-react';
 import CoupleFrame from './assets/CoupleFrame.png';
+import CoupleFrameDark from './assets/CoupleFrameDark.png';
 import './App.css';
 
 if (typeof window !== 'undefined') {
@@ -340,7 +341,7 @@ const handleRsvpSubmit = async () => {
       transition: 'color 0.5s ease, text-shadow 0.5s ease',
       letterSpacing: '0.02em',
     }}>
-      David &amp; Ilona
+      Amine &amp; Ilona
     </h1>
 
     <div style={{
@@ -397,158 +398,26 @@ const handleRsvpSubmit = async () => {
 
 
        {/* ════════════ PROGRAMME DU JOUR ════════════ */}
-{/* <section className="dn-day-program">
+<section className="dn-day-program-v2">
 
-
-  <div className="dn-dp-header">
-    <h2 className="dn-dp-title">Programme du Jour</h2>
-    <p className="dn-dp-subtitle">Ce que nous avons préparé pour vous</p>
-  </div>
-
-  <div className="dn-dp-timeline">
-    
-
-    {[
-      {
-        time: '16h30',
-        name: 'Arrivée des Invités',
-        desc: 'Accueil et réception',
-        icon: 'guests',
-      },
-      {
-        time: '17h00',
-        name: 'Cérémonie',
-        desc: 'Mariage civil',
-        icon: 'heart',
-      },
-      {
-        time: '18h00',
-        name: 'Cocktail',
-        desc: 'Apéritifs et boissons',
-        icon: 'glass',
-      },
-      {
-        time: '20h00',
-        name: 'Dîner',
-        desc: 'Banquet de mariage',
-        icon: 'fork',
-      },
-      {
-  time: '22h00',
-  name: 'Fête',
-  desc: 'Musique et célébration',
-  icon: 'party',
-},
-{
-  time: '04h00',
-  name: 'Fin de la Soirée',
-  desc: 'Au revoir et bonne nuit',
-  icon: 'end',
-},
-    ].map(({ time, name, desc, icon }) => (
-      <div className="dn-dp-item" key={time}>
-        <div className="dn-dp-icon-wrap">
-          {icon === 'guests' && (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-          )}
-          {icon === 'heart' && (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
-          )}
-          {icon === 'glass' && (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 22h8M12 11v11M5 2l2 9a5 5 0 0 0 10 0l2-9H5z"/>
-            </svg>
-          )}
-          {icon === 'fork' && (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 11l19-9-9 19-2-8-8-2z"/>
-            </svg>
-          )}
-       {icon === 'party' && (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 18V5l12-2v13"/>
-    <circle cx="6" cy="18" r="3"/>
-    <circle cx="18" cy="16" r="3"/>
-  </svg>
-)}
-{icon === 'end' && (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <path d="M12 8v4l3 3"/>
-  </svg>
-)}
-        </div>
-        <div className="dn-dp-info">
-          <div className="dn-dp-time-name">
-            <span className="dn-dp-badge">{time}</span>
-            <p className="dn-dp-event-name">{name}</p>
-          </div>
-          <p className="dn-dp-desc">{desc}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
- */}
-
-
- <section className="dn-day-program-v2">
   <div className="dn-dp-header">
     <h2 className="dn-dp-title">Programme du Jour</h2>
     <p className="dn-dp-subtitle">Ce que nous avons préparé pour vous</p>
   </div>
 
   <div className="dn-dp-timeline-v2">
-    {/* Ligne verticale de fond */}
     <div className="dn-dp-line-track-v2"></div>
 
     {[
-      {
-        time: '16h30',
-        name: 'Arrivée des Invités',
-        desc: 'Accueil et réception',
-        icon: 'guests',
-      },
-      {
-        time: '17h00',
-        name: 'Cérémonie',
-        desc: 'Mariage civil',
-        icon: 'heart',
-      },
-      {
-        time: '18h00',
-        name: 'Cocktail',
-        desc: 'Apéritifs et boissons',
-        icon: 'glass',
-      },
-      {
-        time: '20h00',
-        name: 'Dîner',
-        desc: 'Banquet de mariage',
-        icon: 'fork',
-      },
-      {
-        time: '22h00',
-        name: 'Fête',
-        desc: 'Musique et célébration',
-        icon: 'party',
-      },
-      {
-        time: '04h00',
-        name: 'Fin de la Soirée',
-        desc: 'Au revoir et bonne nuit',
-        icon: 'end',
-      },
+      { time: '16h30', name: 'Arrivée des Invités', desc: 'Accueil et réception', icon: 'guests' },
+      { time: '17h00', name: 'Cérémonie', desc: 'Mariage civil', icon: 'heart' },
+      { time: '18h00', name: 'Cocktail', desc: 'Apéritifs et boissons', icon: 'glass' },
+      { time: '20h00', name: 'Dîner', desc: 'Banquet de mariage', icon: 'fork' },
+      { time: '22h00', name: 'Fête', desc: 'Musique et célébration', icon: 'party' },
+      { time: '04h00', name: 'Fin de la Soirée', desc: 'Au revoir et bonne nuit', icon: 'end' },
     ].map(({ time, name, desc, icon }, index) => (
       <div className={`dn-dp-item-v2 ${index % 2 === 0 ? 'dn-dp-item-left' : 'dn-dp-item-right'}`} key={time}>
-        
-        {/* Le point central sur la ligne avec icône et heure */}
+
         <div className="dn-dp-marker">
           <div className="dn-dp-icon-wrap-v2">
             {icon === 'guests' && (
@@ -558,17 +427,15 @@ const handleRsvpSubmit = async () => {
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
               </svg>
             )}
-            {/* ...autres SVG d'icônes ici... */}
-            {icon === 'heart' && <Heart/>}
+            {icon === 'heart' && <Heart />}
             {icon === 'glass' && <Wine />}
             {icon === 'fork' && <UtensilsCrossed />}
-            {icon === 'party' && <Music /> }
+            {icon === 'party' && <Music />}
             {icon === 'end' && <Origami />}
           </div>
           <span className="dn-dp-badge-v2">{time}</span>
         </div>
 
-        {/* Le bloc d'information sur le côté */}
         <div className="dn-dp-info-card">
           <h3 className="dn-dp-event-name-v2">{name}</h3>
           <p className="dn-dp-desc-v2">{desc}</p>
@@ -578,6 +445,8 @@ const handleRsvpSubmit = async () => {
     ))}
   </div>
 </section>
+ 
+
 
 
 
@@ -681,10 +550,32 @@ const handleRsvpSubmit = async () => {
 
 </section>
 
+{/* ════════════ NO KIDS ════════════ */}
+{/* <section className="dn-nokids">
+  <div className="dn-nokids-inner">
+     <div className="dn-nokids-icon">
+      🚫👶
+    </div> 
+    <h2 className="dn-nokids-title">Cérémonie Adultes Uniquement</h2>
+    <div className="dn-nokids-sep" />
+    <p className="dn-nokids-text">
+      Afin que chacun puisse profiter pleinement de cette journée,<br />
+      nous vous informons que les enfants ne seront<br />
+      <strong>pas admis</strong> lors de notre célébration.
+    </p>
+    <p className="dn-nokids-sub">
+      Nous vous remercions de votre compréhension.
+    </p>
+  </div>
+</section> */}
 
 
 <div className="dn-img-divider">
-  <img src={CoupleFrame} alt="Couple Illustration" className="couple-illustration" />
+  <img 
+    src={theme === 'dark' ? CoupleFrameDark : CoupleFrame}
+    alt="Couple Illustration" 
+    className="couple-illustration" 
+  />
 </div>
 
 
@@ -780,46 +671,48 @@ const handleRsvpSubmit = async () => {
         return (
           <div key={id} className="dn-cd-ring-item">
             <svg width="92" height="92" viewBox="0 0 92 92">
-              <defs>
-                <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#c8bda4"/>
-                  <stop offset="100%" stopColor="#a89880" stopOpacity="0.8"/>
-                </linearGradient>
-              </defs>
+  <defs>
+    <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor={theme === 'dark' ? '#FAF7F2' : '#c8bda4'}/>
+      <stop offset="100%" stopColor={theme === 'dark' ? '#FAF7F2' : '#a89880'} stopOpacity="0.8"/>
+    </linearGradient>
+  </defs>
 
-              {/* Track */}
-              <circle cx="46" cy="46" r={r}
-                fill="none"
-                stroke="rgba(200,189,164,0.1)"
-                strokeWidth="2.5"
-              />
+  {/* Track */}
+  <circle cx="46" cy="46" r={r}
+    fill="none"
+    stroke={theme === 'dark' ? 'rgba(250,247,242,0.1)' : 'rgba(200,189,164,0.1)'}
+    strokeWidth="2.5"
+  />
 
-              {/* Progress */}
-              <circle cx="46" cy="46" r={r}
-                fill="none"
-                stroke={`url(#${id})`}
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeDasharray={`${dash} ${circ}`}
-                transform="rotate(-90 46 46)"
-                style={{ transition: 'stroke-dasharray 1s ease' }}
-              />
+  {/* Progress */}
+  <circle cx="46" cy="46" r={r}
+    fill="none"
+    stroke={`url(#${id})`}
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeDasharray={`${dash} ${circ}`}
+    transform="rotate(-90 46 46)"
+    style={{ transition: 'stroke-dasharray 1s ease' }}
+  />
 
-              {/* Valeur */}
-              <text x="46" y="42" textAnchor="middle"
-                fontFamily="Cormorant Garamond, Georgia, serif"
-                fontSize="22" fontWeight="300" fill="#f0e6cc">
-                {String(value).padStart(2, '0')}
-              </text>
+  {/* Valeur */}
+  <text x="46" y="42" textAnchor="middle"
+    fontFamily="Cormorant Garamond, Georgia, serif"
+    fontSize="22" fontWeight="300"
+    fill={theme === 'dark' ? '#FAF7F2' : '#f0e6cc'}>
+    {String(value).padStart(2, '0')}
+  </text>
 
-              {/* Label */}
-              <text x="46" y="56" textAnchor="middle"
-                fontFamily="Josefin Sans, sans-serif"
-                fontSize="6" fontWeight="300"
-                fill="rgba(200,189,164,0.55)" letterSpacing="2">
-                {label}
-              </text>
-            </svg>
+  {/* Label */}
+  <text x="46" y="56" textAnchor="middle"
+    fontFamily="Josefin Sans, sans-serif"
+    fontSize="6" fontWeight="300"
+    fill={theme === 'dark' ? 'rgba(250,247,242,0.55)' : 'rgba(200,189,164,0.55)'}
+    letterSpacing="2">
+    {label}
+  </text>
+</svg>
           </div>
         );
       })}

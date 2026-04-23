@@ -486,6 +486,95 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 }
 
 
+
+
+
+
+
+
+
+
+/* ══════════════════════════════════════════════
+   NO KIDS
+   ══════════════════════════════════════════════ */
+.dn-nokids {
+  background: #4a5a3f;
+  padding: 80px 24px;
+  text-align: center;
+  transition: background 0.8s var(--ease);
+}
+[data-theme="dark"] .dn-nokids {
+  background: #001530;
+}
+
+.dn-nokids-inner {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.dn-nokids-icon {
+  font-size: 2.8rem;
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+
+.dn-nokids-title {
+  font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  color: #e8c99a;
+  margin: 0 0 20px;
+  line-height: 1.2;
+}
+[data-theme="dark"] .dn-nokids-title {
+  color: #FAF7F2;
+}
+
+.dn-nokids-sep {
+  width: 48px;
+  height: 1px;
+  background: rgba(232,201,154,0.4);
+  margin: 0 auto 24px;
+}
+[data-theme="dark"] .dn-nokids-sep {
+  background: rgba(250,247,242,0.3);
+}
+
+.dn-nokids-text {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 3vw, 1.15rem);
+  font-style: italic;
+  color: #c8bda4;
+  line-height: 2;
+  margin: 0 0 16px;
+}
+[data-theme="dark"] .dn-nokids-text {
+  color: rgba(250,247,242,0.8);
+}
+
+.dn-nokids-text strong {
+  color: #e8c99a;
+  font-style: normal;
+  font-weight: 600;
+}
+[data-theme="dark"] .dn-nokids-text strong {
+  color: #FAF7F2;
+}
+
+.dn-nokids-sub {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  color: rgba(200,189,164,0.55);
+  margin: 0;
+  text-transform: uppercase;
+}
+[data-theme="dark"] .dn-nokids-sub {
+  color: rgba(250,247,242,0.4);
+}
+
 /* ══════════════════════════════════════════════
    DÉTAILS DE L'ÉVÉNEMENT
    ══════════════════════════════════════════════ */
@@ -1057,4 +1146,181 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 @keyframes dn-ribbon-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
+}
+
+
+/* ══════════════════════════════════════════════
+   MODE SOMBRE — Overrides sections spécifiques
+   ══════════════════════════════════════════════ */
+
+/* ── Welcome (beige → #001E45) ── */
+[data-theme="dark"] .dn-welcome {
+  background: #001E45;
+}
+[data-theme="dark"] .dn-welcome-title {
+  color: #D4A849;
+}
+[data-theme="dark"] .dn-welcome-text {
+  color: rgba(200,189,164,0.85);
+}
+
+/* ── Programme du Jour (olive → #001E45) ── */
+[data-theme="dark"] .dn-day-program-v2 {
+  background-color: #001E45;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNjOGJkYTQiIGZpbGwtb3BhY2l0eT0iMC4wNiI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwaDIwdjIwSDIWMjB6TTAgMjBoMjB2MjBIMFYyMHoyMCAwaDIwdjIwSDIwVjB6Ii8+PC9nPjwvZz48L3N2Zz4=');
+}
+
+/* ── Détails Événement (blanc → #001E45) ── */
+[data-theme="dark"] .dn-event-details {
+  background: #001E45;
+}
+[data-theme="dark"] .dn-ed-title {
+  color: #e8d5b0;
+}
+[data-theme="dark"] .dn-ed-intro {
+  color: rgba(200,189,164,0.75);
+}
+[data-theme="dark"] .dn-ed-card {
+  background: rgba(0,30,69,0.7);
+  border: 1px solid rgba(200,189,164,0.12);
+}
+[data-theme="dark"] .dn-ed-event-title {
+  color: #e8d5b0;
+}
+[data-theme="dark"] .dn-ed-meta-row {
+  color: rgba(200,189,164,0.85);
+}
+[data-theme="dark"] .dn-ed-meta-row svg {
+  stroke: rgba(200,189,164,0.6);
+}
+[data-theme="dark"] .dn-ed-address,
+[data-theme="dark"] .dn-ed-caption {
+  color: rgba(200,189,164,0.55);
+}
+[data-theme="dark"] .dn-ed-btn {
+  border-color: rgba(200,189,164,0.35);
+  color: #e8d5b0;
+}
+[data-theme="dark"] .dn-ed-btn:hover {
+  background: rgba(200,189,164,0.08);
+}
+[data-theme="dark"] .dn-ed-icon-wrap {
+  background: rgba(200,189,164,0.1);
+}
+[data-theme="dark"] .dn-ed-icon-wrap svg {
+  stroke: #FAF7F2;
+}
+
+/* ── RSVP (beige → #001E45) ── */
+[data-theme="dark"] .dn-rsvp {
+  background: #001E45;
+}
+[data-theme="dark"] .dn-rsvp-card {
+  background: #001E45;
+  border: 1px solid rgba(200,189,164,0.1);
+}
+
+/* ── Countdown (olive → #001E45) ── */
+[data-theme="dark"] .dn-countdown {
+  background: #001530;
+}
+
+/* ── Footer (beige → #001E45) ── */
+[data-theme="dark"] .dn-footer {
+  background: #001E45;
+  border-top: 1px solid rgba(200,189,164,0.1);
+}
+[data-theme="dark"] .dn-footer-credit {
+  color: rgba(200,189,164,0.6);
+}
+[data-theme="dark"] .dn-footer-link {
+  color: #D4A849;
+}
+
+/* ── Textes mode sombre → #FAF7F2 ── */
+[data-theme="dark"] .dn-welcome-title,
+[data-theme="dark"] .dn-welcome-text,
+[data-theme="dark"] .dn-dp-title,
+[data-theme="dark"] .dn-dp-subtitle,
+[data-theme="dark"] .dn-dp-event-name-v2,
+[data-theme="dark"] .dn-dp-desc-v2,
+[data-theme="dark"] .dn-dp-badge-v2,
+[data-theme="dark"] .dn-ed-join,
+[data-theme="dark"] .dn-ed-title,
+[data-theme="dark"] .dn-ed-intro,
+[data-theme="dark"] .dn-ed-event-title,
+[data-theme="dark"] .dn-ed-meta-row,
+[data-theme="dark"] .dn-ed-address,
+[data-theme="dark"] .dn-ed-caption,
+[data-theme="dark"] .dn-ed-btn,
+[data-theme="dark"] .dn-rsvp-surtitle,
+[data-theme="dark"] .dn-rsvp-title,
+[data-theme="dark"] .dn-rsvp-desc,
+[data-theme="dark"] .dn-rsvp-label,
+[data-theme="dark"] .dn-rsvp-ok-title,
+[data-theme="dark"] .dn-rsvp-ok-text,
+[data-theme="dark"] .dn-cd-surtitle,
+[data-theme="dark"] .dn-cd-title-new,
+[data-theme="dark"] .dn-cd-date-txt,
+[data-theme="dark"] .dn-footer-credit {
+  color: #FAF7F2;
+}
+
+/* Inputs et textarea */
+[data-theme="dark"] .dn-rsvp-input,
+[data-theme="dark"] .dn-rsvp-textarea {
+  color: #FAF7F2;
+}
+
+/* Opacités réduites pour les éléments secondaires */
+[data-theme="dark"] .dn-ed-address,
+[data-theme="dark"] .dn-ed-caption,
+[data-theme="dark"] .dn-dp-subtitle,
+[data-theme="dark"] .dn-dp-desc-v2,
+[data-theme="dark"] .dn-rsvp-desc,
+[data-theme="dark"] .dn-cd-date-txt {
+  color: rgba(250,247,242,0.6);
+}
+
+/* ── Gold → #FAF7F2 en mode sombre ── */
+[data-theme="dark"] {
+  --gold: #FAF7F2;
+  --gold-light: rgba(250,247,242,0.10);
+  --gold-glow: rgba(250,247,242,0.18);
+  --border: rgba(250,247,242,0.15);
+}
+
+
+
+/* ── Inputs RSVP clairs en mode sombre ── */
+[data-theme="dark"] .dn-rsvp-input,
+[data-theme="dark"] .dn-rsvp-textarea {
+  background: rgba(250,247,242,0.08);
+  border-color: rgba(250,247,242,0.2);
+  color: #FAF7F2;
+}
+
+[data-theme="dark"] .dn-rsvp-input::placeholder,
+[data-theme="dark"] .dn-rsvp-textarea::placeholder {
+  color: rgba(250,247,242,0.35);
+}
+
+[data-theme="dark"] .dn-rsvp-input:focus,
+[data-theme="dark"] .dn-rsvp-textarea:focus {
+  border-color: rgba(250,247,242,0.5);
+  box-shadow: 0 0 0 3px rgba(250,247,242,0.08);
+}
+
+/* ── No Kids → #001E45 (bleu clair) ── */
+[data-theme="dark"] .dn-nokids {
+  background: #001E45;
+}
+
+/* ── Détails Événement → #001530 (bleu foncé) ── */
+[data-theme="dark"] .dn-event-details {
+  background: #001530;
+}
+[data-theme="dark"] .dn-ed-card {
+  background: rgba(0,21,48,0.7);
+  border: 1px solid rgba(200,189,164,0.12);
 }
