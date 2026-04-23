@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Volume2, VolumeX, Sun, Moon, Heart, Wine, UtensilsCrossed, Music, Send, Origami,Star } from 'lucide-react';
+import { Volume2, VolumeX, Sun, Moon, Heart, Send,Star } from 'lucide-react';
 import CoupleFrame from './assets/CoupleFrame.png';
 import CoupleFrameDark from './assets/CoupleFrameDark.png';
 import './App.css';
@@ -56,6 +56,7 @@ const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [pendingDarkSwitch, setPendingDarkSwitch] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [theme, setTheme] = useState('light');
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -73,9 +74,119 @@ const App = () => {
   const eventRef = useRef(null); const eventHeaderRef = useRef(null); const eventCardRef = useRef(null);
   const rsvpRef = useRef(null); const rsvpHeaderRef = useRef(null); const rsvpCardRef = useRef(null);
   const countdownRef = useRef(null); const countdownTitleRef = useRef(null); const countdownCardRef = useRef(null);
-  const footerRef = useRef(null);
+  const targetDate = '2026-05-01';
 
-  const targetDate = '2026-08-14';
+
+  
+
+    const toggleTheme = useCallback(() => {
+    if (isTransitioning) return;
+    const next = theme === 'light' ? 'dark' : 'light';
+    const vid = next === 'dark' ? transitionVideoDarkRef.current : transitionVideoLightRef.current;
+    if (!vid) return;
+    setIsTransitioning(true);
+    transitionVideoDarkRef.current.style.display = 'none'; transitionVideoLightRef.current.style.display = 'none';
+    vid.style.display = 'block'; vid.style.opacity = '0'; vid.currentTime = 0;
+    const onReady = () => {
+      vid.removeEventListener('playing', onReady); vid.style.opacity = '1';
+      let themeSwitched = false;
+      let textSwitched = false; 
+      vid.ontimeupdate = () => {
+  const switchPoint = vid.duration * 0.4;
+  const textSwitchPoint = vid.duration * 0.15; // ← texte change plus tôt (2s avant environ)
+  
+  // Changer les couleurs du texte hero en premier, avec transition fluide
+  if (!textSwitched && vid.currentTime >= textSwitchPoint) {
+    textSwitched = true;
+    const heroContent = document.querySelector('.dn-hero-content');
+    if (heroContent) {
+      // Laisser la transition CSS faire le fondu
+      heroContent.querySelectorAll('p, h1, div').forEach(el => {
+        el.style.transition = 'color 2s ease, background 2s ease, text-shadow 2s ease';
+      });
+    }
+    // Forcer le re-render React pour que les couleurs conditionnelles changent
+    setTheme(prev => prev); // ne change rien mais force les styles inline à se recalculer
+    // On applique manuellement les couleurs dark/light sur les éléments
+    const isDark = next === 'dark';
+    heroContent?.querySelectorAll('p').forEach((p, i) => {
+      if (i === 0) p.style.color = isDark ? '#c8bda4' : '#4a5a3f';
+      if (i === 1) p.style.color = isDark ? 'rgba(200,189,164,0.7)' : 'rgba(74,90,63,0.75)';
+    });
+    const h1 = heroContent?.querySelector('h1');
+    if (h1) {
+      h1.style.color = isDark ? '#f0e6cc' : '#3d4e35';
+      h1.style.textShadow = isDark
+        ? '0 2px 40px rgba(0,0,0,0.35)'
+        : '0 2px 24px rgba(255,255,255,0.5)';
+    }
+    const line = heroContent?.querySelector('div');
+    if (line) line.style.background = isDark ? 'rgba(200,189,164,0.4)' : 'rgba(74,90,63,0.35)';
+  }
+
+  if (!themeSwitched && vid.currentTime >= switchPoint) {
+    themeSwitched = true;
+
+    const root = document.documentElement;
+    const wrapper = document.querySelector('.app-wrapper');
+    const heroLight = document.querySelector('.dn-hero-video--light');
+    const heroDark = document.querySelector('.dn-hero-video--dark');
+
+    root.style.setProperty('transition', 'none');
+    if (wrapper) wrapper.style.transition = 'none';
+    if (heroLight) heroLight.style.transition = 'none';
+    if (heroDark) heroDark.style.transition = 'none';
+
+    const vars = THEMES[next];
+    Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
+    if (wrapper) wrapper.setAttribute('data-theme', next);
+
+    if (next === 'dark') {
+      if (heroLight) heroLight.style.opacity = '0';
+      if (heroDark) heroDark.style.opacity = '1';
+    } else {
+      if (heroLight) heroLight.style.opacity = '1';
+      if (heroDark) heroDark.style.opacity = '0';
+    }
+
+    void document.body.offsetHeight;
+
+    requestAnimationFrame(() => {
+      root.style.removeProperty('transition');
+      if (wrapper) wrapper.style.transition = '';
+      if (heroLight) heroLight.style.transition = '';
+      if (heroDark) heroDark.style.transition = '';
+    });
+  }
+};
+      vid.onended = () => { vid.ontimeupdate = null; vid.onended = null; vid.style.opacity = '0'; setTimeout(() => { vid.style.display = 'none'; setTheme(next); setIsTransitioning(false); }, 150); };
+    };
+    vid.addEventListener('playing', onReady); vid.play().catch(() => setIsTransitioning(false));
+  }, [theme, isTransitioning]);
+
+
+
+// Détecter le thème système
+useEffect(() => {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (prefersDark) {
+    setPendingDarkSwitch(true);
+  }
+}, []);
+
+// Lancer la transition vidéo une fois le site ouvert
+useEffect(() => {
+  if (isOpen && pendingDarkSwitch && theme === 'light' && !isTransitioning) {
+    // Petit délai pour laisser le site s'afficher d'abord
+    const timer = setTimeout(() => {
+      toggleTheme();
+      setPendingDarkSwitch(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }
+}, [isOpen, pendingDarkSwitch, theme, isTransitioning, toggleTheme]);
+
+
 
   useEffect(() => { const vars = THEMES[theme]; const root = document.documentElement; Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v)); }, [theme]);
 
@@ -88,66 +199,7 @@ const App = () => {
     calculate(); const interval = setInterval(calculate, 1000); return () => clearInterval(interval);
   }, [targetDate]);
 
-  const toggleTheme = useCallback(() => {
-    if (isTransitioning) return;
-    const next = theme === 'light' ? 'dark' : 'light';
-    const vid = next === 'dark' ? transitionVideoDarkRef.current : transitionVideoLightRef.current;
-    if (!vid) return;
-    setIsTransitioning(true);
-    transitionVideoDarkRef.current.style.display = 'none'; transitionVideoLightRef.current.style.display = 'none';
-    vid.style.display = 'block'; vid.style.opacity = '0'; vid.currentTime = 0;
-    const onReady = () => {
-      vid.removeEventListener('playing', onReady); vid.style.opacity = '1';
-      let themeSwitched = false;
-      vid.ontimeupdate = () => {
-  const switchPoint = vid.duration * 0.4;
-  if (!themeSwitched && vid.currentTime >= switchPoint) {
-    themeSwitched = true;
 
-    const root = document.documentElement;
-    const wrapper = document.querySelector('.app-wrapper');
-    const heroLight = document.querySelector('.dn-hero-video--light');
-    const heroDark = document.querySelector('.dn-hero-video--dark');
-    const heroContent = document.querySelector('.dn-hero-content');
-
-    // Couper toutes les transitions
-    root.style.setProperty('transition', 'none');
-    if (wrapper) wrapper.style.transition = 'none';
-    if (heroLight) heroLight.style.transition = 'none';
-    if (heroDark) heroDark.style.transition = 'none';
-    if (heroContent) heroContent.style.transition = 'none';
-
-    // Appliquer le thème
-    const vars = THEMES[next];
-    Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
-    if (wrapper) wrapper.setAttribute('data-theme', next);
-
-    // Switcher les fonds hero immédiatement
-    if (next === 'dark') {
-      if (heroLight) heroLight.style.opacity = '0';
-      if (heroDark) heroDark.style.opacity = '1';
-    } else {
-      if (heroLight) heroLight.style.opacity = '1';
-      if (heroDark) heroDark.style.opacity = '0';
-    }
-
-    // Forcer le reflow
-    void document.body.offsetHeight;
-
-    // Restaurer les transitions
-    requestAnimationFrame(() => {
-      root.style.removeProperty('transition');
-      if (wrapper) wrapper.style.transition = '';
-      if (heroLight) heroLight.style.transition = '';
-      if (heroDark) heroDark.style.transition = '';
-      if (heroContent) heroContent.style.transition = '';
-    });
-  }
-};
-      vid.onended = () => { vid.ontimeupdate = null; vid.onended = null; vid.style.opacity = '0'; setTimeout(() => { vid.style.display = 'none'; setTheme(next); setIsTransitioning(false); }, 150); };
-    };
-    vid.addEventListener('playing', onReady); vid.play().catch(() => setIsTransitioning(false));
-  }, [theme, isTransitioning]);
 
   const initScrollAnimations = useCallback(() => {
     const timer = setTimeout(() => {
@@ -171,22 +223,7 @@ const App = () => {
       if (countdownTitleRef.current) gsap.fromTo(countdownTitleRef.current, { y: 40, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 1, ease: 'back.out(1.4)', scrollTrigger: { trigger: countdownRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
       gsap.fromTo('.dn-cd-subtitle-row', { width: '0%', opacity: 0 }, { width: '100%', opacity: 1, duration: 1, delay: 0.3, ease: 'power2.out', scrollTrigger: { trigger: countdownRef.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
       if (countdownCardRef.current) gsap.fromTo(countdownCardRef.current, { y: 60, opacity: 0, rotateX: 10 }, { y: 0, opacity: 1, rotateX: 0, duration: 1.2, delay: 0.4, ease: 'power3.out', scrollTrigger: { trigger: countdownRef.current, start: 'top 70%', toggleActions: 'play none none reverse' } });
-      if (footerRef.current) gsap.fromTo(
-  footerRef.current.children,
-  { y: 30, opacity: 0 },
-  {
-    y: 0,
-    opacity: 1,
-    duration: 0.8,
-    stagger: 0.15,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: footerRef.current,
-      start: 'top 90%',
-      toggleActions: 'play none none none'
-    }
-  }
-);
+
       document.querySelectorAll('.dn-section-border').forEach(b => gsap.fromTo(b, { width: '0%' }, { width: '60%', duration: 1.2, ease: 'power2.out', scrollTrigger: { trigger: b.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' } }));
       document.querySelectorAll('.dn-gold-sep').forEach(s => gsap.fromTo(s, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: s, start: 'top 85%', toggleActions: 'play none none reverse' } }));
       ScrollTrigger.refresh();
@@ -213,7 +250,7 @@ const App = () => {
 const [isSubmitting, setIsSubmitting] = useState(false);
 const [submitError, setSubmitError] = useState('');
 
-const SHEETDB_URL = 'https://sheetdb.io/api/v1/4ftqiihm01qka'; 
+const SHEETDB_URL = 'https://sheetdb.io/api/v1/gbbytqb7a495n'; 
 
 const handleRsvpSubmit = async () => {
   if (!rsvpData.fullName || !rsvpData.attending) {
@@ -248,6 +285,20 @@ const handleRsvpSubmit = async () => {
     setIsSubmitting(false);
   }
 };
+// Pause musique quand l'utilisateur quitte l'onglet/app
+useEffect(() => {
+  const handleVisibility = () => {
+    if (!audioRef.current) return;
+    if (document.hidden) {
+      audioRef.current.pause();
+    } else if (isOpen && !isMuted) {
+      audioRef.current.play().catch(() => {});
+    }
+  };
+
+  document.addEventListener('visibilitychange', handleVisibility);
+  return () => document.removeEventListener('visibilitychange', handleVisibility);
+}, [isOpen, isMuted]);
 
 
   return (
@@ -341,7 +392,7 @@ const handleRsvpSubmit = async () => {
       transition: 'color 0.5s ease, text-shadow 0.5s ease',
       letterSpacing: '0.02em',
     }}>
-      Amine &amp; Ilona
+      Amine &amp; Lina
     </h1>
 
     <div style={{
@@ -363,7 +414,7 @@ const handleRsvpSubmit = async () => {
       margin: 0,
       transition: 'color 0.5s ease',
     }}>
-      14 Août 2026
+      01 Mai 2026
     </p>
   </div>
 
@@ -377,17 +428,21 @@ const handleRsvpSubmit = async () => {
 <section className="dn-welcome">
 
   <h2 className="dn-welcome-title">
-    Bienvenue !
+    À l’occasion de cette union,
   </h2>
 
   <p className="dn-welcome-text">
-    C’est avec beaucoup d’amour que nous vous convions à célébrer notre mariage à Chantilly, et à vivre à nos côtés un instant précieux et inoubliable.
+Nous avons l’honneur de vous convier à partager avec nous ce mariage <br />
+
+entourés de nos familles et de nos proches, dans une ambiance de joie, de convivialité et de bénédiction.
+<br />
+Votre présence à nos côtés sera pour nous un immense bonheur et contribuera à rendre cette soirée inoubliable.
   </p>
 
 <div className="dn-welcome-ribbon">
   <div className="dn-ribbon-track">
-    {['/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg',
-      '/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg',
+    {['/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg','/photo5.jpg','/photo6.jpg',
+      '/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg','/photo5.jpg','/photo6.jpg',
     ].map((src, i) => (
       <div key={i} className="dn-ribbon-item" style={{ backgroundImage: `url('${src}')` }} />
     ))}
@@ -396,56 +451,6 @@ const handleRsvpSubmit = async () => {
 </section>
 
 
-
-       {/* ════════════ PROGRAMME DU JOUR ════════════ */}
-<section className="dn-day-program-v2">
-
-  <div className="dn-dp-header">
-    <h2 className="dn-dp-title">Programme du Jour</h2>
-    <p className="dn-dp-subtitle">Ce que nous avons préparé pour vous</p>
-  </div>
-
-  <div className="dn-dp-timeline-v2">
-    <div className="dn-dp-line-track-v2"></div>
-
-    {[
-      { time: '16h30', name: 'Arrivée des Invités', desc: 'Accueil et réception', icon: 'guests' },
-      { time: '17h00', name: 'Cérémonie', desc: 'Mariage civil', icon: 'heart' },
-      { time: '18h00', name: 'Cocktail', desc: 'Apéritifs et boissons', icon: 'glass' },
-      { time: '20h00', name: 'Dîner', desc: 'Banquet de mariage', icon: 'fork' },
-      { time: '22h00', name: 'Fête', desc: 'Musique et célébration', icon: 'party' },
-      { time: '04h00', name: 'Fin de la Soirée', desc: 'Au revoir et bonne nuit', icon: 'end' },
-    ].map(({ time, name, desc, icon }, index) => (
-      <div className={`dn-dp-item-v2 ${index % 2 === 0 ? 'dn-dp-item-left' : 'dn-dp-item-right'}`} key={time}>
-
-        <div className="dn-dp-marker">
-          <div className="dn-dp-icon-wrap-v2">
-            {icon === 'guests' && (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            )}
-            {icon === 'heart' && <Heart />}
-            {icon === 'glass' && <Wine />}
-            {icon === 'fork' && <UtensilsCrossed />}
-            {icon === 'party' && <Music />}
-            {icon === 'end' && <Origami />}
-          </div>
-          <span className="dn-dp-badge-v2">{time}</span>
-        </div>
-
-        <div className="dn-dp-info-card">
-          <h3 className="dn-dp-event-name-v2">{name}</h3>
-          <p className="dn-dp-desc-v2">{desc}</p>
-        </div>
-
-      </div>
-    ))}
-  </div>
-</section>
- 
 
 
 
@@ -476,7 +481,7 @@ const handleRsvpSubmit = async () => {
           <circle cx="12" cy="12" r="10"/>
           <path d="M12 6v6l4 2"/>
         </svg>
-        <span>19h00</span>
+        <span>À partir de 18h00</span>
       </div>
 
       <div className="dn-ed-meta-row">
@@ -484,19 +489,20 @@ const handleRsvpSubmit = async () => {
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
           <circle cx="12" cy="10" r="3"/>
         </svg>
-        <span>Château de Chantilly</span>
+        <span>Salle Jupiter – Hôtel Sheraton Alger</span>
       </div>
     </div>
 
     <p className="dn-ed-address">
-      60500 Chantilly<br />
-      France
+      Hôtel Sheraton Alger<br />
+      Boite Postale 62, Staoueli 16101<br />
+      Algérie
     </p>
 
     <div className="dn-ed-map-wrap">
       <iframe
         title="Carte du lieu"
-        src="https://maps.google.com/maps?q=Chateau+de+Chantilly,+France&output=embed"
+        src="https://maps.google.com/maps?q=Sheraton+Club+des+Pins+Alger&output=embed"
         width="100%"
         height="100%"
         loading="lazy"
@@ -506,11 +512,11 @@ const handleRsvpSubmit = async () => {
     </div>
 
     <p className="dn-ed-caption">
-      Rejoignez-nous dans un cadre royal et élégant pour célébrer ce moment inoubliable.
+      Rejoignez-nous dans un cadre élégant et raffiné pour célébrer ce moment inoubliable.
     </p>
 
     <a
-      href="https://maps.google.com/?q=Chateau+de+Chantilly,+France"
+      href="https://maps.google.com/?q=Sheraton+Club+des+Pins+Alger"
       target="_blank"
       rel="noopener noreferrer"
       className="dn-ed-btn"
@@ -518,44 +524,13 @@ const handleRsvpSubmit = async () => {
       Ouvrir dans Maps
     </a>
 
-    <button
-      className="dn-ed-btn"
-      onClick={() => {
-        const ics = [
-          'BEGIN:VCALENDAR',
-          'VERSION:2.0',
-          'BEGIN:VEVENT',
-          'DTSTART:20260814T190000',
-          'DTEND:20260815T030000',
-          'SUMMARY:Mariage',
-          'LOCATION:Château de Chantilly, France',
-          'DESCRIPTION:Cérémonie de mariage',
-          'END:VEVENT',
-          'END:VCALENDAR'
-        ].join('\n');
-
-        const blob = new Blob([ics], { type: 'text/calendar' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'event.ics';
-        a.click();
-        URL.revokeObjectURL(url);
-      }}
-    >
-      Ajouter au Calendrier
-    </button>
-
   </div>
 
 </section>
 
 {/* ════════════ NO KIDS ════════════ */}
-{/* <section className="dn-nokids">
+ <section className="dn-nokids">
   <div className="dn-nokids-inner">
-     <div className="dn-nokids-icon">
-      🚫👶
-    </div> 
     <h2 className="dn-nokids-title">Cérémonie Adultes Uniquement</h2>
     <div className="dn-nokids-sep" />
     <p className="dn-nokids-text">
@@ -567,7 +542,7 @@ const handleRsvpSubmit = async () => {
       Nous vous remercions de votre compréhension.
     </p>
   </div>
-</section> */}
+</section> 
 
 
 <div className="dn-img-divider">
@@ -653,7 +628,7 @@ const handleRsvpSubmit = async () => {
   <div className="dn-countdown-inner">
 
     <div ref={countdownTitleRef} className="dn-cd-header">
-      <p className="dn-cd-surtitle">David & Ilona</p>
+      <p className="dn-cd-surtitle">Amine & Lina</p>
       <h2 className="dn-cd-title-new">Compte à Rebours</h2>
       <div className="dn-cd-sep-line" />
     </div>
@@ -720,7 +695,7 @@ const handleRsvpSubmit = async () => {
 
     <div className="dn-cd-date-row">
       <div className="dn-cd-date-line" />
-      <span className="dn-cd-date-txt">14 Août 2026</span>
+      <span className="dn-cd-date-txt">01 Mai 2026</span>
       <div className="dn-cd-date-line" />
     </div>
 
@@ -728,19 +703,24 @@ const handleRsvpSubmit = async () => {
 </section>
 
 
-    <footer className="dn-footer">
-  <div ref={footerRef} className="dn-footer-inner">
-    <p className="dn-footer-credit">
-      Made with love by{" "}
-      <a
-        className="dn-footer-link"
-        href="https://www.instagram.com/rfinvites"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        RF-Invites
-      </a>
-    </p>
+<footer className="dn-footer">
+  <div className="dn-footer-inner">
+    <p className="dn-footer-credit">Made with love by DigiInvitations DZ</p>
+
+<div className="dn-footer-socials">
+  <a href="https://www.instagram.com/digi.invites.dz?igsh=ajZkZW41dXlkd3Q3&utm_source=qr" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="Instagram">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  </a>
+  <a href="https://www.tiktok.com/@digiinvitations?_r=1&_t=ZS-95mgv104jcg" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="TikTok">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+    </svg>
+  </a>
+</div>
   </div>
 </footer>
 
