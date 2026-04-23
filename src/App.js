@@ -168,27 +168,48 @@ const App = () => {
 
 // Détecter le thème système
 useEffect(() => {
-  // Sur iOS, ne pas activer le dark auto
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
   let prefersDark = false;
-
+  
   try {
     prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   } catch (e) {}
 
-  // Fallback Samsung
   if (!prefersDark) {
     try {
-      const testDiv = document.createElement('div');
-      testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
-      document.body.appendChild(testDiv);
-      const bg = getComputedStyle(testDiv).backgroundColor;
-      document.body.removeChild(testDiv);
-      const match = bg.match(/\d+/g);
-      if (match && parseInt(match[0]) < 128 && parseInt(match[1]) < 128 && parseInt(match[2]) < 128) {
+      const testEl = document.createElement('div');
+      testEl.style.cssText = 'color-scheme:light dark;position:absolute;visibility:hidden;';
+      document.body.appendChild(testEl);
+      const computed = getComputedStyle(testEl);
+      const bgColor = computed.colorScheme;
+      document.body.removeChild(testEl);
+      if (bgColor && bgColor.includes('dark')) {
         prefersDark = true;
+      }
+    } catch (e) {}
+  }
+
+  if (!prefersDark) {
+    try {
+      const mqDark = window.matchMedia('(prefers-color-scheme: dark)');
+      const mqLight = window.matchMedia('(prefers-color-scheme: light)');
+      if (!mqDark.matches && !mqLight.matches) {
+        const testDiv = document.createElement('div');
+        testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
+        document.body.appendChild(testDiv);
+        const bg = getComputedStyle(testDiv).backgroundColor;
+        document.body.removeChild(testDiv);
+        const match = bg.match(/\d+/g);
+        if (match) {
+          const r = parseInt(match[0]);
+          const g = parseInt(match[1]);
+          const b = parseInt(match[2]);
+          if (r < 128 && g < 128 && b < 128) {
+            prefersDark = true;
+          }
+        }
       }
     } catch (e) {}
   }
@@ -197,6 +218,9 @@ useEffect(() => {
     setPendingDarkSwitch(true);
   }
 }, []);
+
+
+
 // Lancer la transition vidéo une fois le site ouvert
 useEffect(() => {
   if (isOpen && pendingDarkSwitch && theme === 'light' && !isTransitioning) {
