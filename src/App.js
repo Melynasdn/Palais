@@ -312,34 +312,7 @@ const App = () => {
   }
 }, []); */
 
-useEffect(() => {
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  if (isIOS) return;
 
-  // Méthode officielle Google pour détecter Auto Dark Theme
-  const detectAutoDark = () => {
-    const detectionDiv = document.createElement('div');
-    detectionDiv.style.cssText = 'display:none;background-color:canvas;color-scheme:light;';
-    document.body.appendChild(detectionDiv);
-    
-    const computedBg = getComputedStyle(detectionDiv).backgroundColor;
-    document.body.removeChild(detectionDiv);
-    
-    // Si le canvas n'est pas blanc, Chrome a forcé son dark mode
-    const isAutoDark = computedBg !== 'rgb(255, 255, 255)';
-    
-    if (isAutoDark) {
-      setPendingDarkSwitch(true);
-    }
-  };
-
-  // Attendre que le DOM soit prêt
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', detectAutoDark);
-  } else {
-    detectAutoDark();
-  }
-}, []);
 
 useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
