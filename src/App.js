@@ -521,6 +521,10 @@ useEffect(() => {
         </div>
       )}
 
+      <a href="intent://tonsite.com#Intent;scheme=https;package=com.android.chrome;end;">
+  Ouvrir dans Chrome
+</a>
+
       <main ref={mainContentRef} className={`main-content ${!isOpen ? 'hidden' : ''}`}>
 
        {/* ════════════ HERO ════════════ */}
