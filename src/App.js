@@ -57,9 +57,9 @@ const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted] = useState(false);
   const [theme, setTheme] = useState('light');
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isTransitioning] = useState(false);
   const [rsvpData, setRsvpData] = useState({ fullName: '', email: '', attending: '', message: '' });
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
 
@@ -86,7 +86,7 @@ useEffect(() => {
 }, []);
   
 
-    const toggleTheme = useCallback(() => {
+/*     const toggleTheme = useCallback(() => {
     if (isTransitioning) return;
     const next = theme === 'light' ? 'dark' : 'light';
     const vid = next === 'dark' ? transitionVideoDarkRef.current : transitionVideoLightRef.current;
@@ -170,7 +170,7 @@ useEffect(() => {
     };
     vid.addEventListener('playing', onReady); vid.play().catch(() => setIsTransitioning(false));
   }, [theme, isTransitioning]);
-
+ */
 
 
 // Détecter le thème système
