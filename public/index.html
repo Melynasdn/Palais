@@ -4,7 +4,13 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <!-- Empêcher le navigateur de forcer son dark mode sur ton site -->
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+
+<!-- Couleur de la barre d'adresse — ne pas mettre noir fixe -->
+<meta name="theme-color" content="#FAF7F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#08080D" media="(prefers-color-scheme: dark)">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <meta
       name="description"

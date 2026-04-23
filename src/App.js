@@ -168,7 +168,57 @@ const App = () => {
 
 // Détecter le thème système
 useEffect(() => {
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  // Détecter le thème système AVANT que color-scheme: only light le bloque
+  let prefersDark = false;
+  
+  try {
+    // Méthode 1 : matchMedia classique
+    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  } catch (e) {}
+
+  // Méthode 2 : fallback pour Samsung — vérifier la luminosité du user-agent
+  if (!prefersDark) {
+    try {
+      // Tester en créant un élément temporaire sans color-scheme: only light
+      const testEl = document.createElement('div');
+      testEl.style.cssText = 'color-scheme:light dark;position:absolute;visibility:hidden;';
+      document.body.appendChild(testEl);
+      const computed = getComputedStyle(testEl);
+      const bgColor = computed.colorScheme;
+      document.body.removeChild(testEl);
+      if (bgColor && bgColor.includes('dark')) {
+        prefersDark = true;
+      }
+    } catch (e) {}
+  }
+
+  // Méthode 3 : Samsung Internet specific
+  if (!prefersDark) {
+    try {
+      const mqDark = window.matchMedia('(prefers-color-scheme: dark)');
+      const mqLight = window.matchMedia('(prefers-color-scheme: light)');
+      // Si ni dark ni light ne match, Samsung force son propre mode
+      // On check via la couleur réelle du body
+      if (!mqDark.matches && !mqLight.matches) {
+        const testDiv = document.createElement('div');
+        testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
+        document.body.appendChild(testDiv);
+        const bg = getComputedStyle(testDiv).backgroundColor;
+        document.body.removeChild(testDiv);
+        // Si le background Canvas est sombre, le système est en dark
+        const match = bg.match(/\d+/g);
+        if (match) {
+          const r = parseInt(match[0]);
+          const g = parseInt(match[1]);
+          const b = parseInt(match[2]);
+          if (r < 128 && g < 128 && b < 128) {
+            prefersDark = true;
+          }
+        }
+      }
+    } catch (e) {}
+  }
+
   if (prefersDark) {
     setPendingDarkSwitch(true);
   }
