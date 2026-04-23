@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Volume2, VolumeX, Sun, Moon, Heart, Send,Star } from 'lucide-react';
+import { Sun, Moon, Heart, Send,Star } from 'lucide-react';
 import CoupleFrame from './assets/CoupleFrame.png';
 import CoupleFrameDark from './assets/CoupleFrameDark.png';
 import './App.css';
@@ -396,8 +396,12 @@ useEffect(() => {
       .to(flashRef.current, { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "-=1.5");
   };
 
-  const toggleMute = () => { if (audioRef.current) { audioRef.current.muted = !audioRef.current.muted; setIsMuted(!isMuted); } };
-
+ const toggleMute = () => {
+  if (audioRef.current) {
+    audioRef.current.muted = !audioRef.current.muted;
+    setIsMuted(!isMuted);
+  }
+};
 
   /* ===============RSVP =================== */
 const [isSubmitting, setIsSubmitting] = useState(false);
@@ -502,28 +506,37 @@ useEffect(() => {
       <audio ref={audioRef} loop preload="auto"><source src="/music.mp3" type="audio/mpeg" /></audio>
 
 
-      {isOpen && (
-        <div className="dn-fixed-controls">
-          <button onClick={toggleMute} className="dn-control-btn" aria-label="Toggle musique">
-            <div className="dn-control-icon">{isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}</div>
-            {!isMuted && <div className="dn-music-bars"><span className="dn-bar dn-bar-1" /><span className="dn-bar dn-bar-2" /><span className="dn-bar dn-bar-3" /></div>}
-          </button>
-          <button onClick={toggleTheme} className="dn-control-btn dn-theme-btn" aria-label="Toggle thème">
-            <div className={`dn-theme-icons ${theme === 'dark' ? 'is-dark' : ''}`}><Sun size={18} className="dn-sun-icon" /><Moon size={18} className="dn-moon-icon" /></div>
-          </button>
-        </div>
-      )}
+{isOpen && (
+  <div className="dn-center-controls">
+    
+    <button
+      onClick={toggleTheme}
+      className="dn-theme-center-btn"
+      aria-label="Changer le thème"
+    >
+      <div className={`dn-theme-icons ${theme === 'dark' ? 'is-dark' : ''}`}>
+        <Sun size={22} className="dn-sun-icon" />
+        <Moon size={22} className="dn-moon-icon" />
+      </div>
+
+      <span className="dn-theme-text">
+        {theme === 'dark' ? 'Mode clair' : 'Mode nuit'}
+      </span>
+    </button>
+    <button onClick={toggleMute}>...;</button>
+
+  </div>
+)}
 
       {!isOpen && (
         <div className="ouverture-wrapper" onClick={handleStartTransition}>
           <div className={`ouverture-poster ${hasStarted ? 'hidden' : ''}`} style={{ backgroundImage: "url('/poster.jpg')" }} />
           <video ref={videoRef} className="ouverture-video" playsInline src="/ouverture.mp4" />
         </div>
+        
       )}
 
-      <a href="intent://tonsite.com#Intent;scheme=https;package=com.android.chrome;end;">
-  Ouvrir dans Chrome
-</a>
+
 
       <main ref={mainContentRef} className={`main-content ${!isOpen ? 'hidden' : ''}`}>
 
