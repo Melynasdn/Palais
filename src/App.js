@@ -79,90 +79,110 @@ const App = () => {
 
   
 
-    const toggleTheme = useCallback(() => {
-    if (isTransitioning) return;
-    const next = theme === 'light' ? 'dark' : 'light';
-    const vid = next === 'dark' ? transitionVideoDarkRef.current : transitionVideoLightRef.current;
-    if (!vid) return;
-    setIsTransitioning(true);
-    transitionVideoDarkRef.current.style.display = 'none'; transitionVideoLightRef.current.style.display = 'none';
-    vid.style.display = 'block'; vid.style.opacity = '0'; vid.currentTime = 0;
-    const onReady = () => {
-      vid.removeEventListener('playing', onReady); vid.style.opacity = '1';
-      let themeSwitched = false;
-      let textSwitched = false; 
-      vid.ontimeupdate = () => {
-  const switchPoint = vid.duration * 0.4;
-  const textSwitchPoint = vid.duration * 0.15; // ← texte change plus tôt (2s avant environ)
+const toggleTheme = useCallback(() => {
+  if (isTransitioning) return;
+
+  const next = theme === 'light' ? 'dark' : 'light';
+  const vid = next === 'dark' ? transitionVideoDarkRef.current : transitionVideoLightRef.current;
   
-  // Changer les couleurs du texte hero en premier, avec transition fluide
-  if (!textSwitched && vid.currentTime >= textSwitchPoint) {
-    textSwitched = true;
-    const heroContent = document.querySelector('.dn-hero-content');
-    if (heroContent) {
-      // Laisser la transition CSS faire le fondu
-      heroContent.querySelectorAll('p, h1, div').forEach(el => {
-        el.style.transition = 'color 2s ease, background 2s ease, text-shadow 2s ease';
-      });
-    }
-    // Forcer le re-render React pour que les couleurs conditionnelles changent
-    setTheme(prev => prev); // ne change rien mais force les styles inline à se recalculer
-    // On applique manuellement les couleurs dark/light sur les éléments
-    const isDark = next === 'dark';
-    heroContent?.querySelectorAll('p').forEach((p, i) => {
-      if (i === 0) p.style.color = isDark ? '#c8bda4' : '#4a5a3f';
-      if (i === 1) p.style.color = isDark ? 'rgba(200,189,164,0.7)' : 'rgba(74,90,63,0.75)';
-    });
-    const h1 = heroContent?.querySelector('h1');
-    if (h1) {
-      h1.style.color = isDark ? '#f0e6cc' : '#3d4e35';
-      h1.style.textShadow = isDark
-        ? '0 2px 40px rgba(0,0,0,0.35)'
-        : '0 2px 24px rgba(255,255,255,0.5)';
-    }
-    const line = heroContent?.querySelector('div');
-    if (line) line.style.background = isDark ? 'rgba(200,189,164,0.4)' : 'rgba(74,90,63,0.35)';
-  }
+  if (!vid) return;
 
-  if (!themeSwitched && vid.currentTime >= switchPoint) {
-    themeSwitched = true;
+  setIsTransitioning(true);
+  
+  // Reset des vidéos de transition
+  transitionVideoDarkRef.current.style.display = 'none'; 
+  transitionVideoLightRef.current.style.display = 'none';
+  
+  vid.style.display = 'block'; 
+  vid.style.opacity = '0'; 
+  vid.currentTime = 0;
 
-    const root = document.documentElement;
-    const wrapper = document.querySelector('.app-wrapper');
-    const heroLight = document.querySelector('.dn-hero-video--light');
-    const heroDark = document.querySelector('.dn-hero-video--dark');
+  const onReady = () => {
+    vid.removeEventListener('playing', onReady);
+    vid.style.opacity = '1';
+    
+    let themeSwitched = false;
+    let textSwitched = false; 
 
-    root.style.setProperty('transition', 'none');
-    if (wrapper) wrapper.style.transition = 'none';
-    if (heroLight) heroLight.style.transition = 'none';
-    if (heroDark) heroDark.style.transition = 'none';
+    vid.ontimeupdate = () => {
+      const switchPoint = vid.duration * 0.4;
+      const textSwitchPoint = vid.duration * 0.15; 
 
-    const vars = THEMES[next];
-    Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
-    if (wrapper) wrapper.setAttribute('data-theme', next);
+      // 1. Changement préventif du texte (fluidité visuelle)
+      if (!textSwitched && vid.currentTime >= textSwitchPoint) {
+        textSwitched = true;
+        const heroContent = document.querySelector('.dn-hero-content');
+        if (heroContent) {
+          heroContent.querySelectorAll('p, h1, div').forEach(el => {
+            el.style.transition = 'color 2s ease, background 2s ease, text-shadow 2s ease';
+          });
+        }
+        
+        // Application manuelle des couleurs pour anticiper le re-render
+        const isDark = next === 'dark';
+        heroContent?.querySelectorAll('p').forEach((p, i) => {
+          if (i === 0) p.style.color = isDark ? '#c8bda4' : '#4a5a3f';
+          if (i === 1) p.style.color = isDark ? 'rgba(200,189,164,0.7)' : 'rgba(74,90,63,0.75)';
+        });
+      }
 
-    if (next === 'dark') {
-      if (heroLight) heroLight.style.opacity = '0';
-      if (heroDark) heroDark.style.opacity = '1';
-    } else {
-      if (heroLight) heroLight.style.opacity = '1';
-      if (heroDark) heroDark.style.opacity = '0';
-    }
+      // 2. Le Switch de thème principal (Cœur de la correction)
+      if (!themeSwitched && vid.currentTime >= switchPoint) {
+        themeSwitched = true;
 
-    void document.body.offsetHeight;
+        const root = document.documentElement;
+        const wrapper = document.querySelector('.app-wrapper');
+        const heroLight = document.querySelector('.dn-hero-video--light');
+        const heroDark = document.querySelector('.dn-hero-video--dark');
 
-    requestAnimationFrame(() => {
-      root.style.removeProperty('transition');
-      if (wrapper) wrapper.style.transition = '';
-      if (heroLight) heroLight.style.transition = '';
-      if (heroDark) heroDark.style.transition = '';
-    });
-  }
-};
-      vid.onended = () => { vid.ontimeupdate = null; vid.onended = null; vid.style.opacity = '0'; setTimeout(() => { vid.style.display = 'none'; setTheme(next); setIsTransitioning(false); }, 150); };
+        // Désactiver temporairement les transitions CSS pour un switch instantané sous la vidéo
+        root.style.setProperty('transition', 'none');
+        
+        // --- CORRECTION CRUCIALE POUR ANDROID ---
+        // On change le color-scheme pour que le navigateur arrête de forcer ses propres couleurs
+        // 'dark' quand on passe sur ton thème noir, 'light' quand on revient au beige.
+        root.style.colorScheme = next; 
+        // ----------------------------------------
+
+        // Application des variables CSS de ton objet THEMES
+        const vars = THEMES[next];
+        Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
+        
+        if (wrapper) wrapper.setAttribute('data-theme', next);
+
+        // Switch des assets du Hero
+        if (next === 'dark') {
+          if (heroLight) heroLight.style.opacity = '0';
+          if (heroDark) heroDark.style.opacity = '1';
+        } else {
+          if (heroLight) heroLight.style.opacity = '1';
+          if (heroDark) heroDark.style.opacity = '0';
+        }
+
+        // Force le recalcul du layout (reflow)
+        void document.body.offsetHeight;
+
+        requestAnimationFrame(() => {
+          root.style.removeProperty('transition');
+        });
+      }
     };
-    vid.addEventListener('playing', onReady); vid.play().catch(() => setIsTransitioning(false));
-  }, [theme, isTransitioning]);
+
+    vid.onended = () => {
+      vid.ontimeupdate = null;
+      vid.onended = null;
+      vid.style.opacity = '0';
+      setTimeout(() => {
+        vid.style.display = 'none';
+        setTheme(next);
+        setIsTransitioning(false);
+      }, 150);
+    };
+  };
+
+  vid.addEventListener('playing', onReady);
+  vid.play().catch(() => setIsTransitioning(false));
+}, [theme, isTransitioning]);
 
 
 
@@ -316,32 +336,53 @@ useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
-  // Attendre que le site soit rendu
+  // On attend que le navigateur ait fini d'appliquer ses filtres de forçage
   const timer = setTimeout(() => {
     try {
-      // Vérifier la couleur réelle du body ou du wrapper
-      const wrapper = document.querySelector('.app-wrapper');
-      if (!wrapper) return;
+      const testDiv = document.createElement('div');
+      // On utilise des couleurs "témoins"
+      // Si le mode forcé est actif, le blanc (#FFFFFF) deviendra sombre
+      testDiv.style.cssText = `
+        position: fixed;
+        top: -100px;
+        left: -100px;
+        width: 1px;
+        height: 1px;
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        visibility: visible;
+        pointer-events: none;
+      `;
+      document.body.appendChild(testDiv);
 
-      const computedBg = getComputedStyle(wrapper).backgroundColor;
-      const match = computedBg.match(/\d+/g);
-      if (!match) return;
+      const computedBg = window.getComputedStyle(testDiv).backgroundColor;
+      document.body.removeChild(testDiv);
 
-      const r = parseInt(match[0]);
-      const g = parseInt(match[1]);
-      const b = parseInt(match[2]);
+      // Extraction des valeurs RGB
+      const rgb = computedBg.match(/\d+/g);
+      if (rgb) {
+        const r = parseInt(rgb[0]);
+        const g = parseInt(rgb[1]);
+        const b = parseInt(rgb[2]);
 
-      // Notre bg-primary light est #FAF7F2 → RGB(250, 247, 242)
-      // Si le navigateur l'a modifié en quelque chose de sombre ou marron
-      // → il force ses couleurs
-      if (r < 200 || g < 200 || b < 200) {
-        setPendingDarkSwitch(true);
+        // Si le blanc n'est plus blanc (ex: Samsung transforme #FFF en #212121)
+        // On considère que le navigateur a "hacké" le rendu.
+        const isForcedDark = (r < 230 || g < 230 || b < 230);
+
+        if (isForcedDark) {
+          console.log("Auto Dark Mode détecté ! Activation du thème personnalisé.");
+          setPendingDarkSwitch(true);
+        }
       }
-    } catch (e) {}
-  }, 1000);
+    } catch (e) {
+      console.error("Erreur détection mode sombre", e);
+    }
+  }, 500); // 500ms suffisent généralement après le chargement
 
   return () => clearTimeout(timer);
 }, []);
+
+
 
 // Lancer la transition vidéo une fois le site ouvert
 useEffect(() => {
