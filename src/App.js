@@ -866,17 +866,18 @@ Votre présence à nos côtés sera pour nous un immense bonheur et contribuera 
 
 <footer className="dn-footer">
   <div className="dn-footer-inner">
-    <p className="dn-footer-credit">Made with love by DigiInvitations DZ</p>
+    <p className="dn-footer-credit">Made with love by Digital.invites.dz
+</p>
 
 <div className="dn-footer-socials">
-  <a href="https://www.instagram.com/digi.invites.dz?igsh=ajZkZW41dXlkd3Q3&utm_source=qr" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="Instagram">
+  <a href="https://www.instagram.com/digital.invites.dz?igsh=ajZkZW41dXlkd3Q3&utm_source=qr" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="Instagram">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="2" width="20" height="20" rx="5" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
     </svg>
   </a>
-  <a href="https://www.tiktok.com/@digiinvitations?_r=1&_t=ZS-95mgv104jcg" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="TikTok">
+  <a href="https://www.tiktok.com/@digitalinvitations.dz?_r=1&_t=ZS-95n59pHQKs3" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="TikTok">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
     </svg>
