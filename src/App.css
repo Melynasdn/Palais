@@ -882,19 +882,25 @@ body { overflow-x: hidden; -webkit-font-smoothing: antialiased; }
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: clamp(8px, 4vw, 24px);
+  gap: clamp(4px, 2vw, 24px);
   margin-bottom: 44px;
   flex-wrap: nowrap;
+  padding: 0 8px;
+}
+
+.dn-cd-ring-item {
+  flex-shrink: 0;
 }
 
 .dn-cd-ring-item svg {
+  width: clamp(68px, 20vw, 92px);
+  height: clamp(68px, 20vw, 92px);
   filter: drop-shadow(0 0 10px rgba(200,189,164,0.1));
   transition: filter 0.3s ease;
 }
 .dn-cd-ring-item:hover svg {
   filter: drop-shadow(0 0 20px rgba(200,189,164,0.25));
 }
-
 
 
 

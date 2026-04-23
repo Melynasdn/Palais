@@ -766,7 +766,7 @@ Votre présence à nos côtés sera pour nous un immense bonheur et contribuera 
         const dash = circ * Math.min(value / max, 1);
         return (
           <div key={id} className="dn-cd-ring-item">
-            <svg width="92" height="92" viewBox="0 0 92 92">
+            <svg viewBox="0 0 92 92">
   <defs>
     <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stopColor={theme === 'dark' ? '#FAF7F2' : '#c8bda4'}/>
