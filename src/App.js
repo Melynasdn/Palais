@@ -176,7 +176,7 @@ useEffect(() => {
 
 
 // Détecter le thème système
-useEffect(() => {
+/* useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
@@ -186,6 +186,43 @@ useEffect(() => {
 
   let prefersDark = false;
 
+  try {
+    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  } catch (e) {}
+
+  if (!prefersDark) {
+    try {
+      const testDiv = document.createElement('div');
+      testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
+      document.body.appendChild(testDiv);
+      const bg = getComputedStyle(testDiv).backgroundColor;
+      document.body.removeChild(testDiv);
+      const match = bg.match(/\d+/g);
+      if (match && parseInt(match[0]) < 128 && parseInt(match[1]) < 128 && parseInt(match[2]) < 128) {
+        prefersDark = true;
+      }
+    } catch (e) {}
+  }
+
+  if (prefersDark) {
+    setPendingDarkSwitch(true);
+  }
+}, []); */
+
+useEffect(() => {
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  if (isIOS) return;
+
+  const isChrome = /Chrome\/\d+/.test(navigator.userAgent) && !/SamsungBrowser/i.test(navigator.userAgent);
+  if (isChrome) return;
+
+  // Samsung Browser → on montre le prompt, PAS de dark auto ici
+  // Le dark sera activé quand l'user clique "Continuer ici"
+  const isSamsungBrowser = /SamsungBrowser/i.test(navigator.userAgent);
+  if (isSamsungBrowser) return;
+
+  // Autres navigateurs Android
+  let prefersDark = false;
   try {
     prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   } catch (e) {}
@@ -406,23 +443,26 @@ useEffect(() => {
 </button>
 
       <button
-        onClick={() => setShowChromePrompt(false)}
-        style={{
-          width: '100%',
-          padding: '12px 24px',
-          background: 'transparent',
-          color: 'rgba(255,255,255,0.4)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '12px',
-          fontFamily: '"Josefin Sans", sans-serif',
-          fontSize: '0.75rem',
-          fontWeight: 300,
-          letterSpacing: '0.1em',
-          cursor: 'pointer',
-        }}
-      >
-        Continuer ici
-      </button>
+  onClick={() => {
+    setShowChromePrompt(false);
+    setPendingDarkSwitch(true);
+  }}
+  style={{
+    width: '100%',
+    padding: '12px 24px',
+    background: 'transparent',
+    color: 'rgba(255,255,255,0.4)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '12px',
+    fontFamily: '"Josefin Sans", sans-serif',
+    fontSize: '0.75rem',
+    fontWeight: 300,
+    letterSpacing: '0.1em',
+    cursor: 'pointer',
+  }}
+>
+  Continuer ici
+</button>
     </div>
   </div>
 )}
