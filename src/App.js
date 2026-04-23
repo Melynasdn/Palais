@@ -167,7 +167,7 @@ const App = () => {
 
 
 // Détecter le thème système
-useEffect(() => {
+/* useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
@@ -215,6 +215,99 @@ useEffect(() => {
   }
 
   if (prefersDark) {
+    setPendingDarkSwitch(true);
+  }
+}, []);
+ */
+
+
+useEffect(() => {
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  if (isIOS) return;
+
+  // Détecter si le navigateur force son propre dark mode (Chrome Android Auto Dark)
+  // Si oui, on doit activer notre dark mode propre pour remplacer le rendu moche
+  const isAndroid = /Android/.test(navigator.userAgent);
+  
+  // Vérifier si le navigateur modifie les couleurs lui-même
+  let browserForcingDark = false;
+  if (isAndroid) {
+    try {
+      const testDiv = document.createElement('div');
+      testDiv.style.cssText = 'background:#FFFFFF;color:#000000;position:absolute;visibility:hidden;width:1px;height:1px;';
+      document.body.appendChild(testDiv);
+      const computedBg = getComputedStyle(testDiv).backgroundColor;
+      const computedColor = getComputedStyle(testDiv).color;
+      document.body.removeChild(testDiv);
+      
+      // Si le navigateur a changé le blanc en sombre, il force son dark mode
+      const bgMatch = computedBg.match(/\d+/g);
+      const colorMatch = computedColor.match(/\d+/g);
+      
+      if (bgMatch) {
+        const r = parseInt(bgMatch[0]);
+        const g = parseInt(bgMatch[1]);
+        const b = parseInt(bgMatch[2]);
+        // Le navigateur a transformé #FFFFFF en quelque chose de sombre
+        if (r < 200 || g < 200 || b < 200) {
+          browserForcingDark = true;
+        }
+      }
+      
+      if (colorMatch) {
+        const r = parseInt(colorMatch[0]);
+        const g = parseInt(colorMatch[1]);
+        const b = parseInt(colorMatch[2]);
+        // Le navigateur a transformé #000000 en quelque chose de clair
+        if (r > 100 || g > 100 || b > 100) {
+          browserForcingDark = true;
+        }
+      }
+    } catch (e) {}
+  }
+
+  let prefersDark = false;
+
+  try {
+    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  } catch (e) {}
+
+  if (!prefersDark) {
+    try {
+      const testEl = document.createElement('div');
+      testEl.style.cssText = 'color-scheme:light dark;position:absolute;visibility:hidden;';
+      document.body.appendChild(testEl);
+      const bgColor = getComputedStyle(testEl).colorScheme;
+      document.body.removeChild(testEl);
+      if (bgColor && bgColor.includes('dark')) {
+        prefersDark = true;
+      }
+    } catch (e) {}
+  }
+
+  if (!prefersDark) {
+    try {
+      const mqDark = window.matchMedia('(prefers-color-scheme: dark)');
+      const mqLight = window.matchMedia('(prefers-color-scheme: light)');
+      if (!mqDark.matches && !mqLight.matches) {
+        const testDiv = document.createElement('div');
+        testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
+        document.body.appendChild(testDiv);
+        const bg = getComputedStyle(testDiv).backgroundColor;
+        document.body.removeChild(testDiv);
+        const match = bg.match(/\d+/g);
+        if (match && parseInt(match[0]) < 128 && parseInt(match[1]) < 128 && parseInt(match[2]) < 128) {
+          prefersDark = true;
+        }
+      }
+    } catch (e) {}
+  }
+
+  // Si le navigateur ne force pas son dark mode ET le système n'est pas en dark
+  // → pas besoin de switcher
+  if (!prefersDark && !browserForcingDark) return;
+
+  if (prefersDark || browserForcingDark) {
     setPendingDarkSwitch(true);
   }
 }, []);
