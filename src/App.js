@@ -56,7 +56,6 @@ const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [pendingDarkSwitch, setPendingDarkSwitch] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [theme, setTheme] = useState('light');
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -76,7 +75,14 @@ const App = () => {
   const countdownRef = useRef(null); const countdownTitleRef = useRef(null); const countdownCardRef = useRef(null);
   const targetDate = '2026-05-01';
 
+useEffect(() => {
+  const root = document.documentElement;
 
+  // 🔒 Bloque le dark forcé proprement
+  root.style.setProperty('color-scheme', 'light only');
+  root.style.setProperty('forced-color-adjust', 'none');
+
+}, []);
   
 
     const toggleTheme = useCallback(() => {
@@ -313,42 +319,25 @@ const App = () => {
 }, []); */
 
 
+useEffect(() => {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    setTheme(savedTheme);
+  }
+}, []);
 
 useEffect(() => {
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  if (isIOS) return;
-
-  const mq = window.matchMedia('(prefers-color-scheme: dark)');
-  
-  // Si l'utilisateur a son système en sombre, switch vers TON dark mode propre
-  if (mq.matches) {
-    setPendingDarkSwitch(true);
-  }
-
-  // Écouter les changements (si l'utilisateur toggle son téléphone)
-  const handler = (e) => {
-    if (e.matches && theme === 'light') {
-      setPendingDarkSwitch(true);
-    }
-  };
-  mq.addEventListener('change', handler);
-  return () => mq.removeEventListener('change', handler);
+  localStorage.setItem('theme', theme);
 }, [theme]);
 
-
-
-
-// Lancer la transition vidéo une fois le site ouvert
 useEffect(() => {
-  if (isOpen && pendingDarkSwitch && theme === 'light' && !isTransitioning) {
-    // Petit délai pour laisser le site s'afficher d'abord
-    const timer = setTimeout(() => {
-      toggleTheme();
-      setPendingDarkSwitch(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    setTheme(saved);
+  } else {
+    setTheme('light'); // toujours safe
   }
-}, [isOpen, pendingDarkSwitch, theme, isTransitioning, toggleTheme]);
+}, []);
 
 
 
@@ -449,6 +438,11 @@ const handleRsvpSubmit = async () => {
     setIsSubmitting(false);
   }
 };
+
+
+
+
+
 // Pause musique quand l'utilisateur quitte l'onglet/app
 useEffect(() => {
   const handleVisibility = () => {

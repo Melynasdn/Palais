@@ -3,14 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Empêche Chrome d'appliquer Auto Dark Theme -->
-<meta name="color-scheme" content="light dark">
-<meta name="supported-color-schemes" content="light dark">
-    <meta name="color-scheme" content="light">
+    <meta name="color-scheme" content="light only">
 
     <style>
-      :root {
-  color-scheme: light dark;
+     :root {
+  color-scheme: light;
+  forced-color-adjust: none;
+}
+html {
+  forced-color-adjust: none;
 }
     </style>
 
