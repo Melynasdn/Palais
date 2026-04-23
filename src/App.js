@@ -177,9 +177,12 @@ useEffect(() => {
 
 // Détecter le thème système
 useEffect(() => {
-  // Sur iOS, ne pas activer le dark auto
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
+
+  // Si c'est Chrome, ne pas activer le dark auto (comme iOS)
+  const isChrome = /Chrome\/\d+/.test(navigator.userAgent) && !/SamsungBrowser/i.test(navigator.userAgent);
+  if (isChrome) return;
 
   let prefersDark = false;
 
@@ -187,7 +190,6 @@ useEffect(() => {
     prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   } catch (e) {}
 
-  // Fallback Samsung
   if (!prefersDark) {
     try {
       const testDiv = document.createElement('div');
@@ -206,6 +208,8 @@ useEffect(() => {
     setPendingDarkSwitch(true);
   }
 }, []);
+
+
 // Lancer la transition vidéo une fois le site ouvert
 useEffect(() => {
   if (isOpen && pendingDarkSwitch && theme === 'light' && !isTransitioning) {
