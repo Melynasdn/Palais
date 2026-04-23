@@ -318,63 +318,93 @@ useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
-  // Méthode ultime : forcer un repaint et observer les changements
-  const detectForcedColors = () => {
-    const testDiv = document.createElement('div');
-    testDiv.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      background-color: #FFFFFF;
-      color: #000000;
-      forced-color-adjust: none !important;
-      -webkit-forced-color-adjust: none !important;
-    `;
-    
-    const inner = document.createElement('span');
-    inner.textContent = 'TEST';
-    inner.style.cssText = 'color: #000000; background: #FFFFFF;';
-    testDiv.appendChild(inner);
-    
-    document.body.appendChild(testDiv);
+  // ===== DEBUG NUKE =====
+  // 1. Alert système (impossible à cacher par CSS)
+  alert('🔍 DEBUG: useEffect lancé');
 
-    // Utiliser getComputedStyle avec un élément dans le flux visible
-    // Certains navigateurs ne modifient que les éléments visibles
-    requestAnimationFrame(() => {
-      const computedBg = getComputedStyle(testDiv).backgroundColor;
-      const computedColor = getComputedStyle(inner).color;
-      
-      console.log('BG:', computedBg, 'Color:', computedColor);
-      
-      // Vérifier si les valeurs ont été modifiées
-      const bgMatch = computedBg.match(/\d+/g);
-      const colorMatch = computedColor.match(/\d+/g);
-      
-      let isForced = false;
-      
-      if (bgMatch) {
-        const [r, g, b] = bgMatch.map(Number);
-        if (r < 200 || g < 200 || b < 200) isForced = true;
-      }
-      
-      if (colorMatch) {
-        const [r, g, b] = colorMatch.map(Number);
-        if (r > 100 || g > 100 || b > 100) isForced = true;
+  // 2. Créer un overlay natif (pas React) avec couleurs ultra-vives
+  const debugBox = document.createElement('div');
+  debugBox.id = 'debug-nuke';
+  debugBox.style.cssText = `
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    background: #FFFF00 !important;
+    color: #FF0000 !important;
+    border: 5px solid #FF0000 !important;
+    font-size: 16px !important;
+    font-family: monospace !important;
+    padding: 20px !important;
+    z-index: 2147483647 !important;
+    line-height: 1.5 !important;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8) !important;
+  `;
+  debugBox.innerHTML = '<b>⏳ TEST EN COURS...</b>';
+  document.body.appendChild(debugBox);
+
+  // Vibration pour confirmer l'exécution (si supporté)
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+  // ===== DÉTECTION =====
+  setTimeout(() => {
+    let result = '';
+
+    try {
+      // Test 1: Canvas system color
+      const d1 = document.createElement('div');
+      d1.style.cssText = 'background-color:canvas;color-scheme:light;position:absolute;visibility:hidden;';
+      document.body.appendChild(d1);
+      const c1 = getComputedStyle(d1).backgroundColor;
+      document.body.removeChild(d1);
+      result += `Test1(canvas): ${c1}<br/>`;
+
+      // Test 2: Couleur fixe #FAF7F2
+      const d2 = document.createElement('div');
+      d2.style.cssText = 'background:#FAF7F2;position:absolute;visibility:hidden;';
+      document.body.appendChild(d2);
+      const c2 = getComputedStyle(d2).backgroundColor;
+      document.body.removeChild(d2);
+      result += `Test2(#FAF7F2): ${c2}<br/>`;
+
+      // Test 3: prefers-color-scheme
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      result += `Test3(prefers-dark): ${mq.matches}<br/>`;
+
+      // Test 4: User Agent
+      result += `UA: ${navigator.userAgent.slice(0, 50)}...<br/>`;
+
+      // Test 5: Élément visible dans le DOM existant
+      const wrapper = document.querySelector('.app-wrapper');
+      if (wrapper) {
+        const c3 = getComputedStyle(wrapper).backgroundColor;
+        result += `Test5(.app-wrapper): ${c3}<br/>`;
+      } else {
+        result += `Test5: .app-wrapper NOT FOUND<br/>`;
       }
 
-      document.body.removeChild(testDiv);
-      
+      // Analyse
+      const isForced = c1 !== 'rgb(255, 255, 255)';
+      result += `<br/><b>FORCED: ${isForced}</b>`;
+
       if (isForced) {
         setPendingDarkSwitch(true);
+        if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
       }
-    });
-  };
 
-  const timer = setTimeout(detectForcedColors, 500);
-  return () => clearTimeout(timer);
+    } catch (e) {
+      result += `ERREUR: ${e.message}`;
+    }
+
+    debugBox.innerHTML = result;
+    alert('🔍 DEBUG: ' + result.replace(/<br\/>/g, '\n'));
+
+  }, 1000);
+
+  return () => {
+    const old = document.getElementById('debug-nuke');
+    if (old) old.remove();
+  };
 }, []);
 
 
