@@ -318,93 +318,53 @@ useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
-  // ===== DEBUG NUKE =====
-  // 1. Alert système (impossible à cacher par CSS)
-  alert('🔍 DEBUG: useEffect lancé');
-
-  // 2. Créer un overlay natif (pas React) avec couleurs ultra-vives
-  const debugBox = document.createElement('div');
-  debugBox.id = 'debug-nuke';
-  debugBox.style.cssText = `
-    position: fixed !important;
-    top: 10px !important;
-    left: 10px !important;
-    right: 10px !important;
-    background: #FFFF00 !important;
-    color: #FF0000 !important;
-    border: 5px solid #FF0000 !important;
-    font-size: 16px !important;
-    font-family: monospace !important;
-    padding: 20px !important;
-    z-index: 2147483647 !important;
-    line-height: 1.5 !important;
-    box-shadow: 0 0 50px rgba(0,0,0,0.8) !important;
-  `;
-  debugBox.innerHTML = '<b>⏳ TEST EN COURS...</b>';
-  document.body.appendChild(debugBox);
-
-  // Vibration pour confirmer l'exécution (si supporté)
-  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-
-  // ===== DÉTECTION =====
-  setTimeout(() => {
-    let result = '';
-
+  const timer = setTimeout(() => {
     try {
-      // Test 1: Canvas system color
-      const d1 = document.createElement('div');
-      d1.style.cssText = 'background-color:canvas;color-scheme:light;position:absolute;visibility:hidden;';
-      document.body.appendChild(d1);
-      const c1 = getComputedStyle(d1).backgroundColor;
-      document.body.removeChild(d1);
-      result += `Test1(canvas): ${c1}<br/>`;
+      // Créer un div blanc visible brièvement
+      const probe = document.createElement('div');
+      probe.style.cssText = 'position:fixed;top:0;left:0;width:10px;height:10px;background:#FFFFFF;z-index:-1;';
+      document.body.appendChild(probe);
 
-      // Test 2: Couleur fixe #FAF7F2
-      const d2 = document.createElement('div');
-      d2.style.cssText = 'background:#FAF7F2;position:absolute;visibility:hidden;';
-      document.body.appendChild(d2);
-      const c2 = getComputedStyle(d2).backgroundColor;
-      document.body.removeChild(d2);
-      result += `Test2(#FAF7F2): ${c2}<br/>`;
+      // Utiliser html2canvas ou un simple canvas pour lire le pixel réel
+      // Méthode alternative : utiliser un canvas avec drawWindow (non standard)
+      // La vraie solution : utiliser l'API EyeDropper ou un screenshot
 
-      // Test 3: prefers-color-scheme
-      const mq = window.matchMedia('(prefers-color-scheme: dark)');
-      result += `Test3(prefers-dark): ${mq.matches}<br/>`;
+      // Fallback pragmatique : détecter via le user agent si c'est un navigateur
+      // qui est connu pour forcer le dark mode
+      const ua = navigator.userAgent;
+      const isSamsungBrowser = /SamsungBrowser/i.test(ua);
+      
+      // Chrome Android avec version >= 96 peut forcer le dark mode
+      const isAndroid = /Android/.test(ua);
+      
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-      // Test 4: User Agent
-      result += `UA: ${navigator.userAgent.slice(0, 50)}...<br/>`;
+      document.body.removeChild(probe);
 
-      // Test 5: Élément visible dans le DOM existant
-      const wrapper = document.querySelector('.app-wrapper');
-      if (wrapper) {
-        const c3 = getComputedStyle(wrapper).backgroundColor;
-        result += `Test5(.app-wrapper): ${c3}<br/>`;
-      } else {
-        result += `Test5: .app-wrapper NOT FOUND<br/>`;
-      }
-
-      // Analyse
-      const isForced = c1 !== 'rgb(255, 255, 255)';
-      result += `<br/><b>FORCED: ${isForced}</b>`;
-
-      if (isForced) {
+      // Si c'est Samsung Browser en dark mode OU Chrome Android ancien en dark mode
+      // → ces navigateurs forcent toujours le dark
+      if (prefersDark && isSamsungBrowser) {
         setPendingDarkSwitch(true);
-        if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+        return;
       }
 
-    } catch (e) {
-      result += `ERREUR: ${e.message}`;
-    }
+      // Pour Chrome Android, le forçage dépend d'un flag
+      // On ne peut pas le détecter, donc on active notre dark mode
+      // seulement si prefers-dark ET Android 10 ou moins (versions problématiques)
+      if (prefersDark && isAndroid) {
+        const androidMatch = ua.match(/Android\s(\d+)/);
+        const androidVersion = androidMatch ? parseInt(androidMatch[1]) : 99;
+        
+        // Android 10 et moins avec Samsung → toujours problématique
+        // Android 11+ avec Chrome récent → souvent ok si color-scheme: light est respecté
+        if (androidVersion <= 12 || isSamsungBrowser) {
+          setPendingDarkSwitch(true);
+        }
+      }
+    } catch (e) {}
+  }, 500);
 
-    debugBox.innerHTML = result;
-    alert('🔍 DEBUG: ' + result.replace(/<br\/>/g, '\n'));
-
-  }, 1000);
-
-  return () => {
-    const old = document.getElementById('debug-nuke');
-    if (old) old.remove();
-  };
+  return () => clearTimeout(timer);
 }, []);
 
 
