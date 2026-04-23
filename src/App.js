@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Sun, Moon, Heart, Send,Star } from 'lucide-react';
+import { Heart, Send,Star } from 'lucide-react';
 import CoupleFrame from './assets/CoupleFrame.png';
 import CoupleFrameDark from './assets/CoupleFrameDark.png';
 import './App.css';
@@ -53,6 +53,7 @@ const THEMES = {
 
 
 const App = () => {
+  const isSamsung = /SamsungBrowser/i.test(navigator.userAgent);
   const [isOpen, setIsOpen] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -396,12 +397,12 @@ useEffect(() => {
       .to(flashRef.current, { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "-=1.5");
   };
 
- const toggleMute = () => {
+/*  const toggleMute = () => {
   if (audioRef.current) {
     audioRef.current.muted = !audioRef.current.muted;
     setIsMuted(!isMuted);
   }
-};
+}; */
 
   /* ===============RSVP =================== */
 const [isSubmitting, setIsSubmitting] = useState(false);
@@ -506,25 +507,17 @@ useEffect(() => {
       <audio ref={audioRef} loop preload="auto"><source src="/music.mp3" type="audio/mpeg" /></audio>
 
 
-{isOpen && (
-  <div className="dn-center-controls">
-    
-    <button
-      onClick={toggleTheme}
-      className="dn-theme-center-btn"
-      aria-label="Changer le thème"
+{isOpen && isSamsung && (
+  <div className="dn-center-open-chrome">
+    <a
+      href="intent://www.tonsite.com#Intent;scheme=https;package=com.android.chrome;end;"
+      className="dn-open-chrome-btn"
     >
-      <div className={`dn-theme-icons ${theme === 'dark' ? 'is-dark' : ''}`}>
-        <Sun size={22} className="dn-sun-icon" />
-        <Moon size={22} className="dn-moon-icon" />
-      </div>
-
-      <span className="dn-theme-text">
-        {theme === 'dark' ? 'Mode clair' : 'Mode nuit'}
-      </span>
-    </button>
-    <button onClick={toggleMute}>...;</button>
-
+      Ouvrir dans Chrome
+    </a>
+    <p className="dn-open-note">
+  Pour une meilleure expérience visuelle
+</p>
   </div>
 )}
 
