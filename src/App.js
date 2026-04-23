@@ -507,6 +507,43 @@ useEffect(() => {
 }, [isOpen, isMuted]);
 
 
+
+const [debugLogs, setDebugLogs] = useState([]);
+
+// Remplacer console.log temporairement
+useEffect(() => {
+  const originalLog = console.log;
+  console.log = (...args) => {
+    originalLog(...args);
+    setDebugLogs(prev => [...prev.slice(-9), args.join(' ')]);
+  };
+  return () => { console.log = originalLog; };
+}, []);
+
+// Affichage overlay (à mettre dans le return, tout en haut)
+// eslint-disable-next-line no-lone-blocks
+{debugLogs.length > 0 && (
+  <div style={{
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    background: 'rgba(0,0,0,0.85)',
+    color: '#0f0',
+    fontFamily: 'monospace',
+    fontSize: '11px',
+    padding: '8px',
+    zIndex: 99999,
+    maxHeight: '150px',
+    overflowY: 'auto',
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-all',
+  }}>
+    {debugLogs.map((log, i) => (
+      <div key={i}>{log}</div>
+    ))}
+  </div>
+)}
   return (
     <div className="app-wrapper" data-theme={theme}>
       <div ref={flashRef} className="flash-overlay" />
