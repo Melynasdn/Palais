@@ -316,18 +316,14 @@ useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
-  // Attendre que le DOM soit bien rendu
+  // Attendre que le site soit rendu
   const timer = setTimeout(() => {
     try {
-      // Créer un div avec des couleurs connues
-      const testDiv = document.createElement('div');
-      testDiv.style.cssText = 'background-color:#FFFFFF !important;color:#000000 !important;position:absolute;visibility:hidden;width:1px;height:1px;pointer-events:none;';
-      document.body.appendChild(testDiv);
-      
-      const computedBg = getComputedStyle(testDiv).backgroundColor;
-      document.body.removeChild(testDiv);
+      // Vérifier la couleur réelle du body ou du wrapper
+      const wrapper = document.querySelector('.app-wrapper');
+      if (!wrapper) return;
 
-      // Parser le RGB du background
+      const computedBg = getComputedStyle(wrapper).backgroundColor;
       const match = computedBg.match(/\d+/g);
       if (!match) return;
 
@@ -335,13 +331,14 @@ useEffect(() => {
       const g = parseInt(match[1]);
       const b = parseInt(match[2]);
 
-      // Si on a mis #FFFFFF mais le navigateur retourne autre chose que du blanc
-      // → le navigateur force son dark mode et modifie les couleurs
-      if (r < 240 || g < 240 || b < 240) {
+      // Notre bg-primary light est #FAF7F2 → RGB(250, 247, 242)
+      // Si le navigateur l'a modifié en quelque chose de sombre ou marron
+      // → il force ses couleurs
+      if (r < 200 || g < 200 || b < 200) {
         setPendingDarkSwitch(true);
       }
     } catch (e) {}
-  }, 500);
+  }, 1000);
 
   return () => clearTimeout(timer);
 }, []);
