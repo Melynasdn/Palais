@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Heart, Send,Star } from 'lucide-react';
+import { Volume2, VolumeX, Sun, Moon, Heart, Send,Star } from 'lucide-react';
 import CoupleFrame from './assets/CoupleFrame.png';
 import CoupleFrameDark from './assets/CoupleFrameDark.png';
 import './App.css';
@@ -53,15 +53,24 @@ const THEMES = {
 
 
 const App = () => {
-  const isSamsung = /SamsungBrowser/i.test(navigator.userAgent);
   const [isOpen, setIsOpen] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [isMuted] = useState(false);
+  const [pendingDarkSwitch, setPendingDarkSwitch] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [theme, setTheme] = useState('light');
-  const [isTransitioning] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [rsvpData, setRsvpData] = useState({ fullName: '', email: '', attending: '', message: '' });
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
+
+  const [showChromePrompt, setShowChromePrompt] = useState(false);
+
+useEffect(() => {
+  const isSamsungBrowser = /SamsungBrowser/i.test(navigator.userAgent);
+  if (isSamsungBrowser) {
+    setShowChromePrompt(true);
+  }
+}, []);
 
   const videoRef = useRef(null); const flashRef = useRef(null); const mainContentRef = useRef(null);
   const audioRef = useRef(null); const transitionVideoDarkRef = useRef(null); const transitionVideoLightRef = useRef(null);
@@ -76,17 +85,10 @@ const App = () => {
   const countdownRef = useRef(null); const countdownTitleRef = useRef(null); const countdownCardRef = useRef(null);
   const targetDate = '2026-05-01';
 
-useEffect(() => {
-  const root = document.documentElement;
 
-  // 🔒 Bloque le dark forcé proprement
-  root.style.setProperty('color-scheme', 'light only');
-  root.style.setProperty('forced-color-adjust', 'none');
-
-}, []);
   
 
-/*     const toggleTheme = useCallback(() => {
+    const toggleTheme = useCallback(() => {
     if (isTransitioning) return;
     const next = theme === 'light' ? 'dark' : 'light';
     const vid = next === 'dark' ? transitionVideoDarkRef.current : transitionVideoLightRef.current;
@@ -170,53 +172,32 @@ useEffect(() => {
     };
     vid.addEventListener('playing', onReady); vid.play().catch(() => setIsTransitioning(false));
   }, [theme, isTransitioning]);
- */
+
 
 
 // Détecter le thème système
-/* useEffect(() => {
+useEffect(() => {
+  // Sur iOS, ne pas activer le dark auto
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
   let prefersDark = false;
-  
+
   try {
     prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   } catch (e) {}
 
+  // Fallback Samsung
   if (!prefersDark) {
     try {
-      const testEl = document.createElement('div');
-      testEl.style.cssText = 'color-scheme:light dark;position:absolute;visibility:hidden;';
-      document.body.appendChild(testEl);
-      const computed = getComputedStyle(testEl);
-      const bgColor = computed.colorScheme;
-      document.body.removeChild(testEl);
-      if (bgColor && bgColor.includes('dark')) {
+      const testDiv = document.createElement('div');
+      testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
+      document.body.appendChild(testDiv);
+      const bg = getComputedStyle(testDiv).backgroundColor;
+      document.body.removeChild(testDiv);
+      const match = bg.match(/\d+/g);
+      if (match && parseInt(match[0]) < 128 && parseInt(match[1]) < 128 && parseInt(match[2]) < 128) {
         prefersDark = true;
-      }
-    } catch (e) {}
-  }
-
-  if (!prefersDark) {
-    try {
-      const mqDark = window.matchMedia('(prefers-color-scheme: dark)');
-      const mqLight = window.matchMedia('(prefers-color-scheme: light)');
-      if (!mqDark.matches && !mqLight.matches) {
-        const testDiv = document.createElement('div');
-        testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
-        document.body.appendChild(testDiv);
-        const bg = getComputedStyle(testDiv).backgroundColor;
-        document.body.removeChild(testDiv);
-        const match = bg.match(/\d+/g);
-        if (match) {
-          const r = parseInt(match[0]);
-          const g = parseInt(match[1]);
-          const b = parseInt(match[2]);
-          if (r < 128 && g < 128 && b < 128) {
-            prefersDark = true;
-          }
-        }
       }
     } catch (e) {}
   }
@@ -225,120 +206,17 @@ useEffect(() => {
     setPendingDarkSwitch(true);
   }
 }, []);
- */
-
-
-/* useEffect(() => {
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  if (isIOS) return;
-
-  // Détecter si le navigateur force son propre dark mode (Chrome Android Auto Dark)
-  // Si oui, on doit activer notre dark mode propre pour remplacer le rendu moche
-  const isAndroid = /Android/.test(navigator.userAgent);
-  
-  // Vérifier si le navigateur modifie les couleurs lui-même
-  let browserForcingDark = false;
-  if (isAndroid) {
-    try {
-      const testDiv = document.createElement('div');
-      testDiv.style.cssText = 'background:#FFFFFF;color:#000000;position:absolute;visibility:hidden;width:1px;height:1px;';
-      document.body.appendChild(testDiv);
-      const computedBg = getComputedStyle(testDiv).backgroundColor;
-      const computedColor = getComputedStyle(testDiv).color;
-      document.body.removeChild(testDiv);
-      
-      // Si le navigateur a changé le blanc en sombre, il force son dark mode
-      const bgMatch = computedBg.match(/\d+/g);
-      const colorMatch = computedColor.match(/\d+/g);
-      
-      if (bgMatch) {
-        const r = parseInt(bgMatch[0]);
-        const g = parseInt(bgMatch[1]);
-        const b = parseInt(bgMatch[2]);
-        // Le navigateur a transformé #FFFFFF en quelque chose de sombre
-        if (r < 200 || g < 200 || b < 200) {
-          browserForcingDark = true;
-        }
-      }
-      
-      if (colorMatch) {
-        const r = parseInt(colorMatch[0]);
-        const g = parseInt(colorMatch[1]);
-        const b = parseInt(colorMatch[2]);
-        // Le navigateur a transformé #000000 en quelque chose de clair
-        if (r > 100 || g > 100 || b > 100) {
-          browserForcingDark = true;
-        }
-      }
-    } catch (e) {}
-  }
-
-  let prefersDark = false;
-
-  try {
-    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  } catch (e) {}
-
-  if (!prefersDark) {
-    try {
-      const testEl = document.createElement('div');
-      testEl.style.cssText = 'color-scheme:light dark;position:absolute;visibility:hidden;';
-      document.body.appendChild(testEl);
-      const bgColor = getComputedStyle(testEl).colorScheme;
-      document.body.removeChild(testEl);
-      if (bgColor && bgColor.includes('dark')) {
-        prefersDark = true;
-      }
-    } catch (e) {}
-  }
-
-  if (!prefersDark) {
-    try {
-      const mqDark = window.matchMedia('(prefers-color-scheme: dark)');
-      const mqLight = window.matchMedia('(prefers-color-scheme: light)');
-      if (!mqDark.matches && !mqLight.matches) {
-        const testDiv = document.createElement('div');
-        testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
-        document.body.appendChild(testDiv);
-        const bg = getComputedStyle(testDiv).backgroundColor;
-        document.body.removeChild(testDiv);
-        const match = bg.match(/\d+/g);
-        if (match && parseInt(match[0]) < 128 && parseInt(match[1]) < 128 && parseInt(match[2]) < 128) {
-          prefersDark = true;
-        }
-      }
-    } catch (e) {}
-  }
-
-  // Si le navigateur ne force pas son dark mode ET le système n'est pas en dark
-  // → pas besoin de switcher
-  if (!prefersDark && !browserForcingDark) return;
-
-  if (prefersDark || browserForcingDark) {
-    setPendingDarkSwitch(true);
-  }
-}, []); */
-
-
+// Lancer la transition vidéo une fois le site ouvert
 useEffect(() => {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme) {
-    setTheme(savedTheme);
+  if (isOpen && pendingDarkSwitch && theme === 'light' && !isTransitioning) {
+    // Petit délai pour laisser le site s'afficher d'abord
+    const timer = setTimeout(() => {
+      toggleTheme();
+      setPendingDarkSwitch(false);
+    }, 1500);
+    return () => clearTimeout(timer);
   }
-}, []);
-
-useEffect(() => {
-  localStorage.setItem('theme', theme);
-}, [theme]);
-
-useEffect(() => {
-  const saved = localStorage.getItem('theme');
-  if (saved) {
-    setTheme(saved);
-  } else {
-    setTheme('light'); // toujours safe
-  }
-}, []);
+}, [isOpen, pendingDarkSwitch, theme, isTransitioning, toggleTheme]);
 
 
 
@@ -397,12 +275,8 @@ useEffect(() => {
       .to(flashRef.current, { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "-=1.5");
   };
 
-/*  const toggleMute = () => {
-  if (audioRef.current) {
-    audioRef.current.muted = !audioRef.current.muted;
-    setIsMuted(!isMuted);
-  }
-}; */
+  const toggleMute = () => { if (audioRef.current) { audioRef.current.muted = !audioRef.current.muted; setIsMuted(!isMuted); } };
+
 
   /* ===============RSVP =================== */
 const [isSubmitting, setIsSubmitting] = useState(false);
@@ -443,11 +317,6 @@ const handleRsvpSubmit = async () => {
     setIsSubmitting(false);
   }
 };
-
-
-
-
-
 // Pause musique quand l'utilisateur quitte l'onglet/app
 useEffect(() => {
   const handleVisibility = () => {
@@ -464,72 +333,116 @@ useEffect(() => {
 }, [isOpen, isMuted]);
 
 
-
-const [debugLogs, setDebugLogs] = useState([]);
-
-// Remplacer console.log temporairement
-useEffect(() => {
-  const originalLog = console.log;
-  console.log = (...args) => {
-    originalLog(...args);
-    setDebugLogs(prev => [...prev.slice(-9), args.join(' ')]);
-  };
-  return () => { console.log = originalLog; };
-}, []);
-
-// Affichage overlay (à mettre dans le return, tout en haut)
-// eslint-disable-next-line no-lone-blocks
-{debugLogs.length > 0 && (
-  <div style={{
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    background: 'rgba(0,0,0,0.85)',
-    color: '#0f0',
-    fontFamily: 'monospace',
-    fontSize: '11px',
-    padding: '8px',
-    zIndex: 99999,
-    maxHeight: '150px',
-    overflowY: 'auto',
-    whiteSpace: 'pre-wrap',
-    wordBreak: 'break-all',
-  }}>
-    {debugLogs.map((log, i) => (
-      <div key={i}>{log}</div>
-    ))}
-  </div>
-)}
   return (
     <div className="app-wrapper" data-theme={theme}>
       <div ref={flashRef} className="flash-overlay" />
       <audio ref={audioRef} loop preload="auto"><source src="/music.mp3" type="audio/mpeg" /></audio>
 
+{/* Prompt Samsung → Chrome */}
+{showChromePrompt && (
+  <div style={{
+    position: 'fixed',
+    inset: 0,
+    zIndex: 2000,
+    background: 'rgba(0,0,0,0.85)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '24px',
+  }}>
+    <div style={{
+      background: '#1a1a1a',
+      borderRadius: '20px',
+      padding: '40px 28px',
+      maxWidth: '340px',
+      textAlign: 'center',
+      border: '1px solid rgba(196,162,101,0.2)',
+    }}>
+      <p style={{
+        fontFamily: '"Great Vibes", cursive',
+        fontSize: '1.8rem',
+        color: '#C4A265',
+        marginBottom: '20px',
+      }}>
+        Meilleure expérience
+      </p>
+      <p style={{
+        fontFamily: '"Josefin Sans", sans-serif',
+        fontSize: '0.82rem',
+        fontWeight: 300,
+        color: 'rgba(255,255,255,0.7)',
+        lineHeight: 1.7,
+        marginBottom: '28px',
+      }}>
+        Pour profiter pleinement de votre invitation, veuillez ouvrir ce lien dans Chrome.
+      </p>
 
-{isOpen && isSamsung && (
-  <div className="dn-center-open-chrome">
-    <a
-      href="intent://www.tonsite.com#Intent;scheme=https;package=com.android.chrome;end;"
-      className="dn-open-chrome-btn"
-    >
-      Ouvrir dans Chrome
-    </a>
-    <p className="dn-open-note">
-  Pour une meilleure expérience visuelle
-</p>
+      <button
+        onClick={() => {
+          const url = window.location.href;
+          window.location.href = `intent://${url.replace(/https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+        }}
+        style={{
+          width: '100%',
+          padding: '14px 24px',
+          background: '#C4A265',
+          color: '#1a1a1a',
+          border: 'none',
+          borderRadius: '12px',
+          fontFamily: '"Josefin Sans", sans-serif',
+          fontSize: '0.82rem',
+          fontWeight: 400,
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          cursor: 'pointer',
+          marginBottom: '12px',
+        }}
+      >
+        Ouvrir dans Chrome
+      </button>
+
+      <button
+        onClick={() => setShowChromePrompt(false)}
+        style={{
+          width: '100%',
+          padding: '12px 24px',
+          background: 'transparent',
+          color: 'rgba(255,255,255,0.4)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '12px',
+          fontFamily: '"Josefin Sans", sans-serif',
+          fontSize: '0.75rem',
+          fontWeight: 300,
+          letterSpacing: '0.1em',
+          cursor: 'pointer',
+        }}
+      >
+        Continuer ici
+      </button>
+    </div>
   </div>
 )}
+
+
+      {isOpen && (
+        <div className="dn-fixed-controls">
+          <button onClick={toggleMute} className="dn-control-btn" aria-label="Toggle musique">
+            <div className="dn-control-icon">{isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}</div>
+            {!isMuted && <div className="dn-music-bars"><span className="dn-bar dn-bar-1" /><span className="dn-bar dn-bar-2" /><span className="dn-bar dn-bar-3" /></div>}
+          </button>
+          <button onClick={toggleTheme} className="dn-control-btn dn-theme-btn" aria-label="Toggle thème">
+            <div className={`dn-theme-icons ${theme === 'dark' ? 'is-dark' : ''}`}><Sun size={18} className="dn-sun-icon" /><Moon size={18} className="dn-moon-icon" /></div>
+          </button>
+        </div>
+      )}
 
       {!isOpen && (
         <div className="ouverture-wrapper" onClick={handleStartTransition}>
           <div className={`ouverture-poster ${hasStarted ? 'hidden' : ''}`} style={{ backgroundImage: "url('/poster.jpg')" }} />
           <video ref={videoRef} className="ouverture-video" playsInline src="/ouverture.mp4" />
         </div>
-        
       )}
-
-
 
       <main ref={mainContentRef} className={`main-content ${!isOpen ? 'hidden' : ''}`}>
 
