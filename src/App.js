@@ -378,29 +378,28 @@ useEffect(() => {
         Pour profiter pleinement de votre invitation, veuillez ouvrir ce lien dans Chrome.
       </p>
 
-      <button
-        onClick={() => {
-          const url = window.location.href;
-          window.location.href = `intent://${url.replace(/https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
-        }}
-        style={{
-          width: '100%',
-          padding: '14px 24px',
-          background: '#C4A265',
-          color: '#1a1a1a',
-          border: 'none',
-          borderRadius: '12px',
-          fontFamily: '"Josefin Sans", sans-serif',
-          fontSize: '0.82rem',
-          fontWeight: 400,
-          letterSpacing: '0.15em',
-          textTransform: 'uppercase',
-          cursor: 'pointer',
-          marginBottom: '12px',
-        }}
-      >
-        Ouvrir dans Chrome
-      </button>
+<button
+  onClick={() => {
+    window.location.href = 'intent://lina-et-amine.vercel.app/#Intent;scheme=https;package=com.android.chrome;end';
+  }}
+  style={{
+    width: '100%',
+    padding: '14px 24px',
+    background: '#c46565',
+    color: '#1a1a1a',
+    border: 'none',
+    borderRadius: '12px',
+    fontFamily: '"Josefin Sans", sans-serif',
+    fontSize: '0.82rem',
+    fontWeight: 400,
+    letterSpacing: '0.15em',
+    textTransform: 'uppercase',
+    cursor: 'pointer',
+    marginBottom: '12px',
+  }}
+>
+  Ouvrir dans Chrome
+</button>
 
       <button
         onClick={() => setShowChromePrompt(false)}
