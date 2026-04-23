@@ -318,55 +318,62 @@ useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
-  const detectForcedDark = () => {
-    let shouldSwitch = false;
+  // Méthode ultime : forcer un repaint et observer les changements
+  const detectForcedColors = () => {
+    const testDiv = document.createElement('div');
+    testDiv.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      background-color: #FFFFFF;
+      color: #000000;
+      forced-color-adjust: none !important;
+      -webkit-forced-color-adjust: none !important;
+    `;
+    
+    const inner = document.createElement('span');
+    inner.textContent = 'TEST';
+    inner.style.cssText = 'color: #000000; background: #FFFFFF;';
+    testDiv.appendChild(inner);
+    
+    document.body.appendChild(testDiv);
 
-    // === Méthode 1 : Détection officielle Chrome Auto Dark ===
-    try {
-      const detectionDiv = document.createElement('div');
-      detectionDiv.style.cssText = 'display:none;background-color:canvas;color-scheme:light;';
-      document.body.appendChild(detectionDiv);
-      const isAutoDark = getComputedStyle(detectionDiv).backgroundColor !== 'rgb(255, 255, 255)';
-      document.body.removeChild(detectionDiv);
-      if (isAutoDark) shouldSwitch = true;
-    } catch (e) {}
+    // Utiliser getComputedStyle avec un élément dans le flux visible
+    // Certains navigateurs ne modifient que les éléments visibles
+    requestAnimationFrame(() => {
+      const computedBg = getComputedStyle(testDiv).backgroundColor;
+      const computedColor = getComputedStyle(inner).color;
+      
+      console.log('BG:', computedBg, 'Color:', computedColor);
+      
+      // Vérifier si les valeurs ont été modifiées
+      const bgMatch = computedBg.match(/\d+/g);
+      const colorMatch = computedColor.match(/\d+/g);
+      
+      let isForced = false;
+      
+      if (bgMatch) {
+        const [r, g, b] = bgMatch.map(Number);
+        if (r < 200 || g < 200 || b < 200) isForced = true;
+      }
+      
+      if (colorMatch) {
+        const [r, g, b] = colorMatch.map(Number);
+        if (r > 100 || g > 100 || b > 100) isForced = true;
+      }
 
-    // === Méthode 2 : Détection Samsung Internet par UA + système sombre ===
-    // Samsung force son mode même sans que le site ne le demande
-    const isSamsungBrowser = /SamsungBrowser|Samsung|SM-|GT-/i.test(navigator.userAgent);
-    if (isSamsungBrowser) {
-      try {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        // Sur Samsung, même si le site dit "light only", le navigateur peut forcer
-        // On vérifie si le système est en sombre ET que Samsung est détecté
-        if (prefersDark) {
-          shouldSwitch = true;
-        }
-      } catch (e) {}
-    }
-
-    // === Méthode 3 : Fallback canvas system color (tous navigateurs) ===
-    if (!shouldSwitch) {
-      try {
-        const testDiv = document.createElement('div');
-        testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
-        document.body.appendChild(testDiv);
-        const bg = getComputedStyle(testDiv).backgroundColor;
-        document.body.removeChild(testDiv);
-        const match = bg.match(/\d+/g);
-        if (match) {
-          const [r, g, b] = match.map(Number);
-          if (r < 128 && g < 128 && b < 128) shouldSwitch = true;
-        }
-      } catch (e) {}
-    }
-
-    if (shouldSwitch) {
-      setPendingDarkSwitch(true);
-    }
+      document.body.removeChild(testDiv);
+      
+      if (isForced) {
+        setPendingDarkSwitch(true);
+      }
+    });
   };
 
-  const timer = setTimeout(detectForcedDark, 500);
+  const timer = setTimeout(detectForcedColors, 500);
   return () => clearTimeout(timer);
 }, []);
 
