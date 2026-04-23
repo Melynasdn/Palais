@@ -318,54 +318,22 @@ useEffect(() => {
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   if (isIOS) return;
 
-  const timer = setTimeout(() => {
-    try {
-      // Créer un div blanc visible brièvement
-      const probe = document.createElement('div');
-      probe.style.cssText = 'position:fixed;top:0;left:0;width:10px;height:10px;background:#FFFFFF;z-index:-1;';
-      document.body.appendChild(probe);
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  
+  // Si l'utilisateur a son système en sombre, switch vers TON dark mode propre
+  if (mq.matches) {
+    setPendingDarkSwitch(true);
+  }
 
-      // Utiliser html2canvas ou un simple canvas pour lire le pixel réel
-      // Méthode alternative : utiliser un canvas avec drawWindow (non standard)
-      // La vraie solution : utiliser l'API EyeDropper ou un screenshot
-
-      // Fallback pragmatique : détecter via le user agent si c'est un navigateur
-      // qui est connu pour forcer le dark mode
-      const ua = navigator.userAgent;
-      const isSamsungBrowser = /SamsungBrowser/i.test(ua);
-      
-      // Chrome Android avec version >= 96 peut forcer le dark mode
-      const isAndroid = /Android/.test(ua);
-      
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-      document.body.removeChild(probe);
-
-      // Si c'est Samsung Browser en dark mode OU Chrome Android ancien en dark mode
-      // → ces navigateurs forcent toujours le dark
-      if (prefersDark && isSamsungBrowser) {
-        setPendingDarkSwitch(true);
-        return;
-      }
-
-      // Pour Chrome Android, le forçage dépend d'un flag
-      // On ne peut pas le détecter, donc on active notre dark mode
-      // seulement si prefers-dark ET Android 10 ou moins (versions problématiques)
-      if (prefersDark && isAndroid) {
-        const androidMatch = ua.match(/Android\s(\d+)/);
-        const androidVersion = androidMatch ? parseInt(androidMatch[1]) : 99;
-        
-        // Android 10 et moins avec Samsung → toujours problématique
-        // Android 11+ avec Chrome récent → souvent ok si color-scheme: light est respecté
-        if (androidVersion <= 12 || isSamsungBrowser) {
-          setPendingDarkSwitch(true);
-        }
-      }
-    } catch (e) {}
-  }, 500);
-
-  return () => clearTimeout(timer);
-}, []);
+  // Écouter les changements (si l'utilisateur toggle son téléphone)
+  const handler = (e) => {
+    if (e.matches && theme === 'light') {
+      setPendingDarkSwitch(true);
+    }
+  };
+  mq.addEventListener('change', handler);
+  return () => mq.removeEventListener('change', handler);
+}, [theme]);
 
 
 
