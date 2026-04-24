@@ -553,7 +553,7 @@ useEffect(() => {
       transition: 'color 0.5s ease, text-shadow 0.5s ease',
       letterSpacing: '0.02em',
     }}>
-      Amine &amp; Lina
+      Bilal &amp; Lina
     </h1>
 
     <div style={{
@@ -789,7 +789,7 @@ Votre présence à nos côtés sera pour nous un immense bonheur et contribuera 
   <div className="dn-countdown-inner">
 
     <div ref={countdownTitleRef} className="dn-cd-header">
-      <p className="dn-cd-surtitle">Amine & Lina</p>
+      <p className="dn-cd-surtitle">Bilal & Lina</p>
       <h2 className="dn-cd-title-new">Compte à Rebours</h2>
       <div className="dn-cd-sep-line" />
     </div>
