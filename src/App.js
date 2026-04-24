@@ -726,7 +726,7 @@ Votre présence à nos côtés sera pour nous un immense bonheur et contribuera 
             <div className="dn-rsvp-ornament">
               <div className="dn-rsvp-orn-line" /><Heart size={18} strokeWidth={1.5} className="dn-rsvp-heart" /><div className="dn-rsvp-orn-line" />
             </div>
-            <p className="dn-rsvp-desc">Merci de confirmer votre présence avant le 1er Août 2026</p>
+            <p className="dn-rsvp-desc">Merci de confirmer votre présence avant le 1er Mai 2026</p>
           </div>
           <div ref={rsvpCardRef} className="dn-rsvp-card">
             {!rsvpSubmitted ? (
