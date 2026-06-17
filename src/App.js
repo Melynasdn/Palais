@@ -505,7 +505,7 @@ const App = () => {
               transition: 'color 0.5s ease, text-shadow 0.5s ease',
               letterSpacing: '0.02em',
             }}>
-              Alexandre &amp; Camille
+              Alex &amp; Camille
             </h1>
 
             <div style={{
@@ -733,7 +733,7 @@ const App = () => {
           <div className="dn-countdown-inner">
 
             <div ref={countdownTitleRef} className="dn-cd-header">
-              <p className="dn-cd-surtitle">Alexandre & Camille</p>
+              <p className="dn-cd-surtitle">Alex & Camille</p>
               <h2 className="dn-cd-title-new">Compte à Rebours</h2>
               <div className="dn-cd-sep-line" />
             </div>
