@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Volume2, VolumeX, Sun, Moon, Heart, Send,Star } from 'lucide-react';
+import { Volume2, VolumeX, Sun, Moon, Heart, Send, Star } from 'lucide-react';
 import CoupleFrame from './assets/CoupleFrame.png';
 import CoupleFrameDark from './assets/CoupleFrameDark.png';
 import './App.css';
@@ -65,12 +65,12 @@ const App = () => {
 
   const [showChromePrompt, setShowChromePrompt] = useState(false);
 
-useEffect(() => {
-  const isSamsungBrowser = /SamsungBrowser/i.test(navigator.userAgent);
-  if (isSamsungBrowser) {
-    setShowChromePrompt(true);
-  }
-}, []);
+  useEffect(() => {
+    const isSamsungBrowser = /SamsungBrowser/i.test(navigator.userAgent);
+    if (isSamsungBrowser) {
+      setShowChromePrompt(true);
+    }
+  }, []);
 
   const videoRef = useRef(null); const flashRef = useRef(null); const mainContentRef = useRef(null);
   const audioRef = useRef(null); const transitionVideoDarkRef = useRef(null); const transitionVideoLightRef = useRef(null);
@@ -83,12 +83,10 @@ useEffect(() => {
   const eventRef = useRef(null); const eventHeaderRef = useRef(null); const eventCardRef = useRef(null);
   const rsvpRef = useRef(null); const rsvpHeaderRef = useRef(null); const rsvpCardRef = useRef(null);
   const countdownRef = useRef(null); const countdownTitleRef = useRef(null); const countdownCardRef = useRef(null);
-  const targetDate = '2026-05-01';
+  const targetDate = '2026-06-20';
 
 
-  
-
-    const toggleTheme = useCallback(() => {
+  const toggleTheme = useCallback(() => {
     if (isTransitioning) return;
     const next = theme === 'light' ? 'dark' : 'light';
     const vid = next === 'dark' ? transitionVideoDarkRef.current : transitionVideoLightRef.current;
@@ -99,179 +97,133 @@ useEffect(() => {
     const onReady = () => {
       vid.removeEventListener('playing', onReady); vid.style.opacity = '1';
       let themeSwitched = false;
-      let textSwitched = false; 
+      let textSwitched = false;
       vid.ontimeupdate = () => {
-  const switchPoint = vid.duration * 0.4;
-  const textSwitchPoint = vid.duration * 0.15; // ← texte change plus tôt (2s avant environ)
-  
-  // Changer les couleurs du texte hero en premier, avec transition fluide
-  if (!textSwitched && vid.currentTime >= textSwitchPoint) {
-    textSwitched = true;
-    const heroContent = document.querySelector('.dn-hero-content');
-    if (heroContent) {
-      // Laisser la transition CSS faire le fondu
-      heroContent.querySelectorAll('p, h1, div').forEach(el => {
-        el.style.transition = 'color 2s ease, background 2s ease, text-shadow 2s ease';
-      });
-    }
-    // Forcer le re-render React pour que les couleurs conditionnelles changent
-    setTheme(prev => prev); // ne change rien mais force les styles inline à se recalculer
-    // On applique manuellement les couleurs dark/light sur les éléments
-    const isDark = next === 'dark';
-    heroContent?.querySelectorAll('p').forEach((p, i) => {
-      if (i === 0) p.style.color = isDark ? '#c8bda4' : '#4a5a3f';
-      if (i === 1) p.style.color = isDark ? 'rgba(200,189,164,0.7)' : 'rgba(74,90,63,0.75)';
-    });
-    const h1 = heroContent?.querySelector('h1');
-    if (h1) {
-      h1.style.color = isDark ? '#f0e6cc' : '#3d4e35';
-      h1.style.textShadow = isDark
-        ? '0 2px 40px rgba(0,0,0,0.35)'
-        : '0 2px 24px rgba(255,255,255,0.5)';
-    }
-    const line = heroContent?.querySelector('div');
-    if (line) line.style.background = isDark ? 'rgba(200,189,164,0.4)' : 'rgba(74,90,63,0.35)';
-  }
+        const switchPoint = vid.duration * 0.4;
+        const textSwitchPoint = vid.duration * 0.15;
 
-  if (!themeSwitched && vid.currentTime >= switchPoint) {
-    themeSwitched = true;
+        if (!textSwitched && vid.currentTime >= textSwitchPoint) {
+          textSwitched = true;
+          const heroContent = document.querySelector('.dn-hero-content');
+          if (heroContent) {
+            heroContent.querySelectorAll('p, h1, div').forEach(el => {
+              el.style.transition = 'color 2s ease, background 2s ease, text-shadow 2s ease';
+            });
+          }
+          setTheme(prev => prev);
+          const isDark = next === 'dark';
+          heroContent?.querySelectorAll('p').forEach((p, i) => {
+            if (i === 0) p.style.color = isDark ? '#c8bda4' : '#4a5a3f';
+            if (i === 1) p.style.color = isDark ? 'rgba(200,189,164,0.7)' : 'rgba(74,90,63,0.75)';
+          });
+          const h1 = heroContent?.querySelector('h1');
+          if (h1) {
+            h1.style.color = isDark ? '#f0e6cc' : '#3d4e35';
+            h1.style.textShadow = isDark
+              ? '0 2px 40px rgba(0,0,0,0.35)'
+              : '0 2px 24px rgba(255,255,255,0.5)';
+          }
+          const line = heroContent?.querySelector('div');
+          if (line) line.style.background = isDark ? 'rgba(200,189,164,0.4)' : 'rgba(74,90,63,0.35)';
+        }
 
-    const root = document.documentElement;
-    const wrapper = document.querySelector('.app-wrapper');
-    const heroLight = document.querySelector('.dn-hero-video--light');
-    const heroDark = document.querySelector('.dn-hero-video--dark');
+        if (!themeSwitched && vid.currentTime >= switchPoint) {
+          themeSwitched = true;
 
-    root.style.setProperty('transition', 'none');
-    if (wrapper) wrapper.style.transition = 'none';
-    if (heroLight) heroLight.style.transition = 'none';
-    if (heroDark) heroDark.style.transition = 'none';
+          const root = document.documentElement;
+          const wrapper = document.querySelector('.app-wrapper');
+          const heroLight = document.querySelector('.dn-hero-video--light');
+          const heroDark = document.querySelector('.dn-hero-video--dark');
 
-    const vars = THEMES[next];
-    Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
-    if (wrapper) wrapper.setAttribute('data-theme', next);
+          root.style.setProperty('transition', 'none');
+          if (wrapper) wrapper.style.transition = 'none';
+          if (heroLight) heroLight.style.transition = 'none';
+          if (heroDark) heroDark.style.transition = 'none';
 
-    if (next === 'dark') {
-      if (heroLight) heroLight.style.opacity = '0';
-      if (heroDark) heroDark.style.opacity = '1';
-    } else {
-      if (heroLight) heroLight.style.opacity = '1';
-      if (heroDark) heroDark.style.opacity = '0';
-    }
+          const vars = THEMES[next];
+          Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
+          if (wrapper) wrapper.setAttribute('data-theme', next);
 
-    void document.body.offsetHeight;
+          if (next === 'dark') {
+            if (heroLight) heroLight.style.opacity = '0';
+            if (heroDark) heroDark.style.opacity = '1';
+          } else {
+            if (heroLight) heroLight.style.opacity = '1';
+            if (heroDark) heroDark.style.opacity = '0';
+          }
 
-    requestAnimationFrame(() => {
-      root.style.removeProperty('transition');
-      if (wrapper) wrapper.style.transition = '';
-      if (heroLight) heroLight.style.transition = '';
-      if (heroDark) heroDark.style.transition = '';
-    });
-  }
-};
+          void document.body.offsetHeight;
+
+          requestAnimationFrame(() => {
+            root.style.removeProperty('transition');
+            if (wrapper) wrapper.style.transition = '';
+            if (heroLight) heroLight.style.transition = '';
+            if (heroDark) heroDark.style.transition = '';
+          });
+        }
+      };
       vid.onended = () => { vid.ontimeupdate = null; vid.onended = null; vid.style.opacity = '0'; setTimeout(() => { vid.style.display = 'none'; setTheme(next); setIsTransitioning(false); }, 150); };
     };
     vid.addEventListener('playing', onReady); vid.play().catch(() => setIsTransitioning(false));
   }, [theme, isTransitioning]);
 
 
+  useEffect(() => {
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    if (isIOS) return;
 
-// Détecter le thème système
-/* useEffect(() => {
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  if (isIOS) return;
+    const isChrome = /Chrome\/\d+/.test(navigator.userAgent) && !/SamsungBrowser/i.test(navigator.userAgent);
+    if (isChrome) return;
 
-  // Si c'est Chrome, ne pas activer le dark auto (comme iOS)
-  const isChrome = /Chrome\/\d+/.test(navigator.userAgent) && !/SamsungBrowser/i.test(navigator.userAgent);
-  if (isChrome) return;
+    const isSamsungBrowser = /SamsungBrowser/i.test(navigator.userAgent);
+    if (isSamsungBrowser) return;
 
-  let prefersDark = false;
-
-  try {
-    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  } catch (e) {}
-
-  if (!prefersDark) {
+    let prefersDark = false;
     try {
-      const testDiv = document.createElement('div');
-      testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
-      document.body.appendChild(testDiv);
-      const bg = getComputedStyle(testDiv).backgroundColor;
-      document.body.removeChild(testDiv);
-      const match = bg.match(/\d+/g);
-      if (match && parseInt(match[0]) < 128 && parseInt(match[1]) < 128 && parseInt(match[2]) < 128) {
-        prefersDark = true;
-      }
+      prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     } catch (e) {}
-  }
 
-  if (prefersDark) {
-    setPendingDarkSwitch(true);
-  }
-}, []); */
+    if (!prefersDark) {
+      try {
+        const testDiv = document.createElement('div');
+        testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
+        document.body.appendChild(testDiv);
+        const bg = getComputedStyle(testDiv).backgroundColor;
+        document.body.removeChild(testDiv);
+        const match = bg.match(/\d+/g);
+        if (match && parseInt(match[0]) < 128 && parseInt(match[1]) < 128 && parseInt(match[2]) < 128) {
+          prefersDark = true;
+        }
+      } catch (e) {}
+    }
 
-useEffect(() => {
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  if (isIOS) return;
-
-  const isChrome = /Chrome\/\d+/.test(navigator.userAgent) && !/SamsungBrowser/i.test(navigator.userAgent);
-  if (isChrome) return;
-
-  // Samsung Browser → on montre le prompt, PAS de dark auto ici
-  // Le dark sera activé quand l'user clique "Continuer ici"
-  const isSamsungBrowser = /SamsungBrowser/i.test(navigator.userAgent);
-  if (isSamsungBrowser) return;
-
-  // Autres navigateurs Android
-  let prefersDark = false;
-  try {
-    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  } catch (e) {}
-
-  if (!prefersDark) {
-    try {
-      const testDiv = document.createElement('div');
-      testDiv.style.cssText = 'background:Canvas;position:absolute;visibility:hidden;width:1px;height:1px;';
-      document.body.appendChild(testDiv);
-      const bg = getComputedStyle(testDiv).backgroundColor;
-      document.body.removeChild(testDiv);
-      const match = bg.match(/\d+/g);
-      if (match && parseInt(match[0]) < 128 && parseInt(match[1]) < 128 && parseInt(match[2]) < 128) {
-        prefersDark = true;
-      }
-    } catch (e) {}
-  }
-
-  if (prefersDark) {
-    setPendingDarkSwitch(true);
-  }
-}, []);
+    if (prefersDark) {
+      setPendingDarkSwitch(true);
+    }
+  }, []);
 
 
-// Lancer la transition vidéo une fois le site ouvert
-useEffect(() => {
-  if (isOpen && pendingDarkSwitch && theme === 'light' && !isTransitioning) {
-    // Petit délai pour laisser le site s'afficher d'abord
-    const timer = setTimeout(() => {
-      toggleTheme();
-      setPendingDarkSwitch(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }
-}, [isOpen, pendingDarkSwitch, theme, isTransitioning, toggleTheme]);
-
+  useEffect(() => {
+    if (isOpen && pendingDarkSwitch && theme === 'light' && !isTransitioning) {
+      const timer = setTimeout(() => {
+        toggleTheme();
+        setPendingDarkSwitch(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, pendingDarkSwitch, theme, isTransitioning, toggleTheme]);
 
 
   useEffect(() => { const vars = THEMES[theme]; const root = document.documentElement; Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v)); }, [theme]);
 
   useEffect(() => {
     const calculate = () => {
-      const now = new Date(); const target = new Date(targetDate + 'T19:00:00'); const diff = target - now;
+      const now = new Date(); const target = new Date(targetDate + 'T16:00:00'); const diff = target - now;
       if (diff <= 0) { setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 }); return; }
       setTimeLeft({ days: Math.floor(diff / 86400000), hours: Math.floor((diff % 86400000) / 3600000), minutes: Math.floor((diff % 3600000) / 60000), seconds: Math.floor((diff % 60000) / 1000) });
     };
     calculate(); const interval = setInterval(calculate, 1000); return () => clearInterval(interval);
   }, [targetDate]);
-
 
 
   const initScrollAnimations = useCallback(() => {
@@ -319,59 +271,60 @@ useEffect(() => {
   const toggleMute = () => { if (audioRef.current) { audioRef.current.muted = !audioRef.current.muted; setIsMuted(!isMuted); } };
 
 
-  /* ===============RSVP =================== */
-const [isSubmitting, setIsSubmitting] = useState(false);
-const [submitError, setSubmitError] = useState('');
+  /* =============== RSVP =================== */
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-const SHEETDB_URL = 'https://sheetdb.io/api/v1/gbbytqb7a495n'; 
+  const SHEETDB_URL = 'https://sheetdb.io/api/v1/gbbytqb7a495n';
 
-const handleRsvpSubmit = async () => {
-  if (!rsvpData.fullName || !rsvpData.attending) {
-    setSubmitError('Veuillez remplir les champs obligatoires.');
-    return;
-  }
+  const handleRsvpSubmit = async () => {
+    if (!rsvpData.fullName || !rsvpData.attending) {
+      setSubmitError('Veuillez remplir les champs obligatoires.');
+      return;
+    }
 
-  setIsSubmitting(true);
-  setSubmitError('');
+    setIsSubmitting(true);
+    setSubmitError('');
 
-  try {
-    const response = await fetch(SHEETDB_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: {
-          timestamp: new Date().toLocaleString('fr-FR'),
-          fullName: rsvpData.fullName,
-          email: rsvpData.email || '—',
-          attending: rsvpData.attending === 'yes' ? '✅ Présent' : '❌ Absent',
-          message: rsvpData.message || '—',
-        }
-      }),
-    });
+    try {
+      const response = await fetch(SHEETDB_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: {
+            timestamp: new Date().toLocaleString('fr-FR'),
+            fullName: rsvpData.fullName,
+            email: rsvpData.email || '—',
+            attending: rsvpData.attending === 'yes' ? '✅ Présent' : '❌ Absent',
+            message: rsvpData.message || '—',
+          }
+        }),
+      });
 
-    if (!response.ok) throw new Error('Erreur réseau');
+      if (!response.ok) throw new Error('Erreur réseau');
 
-    setRsvpSubmitted(true);
-  } catch (err) {
-    setSubmitError('Une erreur est survenue. Veuillez réessayer.');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-// Pause musique quand l'utilisateur quitte l'onglet/app
-useEffect(() => {
-  const handleVisibility = () => {
-    if (!audioRef.current) return;
-    if (document.hidden) {
-      audioRef.current.pause();
-    } else if (isOpen && !isMuted) {
-      audioRef.current.play().catch(() => {});
+      setRsvpSubmitted(true);
+    } catch (err) {
+      setSubmitError('Une erreur est survenue. Veuillez réessayer.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  document.addEventListener('visibilitychange', handleVisibility);
-  return () => document.removeEventListener('visibilitychange', handleVisibility);
-}, [isOpen, isMuted]);
+  // Pause musique quand l'utilisateur quitte l'onglet/app
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (!audioRef.current) return;
+      if (document.hidden) {
+        audioRef.current.pause();
+      } else if (isOpen && !isMuted) {
+        audioRef.current.play().catch(() => {});
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [isOpen, isMuted]);
 
 
   return (
@@ -379,93 +332,93 @@ useEffect(() => {
       <div ref={flashRef} className="flash-overlay" />
       <audio ref={audioRef} loop preload="auto"><source src="/music.mp3" type="audio/mpeg" /></audio>
 
-{/* Prompt Samsung → Chrome */}
-{showChromePrompt && (
-  <div style={{
-    position: 'fixed',
-    inset: 0,
-    zIndex: 2000,
-    background: 'rgba(0,0,0,0.85)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '24px',
-  }}>
-    <div style={{
-      background: '#1a1a1a',
-      borderRadius: '20px',
-      padding: '40px 28px',
-      maxWidth: '340px',
-      textAlign: 'center',
-      border: '1px solid rgba(196,162,101,0.2)',
-    }}>
-      <p style={{
-        fontFamily: '"Great Vibes", cursive',
-        fontSize: '1.8rem',
-        color: '#C4A265',
-        marginBottom: '20px',
-      }}>
-        Meilleure expérience
-      </p>
-      <p style={{
-        fontFamily: '"Josefin Sans", sans-serif',
-        fontSize: '0.82rem',
-        fontWeight: 300,
-        color: 'rgba(255,255,255,0.7)',
-        lineHeight: 1.7,
-        marginBottom: '28px',
-      }}>
-        Pour profiter pleinement de votre invitation, veuillez ouvrir ce lien dans Chrome.
-      </p>
+      {/* Prompt Samsung → Chrome */}
+      {showChromePrompt && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 2000,
+          background: 'rgba(0,0,0,0.85)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '24px',
+        }}>
+          <div style={{
+            background: '#1a1a1a',
+            borderRadius: '20px',
+            padding: '40px 28px',
+            maxWidth: '340px',
+            textAlign: 'center',
+            border: '1px solid rgba(196,162,101,0.2)',
+          }}>
+            <p style={{
+              fontFamily: '"Great Vibes", cursive',
+              fontSize: '1.8rem',
+              color: '#C4A265',
+              marginBottom: '20px',
+            }}>
+              Meilleure expérience
+            </p>
+            <p style={{
+              fontFamily: '"Josefin Sans", sans-serif',
+              fontSize: '0.82rem',
+              fontWeight: 300,
+              color: 'rgba(255,255,255,0.7)',
+              lineHeight: 1.7,
+              marginBottom: '28px',
+            }}>
+              Pour profiter pleinement de votre invitation, veuillez ouvrir ce lien dans Chrome.
+            </p>
 
-<button
-  onClick={() => {
-    window.location.href = 'intent://lina-et-amine.vercel.app/#Intent;scheme=https;package=com.android.chrome;end';
-  }}
-  style={{
-    width: '100%',
-    padding: '14px 24px',
-    background: '#C4A265',
-    color: '#1a1a1a',
-    border: 'none',
-    borderRadius: '12px',
-    fontFamily: '"Josefin Sans", sans-serif',
-    fontSize: '0.82rem',
-    fontWeight: 400,
-    letterSpacing: '0.15em',
-    textTransform: 'uppercase',
-    cursor: 'pointer',
-    marginBottom: '12px',
-  }}
->
-  Ouvrir dans Chrome
-</button>
+            <button
+              onClick={() => {
+                window.location.href = 'intent://alexandre-et-camille.vercel.app/#Intent;scheme=https;package=com.android.chrome;end';
+              }}
+              style={{
+                width: '100%',
+                padding: '14px 24px',
+                background: '#C4A265',
+                color: '#1a1a1a',
+                border: 'none',
+                borderRadius: '12px',
+                fontFamily: '"Josefin Sans", sans-serif',
+                fontSize: '0.82rem',
+                fontWeight: 400,
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                marginBottom: '12px',
+              }}
+            >
+              Ouvrir dans Chrome
+            </button>
 
-      <button
-  onClick={() => {
-    setShowChromePrompt(false);
-    setPendingDarkSwitch(true);
-  }}
-  style={{
-    width: '100%',
-    padding: '12px 24px',
-    background: 'transparent',
-    color: 'rgba(255,255,255,0.4)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '12px',
-    fontFamily: '"Josefin Sans", sans-serif',
-    fontSize: '0.75rem',
-    fontWeight: 300,
-    letterSpacing: '0.1em',
-    cursor: 'pointer',
-  }}
->
-  Continuer ici
-</button>
-    </div>
-  </div>
-)}
+            <button
+              onClick={() => {
+                setShowChromePrompt(false);
+                setPendingDarkSwitch(true);
+              }}
+              style={{
+                width: '100%',
+                padding: '12px 24px',
+                background: 'transparent',
+                color: 'rgba(255,255,255,0.4)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                fontFamily: '"Josefin Sans", sans-serif',
+                fontSize: '0.75rem',
+                fontWeight: 300,
+                letterSpacing: '0.1em',
+                cursor: 'pointer',
+              }}
+            >
+              Continuer ici
+            </button>
+          </div>
+        </div>
+      )}
 
 
       {isOpen && (
@@ -489,244 +442,235 @@ useEffect(() => {
 
       <main ref={mainContentRef} className={`main-content ${!isOpen ? 'hidden' : ''}`}>
 
-       {/* ════════════ HERO ════════════ */}
-   
-<header ref={heroRef} className="dn-hero">
-  <div className="dn-hero-media">
-    <video
-      className="dn-hero-video dn-hero-video--light"
-      autoPlay loop muted playsInline
-      src="/lightbg.mp4"
-      style={{ opacity: theme === 'light' ? 1 : 0 }}
-    />
-    <img
-      className="dn-hero-video dn-hero-video--dark"
-      src="/darkbg.jpg"
-      alt=""
-      style={{ opacity: theme === 'dark' ? 1 : 0 }}
-    />
-  </div>
+        {/* ════════════ HERO ════════════ */}
+        <header ref={heroRef} className="dn-hero">
+          <div className="dn-hero-media">
+            <video
+              className="dn-hero-video dn-hero-video--light"
+              autoPlay loop muted playsInline
+              src="/lightbg.mp4"
+              style={{ opacity: theme === 'light' ? 1 : 0 }}
+            />
+            <img
+              className="dn-hero-video dn-hero-video--dark"
+              src="/darkbg.jpg"
+              alt=""
+              style={{ opacity: theme === 'dark' ? 1 : 0 }}
+            />
+          </div>
 
-  {/* Transition overlay DANS le hero */}
-  <div className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}>
-    <video ref={transitionVideoDarkRef} playsInline muted preload="auto" src="/transition-to-dark.mp4" style={{ display: 'none' }} />
-    <video ref={transitionVideoLightRef} playsInline muted preload="auto" src="/transition-to-light.mp4" style={{ display: 'none' }} />
-  </div>
+          {/* Transition overlay DANS le hero */}
+          <div className={`dn-transition-overlay ${isTransitioning ? 'active' : ''}`}>
+            <video ref={transitionVideoDarkRef} playsInline muted preload="auto" src="/transition-to-dark.mp4" style={{ display: 'none' }} />
+            <video ref={transitionVideoLightRef} playsInline muted preload="auto" src="/transition-to-light.mp4" style={{ display: 'none' }} />
+          </div>
 
-  <div className="dn-hero-overlay-top" />
+          <div className="dn-hero-overlay-top" />
 
-  <div
-    ref={heroContentRef}
-    className="dn-hero-content"
-    style={{
-      marginTop: '-18vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-    }}
-  >
-    <p style={{
-      fontFamily: '"Playfair Display", serif',
-      fontSize: 'clamp(0.60rem, 1.8vw, 0.78rem)',
-      letterSpacing: '0.5em',
-      textTransform: 'uppercase',
-      fontWeight: 800,
-      color: theme === 'dark' ? '#c8bda4' : '#4a5a3f',
-      marginBottom: '1rem',
-      marginTop: 0,
-      transition: 'color 0.5s ease',
-      opacity: 0.85,
-    }}>
-      We are getting married
-    </p>
+          <div
+            ref={heroContentRef}
+            className="dn-hero-content"
+            style={{
+              marginTop: '-18vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <p style={{
+              fontFamily: '"Playfair Display", serif',
+              fontSize: 'clamp(0.60rem, 1.8vw, 0.78rem)',
+              letterSpacing: '0.5em',
+              textTransform: 'uppercase',
+              fontWeight: 800,
+              color: theme === 'dark' ? '#c8bda4' : '#4a5a3f',
+              marginBottom: '1rem',
+              marginTop: 0,
+              transition: 'color 0.5s ease',
+              opacity: 0.85,
+            }}>
+              We are getting married
+            </p>
 
-    <h1 style={{
-      fontFamily: '"Great Vibes", cursive',
-      fontSize: 'clamp(3.2rem, 13vw, 6rem)',
-      fontWeight: 400,
-      color: theme === 'dark' ? '#f0e6cc' : '#3d4e35',
-      lineHeight: 1.05,
-      margin: '0 0 0.6rem 0',
-      textShadow: theme === 'dark'
-        ? '0 2px 40px rgba(0,0,0,0.35)'
-        : '0 2px 24px rgba(255,255,255,0.5)',
-      transition: 'color 0.5s ease, text-shadow 0.5s ease',
-      letterSpacing: '0.02em',
-    }}>
-      Bilal &amp; Lina
-    </h1>
+            <h1 style={{
+              fontFamily: '"Great Vibes", cursive',
+              fontSize: 'clamp(3.2rem, 13vw, 6rem)',
+              fontWeight: 400,
+              color: theme === 'dark' ? '#f0e6cc' : '#3d4e35',
+              lineHeight: 1.05,
+              margin: '0 0 0.6rem 0',
+              textShadow: theme === 'dark'
+                ? '0 2px 40px rgba(0,0,0,0.35)'
+                : '0 2px 24px rgba(255,255,255,0.5)',
+              transition: 'color 0.5s ease, text-shadow 0.5s ease',
+              letterSpacing: '0.02em',
+            }}>
+              Alexandre &amp; Camille
+            </h1>
 
-    <div style={{
-      width: '40px',
-      height: '1px',
-      background: theme === 'dark' ? 'rgba(200,189,164,0.4)' : 'rgba(74,90,63,0.35)',
-      margin: '0.1rem 0 0.75rem',
-      transition: 'background 0.5s ease',
-    }} />
+            <div style={{
+              width: '40px',
+              height: '1px',
+              background: theme === 'dark' ? 'rgba(200,189,164,0.4)' : 'rgba(74,90,63,0.35)',
+              margin: '0.1rem 0 0.75rem',
+              transition: 'background 0.5s ease',
+            }} />
 
-    <p style={{
-      fontFamily: '"Playfair Display", serif',
-      fontSize: 'clamp(0.65rem, 2vw, 0.82rem)',
-      letterSpacing: '0.38em',
-      textTransform: 'uppercase',
-      fontWeight: 800,
-      fontStyle: 'italic',
-      color: theme === 'dark' ? 'rgba(200,189,164,0.7)' : 'rgba(74,90,63,0.75)',
-      margin: 0,
-      transition: 'color 0.5s ease',
-    }}>
-      01 Mai 2026
-    </p>
-  </div>
+            <p style={{
+              fontFamily: '"Playfair Display", serif',
+              fontSize: 'clamp(0.65rem, 2vw, 0.82rem)',
+              letterSpacing: '0.38em',
+              textTransform: 'uppercase',
+              fontWeight: 800,
+              fontStyle: 'italic',
+              color: theme === 'dark' ? 'rgba(200,189,164,0.7)' : 'rgba(74,90,63,0.75)',
+              margin: 0,
+              transition: 'color 0.5s ease',
+            }}>
+              20 Juin 2026
+            </p>
+          </div>
 
-  <div className="dn-scroll-indicator">
-    <div className="dn-scroll-line" />
-  </div>
-</header>
-
-
-{/* ════════════ WELCOME / INVITATION ════════════ */}
-<section className="dn-welcome">
-
-  <h2 className="dn-welcome-title">
-    À l’occasion de cette union,
-  </h2>
-
-  <p className="dn-welcome-text">
-Nous avons l’honneur de vous convier à partager avec nous ce mariage <br />
-
-entourés de nos familles et de nos proches, dans une ambiance de joie, de convivialité et de bénédiction.
-<br />
-Votre présence à nos côtés sera pour nous un immense bonheur et contribuera à rendre cette soirée inoubliable.
-  </p>
-
-<div className="dn-welcome-ribbon">
-  <div className="dn-ribbon-track">
-    {['/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg','/photo5.jpg','/photo6.jpg',
-      '/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg','/photo5.jpg','/photo6.jpg',
-    ].map((src, i) => (
-      <div key={i} className="dn-ribbon-item" style={{ backgroundImage: `url('${src}')` }} />
-    ))}
-  </div>
-</div>
-</section>
+          <div className="dn-scroll-indicator">
+            <div className="dn-scroll-line" />
+          </div>
+        </header>
 
 
+        {/* ════════════ WELCOME / INVITATION ════════════ */}
+        <section className="dn-welcome">
+
+          <h2 className="dn-welcome-title">
+            À l'occasion de cette union,
+          </h2>
+
+          <p className="dn-welcome-text">
+            Nous avons l'honneur de vous convier à partager avec nous ce mariage<br />
+            entourés de nos familles et de nos proches, dans une ambiance de joie, d'élégance et de partage.
+            <br />
+            Votre présence à nos côtés sera pour nous un immense bonheur et contribuera à rendre cette soirée inoubliable.
+          </p>
+
+          <div className="dn-welcome-ribbon">
+            <div className="dn-ribbon-track">
+              {['/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg','/photo5.jpg','/photo6.jpg',
+                '/photo1.jpg','/photo2.jpg','/photo3.jpg','/photo4.jpg','/photo5.jpg','/photo6.jpg',
+              ].map((src, i) => (
+                <div key={i} className="dn-ribbon-item" style={{ backgroundImage: `url('${src}')` }} />
+              ))}
+            </div>
+          </div>
+        </section>
 
 
+        {/* ════════════ DÉTAILS DE L'ÉVÉNEMENT ════════════ */}
+        <section className="dn-event-details">
+
+          <div className="dn-ed-header">
+            <p className="dn-ed-join">REJOIGNEZ-NOUS</p>
+            <h2 className="dn-ed-title">Détails de l'Événement</h2>
+            <p className="dn-ed-intro">
+              Nous avons hâte de célébrer ce jour spécial avec vous.
+              <br />
+              Voici tout ce que vous devez savoir.
+            </p>
+          </div>
+
+          <div className="dn-ed-card">
+            <div className="dn-ed-icon-wrap">
+              <Star size={24} strokeWidth={1.5} className="dn-ed-icon" />
+            </div>
+
+            <p className="dn-ed-event-title">Cérémonie de Mariage</p>
+
+            <div className="dn-ed-meta">
+              <div className="dn-ed-meta-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+                <span>À partir de 16h00</span>
+              </div>
+
+              <div className="dn-ed-meta-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>Orangerie — Château de Vaux-le-Vicomte</span>
+              </div>
+            </div>
+
+            <p className="dn-ed-address">
+              Château de Vaux-le-Vicomte<br />
+              77950 Maincy, Île-de-France<br />
+              France
+            </p>
+
+            <div className="dn-ed-map-wrap">
+              <iframe
+                title="Carte du lieu"
+                src="https://maps.google.com/maps?q=Chateau+de+Vaux+le+Vicomte+Maincy&output=embed"
+                width="100%"
+                height="100%"
+                loading="lazy"
+                allowFullScreen
+                className="dn-ed-map"
+              />
+            </div>
+
+            <p className="dn-ed-caption">
+              Rejoignez-nous dans un cadre historique et enchanteur pour célébrer ce moment inoubliable.
+            </p>
+
+            <a
+              href="https://maps.google.com/?q=Chateau+de+Vaux+le+Vicomte+Maincy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="dn-ed-btn"
+            >
+              Ouvrir dans Maps
+            </a>
+
+          </div>
+
+        </section>
+
+        {/* ════════════ NO KIDS ════════════ */}
+        <section className="dn-nokids">
+          <div className="dn-nokids-inner">
+            <h2 className="dn-nokids-title">Cérémonie Adultes Uniquement</h2>
+            <div className="dn-nokids-sep" />
+            <p className="dn-nokids-text">
+              Afin que chacun puisse profiter pleinement de cette journée,<br />
+              nous vous informons que les enfants ne seront<br />
+              <strong>pas admis</strong> lors de notre célébration.
+            </p>
+            <p className="dn-nokids-sub">
+              Nous vous remercions de votre compréhension.
+            </p>
+          </div>
+        </section>
 
 
-{/* ════════════ DÉTAILS DE L'ÉVÉNEMENT ════════════ */}
-<section className="dn-event-details">
-
-  <div className="dn-ed-header">
-    <p className="dn-ed-join">REJOIGNEZ-NOUS</p>
-    <h2 className="dn-ed-title">Détails de l'Événement</h2>
-    <p className="dn-ed-intro">
-      Nous avons hâte de célébrer ce jour spécial avec vous.
-      <br />
-      Voici tout ce que vous devez savoir.
-    </p>
-  </div>
-
-  <div className="dn-ed-card">
-    <div className="dn-ed-icon-wrap">
-      <Star size={24} strokeWidth={1.5} className="dn-ed-icon" />
-    </div>
-
-    <p className="dn-ed-event-title">Cérémonie de Mariage</p>
-
-    <div className="dn-ed-meta">
-      <div className="dn-ed-meta-row">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 6v6l4 2"/>
-        </svg>
-        <span>À partir de 18h00</span>
-      </div>
-
-      <div className="dn-ed-meta-row">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-          <circle cx="12" cy="10" r="3"/>
-        </svg>
-        <span>Salle Jupiter – Hôtel Sheraton Alger</span>
-      </div>
-    </div>
-
-    <p className="dn-ed-address">
-      Hôtel Sheraton Alger<br />
-      Boite Postale 62, Staoueli 16101<br />
-      Algérie
-    </p>
-
-    <div className="dn-ed-map-wrap">
-      <iframe
-        title="Carte du lieu"
-        src="https://maps.google.com/maps?q=Sheraton+Club+des+Pins+Alger&output=embed"
-        width="100%"
-        height="100%"
-        loading="lazy"
-        allowFullScreen
-        className="dn-ed-map"
-      />
-    </div>
-
-    <p className="dn-ed-caption">
-      Rejoignez-nous dans un cadre élégant et raffiné pour célébrer ce moment inoubliable.
-    </p>
-
-    <a
-      href="https://maps.google.com/?q=Sheraton+Club+des+Pins+Alger"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="dn-ed-btn"
-    >
-      Ouvrir dans Maps
-    </a>
-
-  </div>
-
-</section>
-
-{/* ════════════ NO KIDS ════════════ */}
- <section className="dn-nokids">
-  <div className="dn-nokids-inner">
-    <h2 className="dn-nokids-title">Cérémonie Adultes Uniquement</h2>
-    <div className="dn-nokids-sep" />
-    <p className="dn-nokids-text">
-      Afin que chacun puisse profiter pleinement de cette journée,<br />
-      nous vous informons que les enfants ne seront<br />
-      <strong>pas admis</strong> lors de notre célébration.
-    </p>
-    <p className="dn-nokids-sub">
-      Nous vous remercions de votre compréhension.
-    </p>
-  </div>
-</section> 
+        <div className="dn-img-divider">
+          <img
+            src={theme === 'dark' ? CoupleFrameDark : CoupleFrame}
+            alt="Couple Illustration"
+            className="couple-illustration"
+          />
+        </div>
 
 
-<div className="dn-img-divider">
-  <img 
-    src={theme === 'dark' ? CoupleFrameDark : CoupleFrame}
-    alt="Couple Illustration" 
-    className="couple-illustration" 
-  />
-</div>
-
-
-
-
-
-        {/* RSVP — cream bg, olive button like inspiration */}
-<section ref={rsvpRef} className="dn-rsvp">
+        {/* RSVP */}
+        <section ref={rsvpRef} className="dn-rsvp">
           <div ref={rsvpHeaderRef} className="dn-rsvp-header">
             <p className="dn-rsvp-surtitle">SOYEZ NOTRE INVITÉ</p>
             <h2 className="dn-rsvp-title">RSVP</h2>
             <div className="dn-rsvp-ornament">
               <div className="dn-rsvp-orn-line" /><Heart size={18} strokeWidth={1.5} className="dn-rsvp-heart" /><div className="dn-rsvp-orn-line" />
             </div>
-            <p className="dn-rsvp-desc">Merci de confirmer votre présence avant le 1er Mai 2026</p>
+            <p className="dn-rsvp-desc">Merci de confirmer votre présence avant le 1er Juin 2026</p>
           </div>
           <div ref={rsvpCardRef} className="dn-rsvp-card">
             {!rsvpSubmitted ? (
@@ -758,20 +702,20 @@ Votre présence à nos côtés sera pour nous un immense bonheur et contribuera 
                 </div>
 
                 {submitError && (
-  <p style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.5rem', textAlign: 'center' }}>
-    {submitError}
-  </p>
-)}
+                  <p style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.5rem', textAlign: 'center' }}>
+                    {submitError}
+                  </p>
+                )}
 
-<button
-  className="dn-rsvp-btn"
-  onClick={handleRsvpSubmit}
-  disabled={isSubmitting}
-  style={{ opacity: isSubmitting ? 0.6 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
->
-  <Send size={16} />
-  {isSubmitting ? 'Envoi en cours…' : 'Envoyer le RSVP'}
-</button>
+                <button
+                  className="dn-rsvp-btn"
+                  onClick={handleRsvpSubmit}
+                  disabled={isSubmitting}
+                  style={{ opacity: isSubmitting ? 0.6 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                >
+                  <Send size={16} />
+                  {isSubmitting ? 'Envoi en cours…' : 'Envoyer le RSVP'}
+                </button>
 
               </>
             ) : (
@@ -784,107 +728,106 @@ Votre présence à nos côtés sera pour nous un immense bonheur et contribuera 
           </div>
         </section>
 
-{/* COUNTDOWN */}
-<section ref={countdownRef} className="dn-countdown">
-  <div className="dn-countdown-inner">
+        {/* COUNTDOWN */}
+        <section ref={countdownRef} className="dn-countdown">
+          <div className="dn-countdown-inner">
 
-    <div ref={countdownTitleRef} className="dn-cd-header">
-      <p className="dn-cd-surtitle">Bilal & Lina</p>
-      <h2 className="dn-cd-title-new">Compte à Rebours</h2>
-      <div className="dn-cd-sep-line" />
-    </div>
+            <div ref={countdownTitleRef} className="dn-cd-header">
+              <p className="dn-cd-surtitle">Alexandre & Camille</p>
+              <h2 className="dn-cd-title-new">Compte à Rebours</h2>
+              <div className="dn-cd-sep-line" />
+            </div>
 
-    <div ref={countdownCardRef} className="dn-cd-rings-wrap">
-      {[
-        { value: timeLeft.days,    label: 'JOURS',    max: 365, id: 'rg1' },
-        { value: timeLeft.hours,   label: 'HEURES',   max: 24,  id: 'rg2' },
-        { value: timeLeft.minutes, label: 'MINUTES',  max: 60,  id: 'rg3' },
-        { value: timeLeft.seconds, label: 'SECONDES', max: 60,  id: 'rg4' },
-      ].map(({ value, label, max, id }) => {
-        const r = 36;
-        const circ = 2 * Math.PI * r;
-        const dash = circ * Math.min(value / max, 1);
-        return (
-          <div key={id} className="dn-cd-ring-item">
-            <svg viewBox="0 0 92 92">
-  <defs>
-    <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor={theme === 'dark' ? '#FAF7F2' : '#c8bda4'}/>
-      <stop offset="100%" stopColor={theme === 'dark' ? '#FAF7F2' : '#a89880'} stopOpacity="0.8"/>
-    </linearGradient>
-  </defs>
+            <div ref={countdownCardRef} className="dn-cd-rings-wrap">
+              {[
+                { value: timeLeft.days,    label: 'JOURS',    max: 365, id: 'rg1' },
+                { value: timeLeft.hours,   label: 'HEURES',   max: 24,  id: 'rg2' },
+                { value: timeLeft.minutes, label: 'MINUTES',  max: 60,  id: 'rg3' },
+                { value: timeLeft.seconds, label: 'SECONDES', max: 60,  id: 'rg4' },
+              ].map(({ value, label, max, id }) => {
+                const r = 36;
+                const circ = 2 * Math.PI * r;
+                const dash = circ * Math.min(value / max, 1);
+                return (
+                  <div key={id} className="dn-cd-ring-item">
+                    <svg viewBox="0 0 92 92">
+                      <defs>
+                        <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor={theme === 'dark' ? '#FAF7F2' : '#c8bda4'}/>
+                          <stop offset="100%" stopColor={theme === 'dark' ? '#FAF7F2' : '#a89880'} stopOpacity="0.8"/>
+                        </linearGradient>
+                      </defs>
 
-  {/* Track */}
-  <circle cx="46" cy="46" r={r}
-    fill="none"
-    stroke={theme === 'dark' ? 'rgba(250,247,242,0.1)' : 'rgba(200,189,164,0.1)'}
-    strokeWidth="2.5"
-  />
+                      {/* Track */}
+                      <circle cx="46" cy="46" r={r}
+                        fill="none"
+                        stroke={theme === 'dark' ? 'rgba(250,247,242,0.1)' : 'rgba(200,189,164,0.1)'}
+                        strokeWidth="2.5"
+                      />
 
-  {/* Progress */}
-  <circle cx="46" cy="46" r={r}
-    fill="none"
-    stroke={`url(#${id})`}
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeDasharray={`${dash} ${circ}`}
-    transform="rotate(-90 46 46)"
-    style={{ transition: 'stroke-dasharray 1s ease' }}
-  />
+                      {/* Progress */}
+                      <circle cx="46" cy="46" r={r}
+                        fill="none"
+                        stroke={`url(#${id})`}
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeDasharray={`${dash} ${circ}`}
+                        transform="rotate(-90 46 46)"
+                        style={{ transition: 'stroke-dasharray 1s ease' }}
+                      />
 
-  {/* Valeur */}
-  <text x="46" y="42" textAnchor="middle"
-    fontFamily="Cormorant Garamond, Georgia, serif"
-    fontSize="22" fontWeight="300"
-    fill={theme === 'dark' ? '#FAF7F2' : '#f0e6cc'}>
-    {String(value).padStart(2, '0')}
-  </text>
+                      {/* Valeur */}
+                      <text x="46" y="42" textAnchor="middle"
+                        fontFamily="Cormorant Garamond, Georgia, serif"
+                        fontSize="22" fontWeight="300"
+                        fill={theme === 'dark' ? '#FAF7F2' : '#f0e6cc'}>
+                        {String(value).padStart(2, '0')}
+                      </text>
 
-  {/* Label */}
-  <text x="46" y="56" textAnchor="middle"
-    fontFamily="Josefin Sans, sans-serif"
-    fontSize="6" fontWeight="300"
-    fill={theme === 'dark' ? 'rgba(250,247,242,0.55)' : 'rgba(200,189,164,0.55)'}
-    letterSpacing="2">
-    {label}
-  </text>
-</svg>
+                      {/* Label */}
+                      <text x="46" y="56" textAnchor="middle"
+                        fontFamily="Josefin Sans, sans-serif"
+                        fontSize="6" fontWeight="300"
+                        fill={theme === 'dark' ? 'rgba(250,247,242,0.55)' : 'rgba(200,189,164,0.55)'}
+                        letterSpacing="2">
+                        {label}
+                      </text>
+                    </svg>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="dn-cd-date-row">
+              <div className="dn-cd-date-line" />
+              <span className="dn-cd-date-txt">20 Juin 2026</span>
+              <div className="dn-cd-date-line" />
+            </div>
+
           </div>
-        );
-      })}
-    </div>
-
-    <div className="dn-cd-date-row">
-      <div className="dn-cd-date-line" />
-      <span className="dn-cd-date-txt">01 Mai 2026</span>
-      <div className="dn-cd-date-line" />
-    </div>
-
-  </div>
-</section>
+        </section>
 
 
-<footer className="dn-footer">
-  <div className="dn-footer-inner">
-    <p className="dn-footer-credit">Made with love by Digital.invites.dz
-</p>
+        <footer className="dn-footer">
+          <div className="dn-footer-inner">
+            <p className="dn-footer-credit">Made with love by Digital.invites.dz</p>
 
-<div className="dn-footer-socials">
-  <a href="https://www.instagram.com/digital.invites.dz?igsh=ajZkZW41dXlkd3Q3&utm_source=qr" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="Instagram">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="2" width="20" height="20" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-    </svg>
-  </a>
-  <a href="https://www.tiktok.com/@digitalinvitations.dz?_r=1&_t=ZS-95n59pHQKs3" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="TikTok">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-    </svg>
-  </a>
-</div>
-  </div>
-</footer>
+            <div className="dn-footer-socials">
+              <a href="https://www.instagram.com/digital.invites.dz?igsh=ajZkZW41dXlkd3Q3&utm_source=qr" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="Instagram">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+              <a href="https://www.tiktok.com/@digitalinvitations.dz?_r=1&_t=ZS-95n59pHQKs3" target="_blank" rel="noopener noreferrer" className="dn-footer-social" aria-label="TikTok">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </footer>
 
       </main>
     </div>
